@@ -1,0 +1,36 @@
+{
+  "name": "Mira",
+  "version": "10.11.2019",
+  "description": "Hopefullness",
+  "author": "NyafiRawr#7358",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/register": "^7.6.2",
+    "@babel/runtime": "^7.6.3",
+    "babel-eslint": "^10.0.3",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.2.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "keyv": "^3.1.0",
+    "mysql": "^2.17.1",
+    "mysql2": "^2.0.0",
+    "sequelize": "^5.21.1",
+    "sqlite3": "^4.1.0",
+    "sync-request": "^6.1.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "nodemon": "^1.19.4"
+  },
+  "scripts": {
+    "start": "node ./index.js",
+    "start:dev": "nodemon ./index.js",
+    "lint": "eslint ./src"
+  }
+}

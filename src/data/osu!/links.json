@@ -1,0 +1,32 @@
+{
+	"ppy": {
+		"avatar": "http://s.ppy.sh/a/ID",
+		"user": "https://osu.ppy.sh/u/ID",
+		"beatmap": "https://osu.ppy.sh/b/ID",
+		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg"
+	},
+	"regular": {
+		"avatar": "http://a.osu.akatsuki.pw/ID",
+		"user": "https://osu.akatsuki.pw/u/ID",
+		"beatmap": "https://osu.akatsuki.pw/b/ID",
+		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg"
+	},
+	"relax": {
+		"avatar": "http://a.relax.akatsuki.pw/ID",
+		"user": "https://relax.akatsuki.pw/u/ID",
+		"beatmap": "https://relax.akatsuki.pw/b/ID",
+		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg"
+	},
+	"ripple": {
+		"avatar": "https://a.ripple.moe/ID",
+		"user": "https://ripple.moe/u/ID",
+		"beatmap": "https://ripple.moe/b/ID",
+		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg"
+	},
+	"enjuu": {
+		"avatar": "https://enjuu.click/ID",
+		"user": "https://enjuu.click/u/ID",
+		"beatmap": "https://enjuu.click/b/ID",
+		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg"
+	}
+}
