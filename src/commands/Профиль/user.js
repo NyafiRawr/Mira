@@ -17,8 +17,14 @@ module.exports = {
     const user = message.mentions.users.first() || message.client.users.find((u) => u.username === args.join(' ') || (`${u.username}#${u.discriminator}`) === args.join(' ')) || message.author;
     const member = message.guild.members.get(user.id);
 
+    const nickname = 'себе';
+    if (message.author.id != user.id) {
+      nickname = (!member || !member.nickname) ? user.username : member.nickname;
+    }
+    
+
     const embed = new Discord.RichEmbed();
-    embed.setAuthor(`Информация о ${(!member || !member.nickname) ? user.username : member.nickname}`, user.avatarURL || user.user.avatarURL);
+    embed.setAuthor(`Информация о ${nickname}`, user.avatarURL || user.user.avatarURL);
 
     embed.setThumbnail(user.avatarURL || user.user.avatarURL);
 
@@ -32,8 +38,8 @@ module.exports = {
     const dbUser = await users.get(message.guild.id, user.id);
 
     if (!!member && !!member.joinedAt) {
+      embed.addField('Первый вход', tools.toDate(dbUser.entryDate || member.joinedAt), true);
       embed.addField('Дата подключения', tools.toDate(member.joinedAt), true);
-      embed.addField('Первый вход на сервер', tools.toDate(dbUser.entryDate || member.joinedAt), true);
     }
 
     if (dbUser.birthday) {
