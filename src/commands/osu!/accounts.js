@@ -39,6 +39,5 @@ module.exports = {
     embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
     
     message.channel.send({ embed });
-    };
-  },
-};
+  }
+}

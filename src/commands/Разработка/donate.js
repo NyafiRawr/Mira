@@ -15,9 +15,10 @@ module.exports = {
   execute(message /* , args, CooldownReset */) {
     const embed = new Discord.RichEmbed()
       .setAuthor('Благодарю за интерес к разработке!')
+      // nyafi: добавить все доступные способы .-.
       .setTitle('Помочь Яндекс.Деньгами')
       .setURL('https://money.yandex.ru/to/410014841265118')
-      .setDescription('Помимо денег Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось o/')
+      .setDescription('Помимо монетки Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось o/')
       .setColor('#6DC066');
 
     message.author.send({ embed }).catch(() => {
