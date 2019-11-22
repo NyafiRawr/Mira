@@ -123,9 +123,11 @@ client
 
     let { content } = message;
 
-    if (message.mentions.members.size === 1 && message.content.split(/ +/).length === 1) {
-      if (message.mentions.members.first().id === client.user.id) {
-        content = `${config.bot.prefix}about`;
+    if (message.mentions.users != null) {
+      if (message.mentions.users.size == 1 && message.content.split(/ +/).length == 1) {
+        if (message.mentions.users.first().id = client.user.id) {
+          content = `${config.bot.prefix}about`;
+        }
       }
     }
 
@@ -138,7 +140,7 @@ client
 
     if (!prefix) return;
 
-    const args = message.content.slice(prefix.length).split(/ +/);
+    const args = content.slice(prefix.length).split(/ +/);
 
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
@@ -160,11 +162,11 @@ client
       return message.reply('эта команда недоступна в ЛС!');
     }
 
-    const timeLeft = await cooldowns.get(message.guild.id, message.author.id, command.name);
+    const timeLeft = await cooldowns.get((message.guild || message.author).id, message.author.id, command.name);
 
     if (!timeLeft) {
       const cooldown = command.cooldown || 3;
-      cooldowns.set(message.guild.id, message.author.id, command.name, cooldown);
+      cooldowns.set((message.guild || message.author).id, message.author.id, command.name, cooldown);
     } else {
       if (!command.cooldownMessage) {
         return message.reply(`пожалуйста, подождите ${timeLeft} прежде, чем снова вызвать команду: ${command.name}!`);
