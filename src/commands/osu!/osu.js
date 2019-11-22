@@ -7,25 +7,31 @@ const config = require('../../config.js');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Профиль игрока',
-  aliases: ['p','osu'],
+  aliases: ['p'],
   usage: '[@ или ник] [/режим]',
   guild: true,
   cooldown: undefined,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args, CooldownReset) {
-    args = args.join(' ');
+  async execute(message, args /* , CooldownReset */) {
+    //=p @NyafiRawr#7358 .mania .gatari
+    let params = args.join(' ');
 
-    let specificMode;
-
-    if (args.lastIndexOf('/') !== -1) {
-      let specifyMode = osu.getKeyFromSearchOnValueFromJson('mode', args.substr(args.lastIndexOf('/') + 1));
-      if (!specifyMode.searchResult) {
-        return message.reply(specifyMode.result);
+    let mode = 0;
+    
+    //let { params, mode } = function getLastArgument
+    //как узнать что за параметр указан?
+    let positionArgument = params.lastIndexOf('.');
+    
+    if (positionArgument !== -1) {
+      mode = params.substr(positionArgument + 1);
+      mode = osu.getKeyFromSearchOnValueFromJson('../dats/osu!/mode.json', mode);
+      if (mode.resultSearch) {
+        return message.reply(mode.content);
       } else {
-        args = args.slice(0, args.lastIndexOf('/') - 1);
-        specificMode = specifyMode.result;
+        params = params.slice(0, positionArgument - 1);
+        mode = mode.resultSearch;
       };
     };
 

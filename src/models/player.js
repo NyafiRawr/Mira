@@ -12,9 +12,10 @@ Player.init({
     type: Sequelize.STRING(20),
     primaryKey: true,
   },
-  // максимальная длина ника (на официальном сервере)
+  // 15 - максимальная длина ника (на официальном сервере)
   nickname: Sequelize.STRING(15),
-  modes: Sequelize.ENUM('0', '1', '2', '3'),
+  // играемые моды
+  mods: Sequelize.ENUM('0', '1', '2', '3'),
 }, {
   modelName: 'player',
   sequelize,

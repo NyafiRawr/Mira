@@ -5,7 +5,7 @@ const tools = require('../../modules/tools.js');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Установить дату рождения',
-  aliases: ['birth', 'birthday'],
+  aliases: ['birth'],
   usage: '<24.06.1997>',
   guild: false,
   hide: false,
