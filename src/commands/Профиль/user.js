@@ -21,7 +21,7 @@ module.exports = {
     if (message.author.id != user.id) {
       nickname = (!member || !member.nickname) ? user.username : member.nickname;
     }
-    
+
 
     const embed = new Discord.RichEmbed();
     embed.setAuthor(`Информация о ${nickname}`, user.avatarURL || user.user.avatarURL);

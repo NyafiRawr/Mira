@@ -1,19 +1,19 @@
 import Player from '../models/player';
 
-export const get = async (idUser, gameServer = null) => {
+export const get = async (userId, gameServer = null) => {
   let player;
 
   if (gameServer) {
     player = await Player.findOne({
       where: {
-        idUser: idUser,
-        gameServer: gameServer,
+        userId,
+        gameServer,
       },
     });
   } else {
     player = await Player.findAll({
       where: {
-        idUser: idUser,
+        userId,
       },
     });
   }
@@ -21,11 +21,11 @@ export const get = async (idUser, gameServer = null) => {
   return player;
 };
 
-export const set = async (idUser, gameServer, fields) => {
+export const set = async (userId, gameServer, fields) => {
   const player = await Player.findOne({
     where: {
-      idUser: idUser,
-      gameServer: gameServer,
+      userId,
+      gameServer,
     },
   });
 
@@ -34,7 +34,7 @@ export const set = async (idUser, gameServer, fields) => {
   }
 
   return Player.create({
-    idUser: idUser,
-    gameServer: gameServer,
+    userId,
+    gameServer,
   }, fields);
 };

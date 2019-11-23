@@ -3,7 +3,7 @@ import { sequelize } from '../modules/db';
 
 class Player extends Model {}
 Player.init({
-  idUser: {
+  userId: {
     type: Sequelize.STRING,
     primaryKey: true,
   },

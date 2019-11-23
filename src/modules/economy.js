@@ -3,9 +3,14 @@ import { sequelize } from './db';
 
 const users = require('./users');
 
-export const get = async (idServer, idUser = null) => {
-  if (idUser != null) {
-    const user = await users.get(idServer, idUser);
+/**
+ * Получение пользователя
+ * @param {Number} serverId id сервера
+ * @param {Number} userId id пользователя
+ */
+export const get = async (serverId, userId = null) => {
+  if (userId != null) {
+    const user = await users.get(serverId, userId);
 
     if (user != null) {
       return user.balance;
@@ -14,16 +19,21 @@ export const get = async (idServer, idUser = null) => {
     return 0;
   }
 
-  // eslint-disable-next-line no-return-await
-  return await User.findAll({
+  return User.findAll({
     where: {
-      idServer: idServer,
+      serverId,
     },
   });
 };
 
-export const set = async (idServer, idUser, currency) => {
-  const user = await users.get(idServer, idUser);
+/**
+ * Установка пользователю печенек, при необходимости добавляет в базу пользователя
+ * @param {Number} serverId id сервера
+ * @param {Number} userId id пользователя
+ * @param {Number} currency сколько печенек установить
+ */
+export const set = async (serverId, userId, currency) => {
+  const user = await users.get(serverId, userId);
 
   if (user != null) {
     return user.update({
@@ -32,15 +42,23 @@ export const set = async (idServer, idUser, currency) => {
   }
 
   return User.create({
-    id: idUser,
-    idServer: idServer,
+    id: userId,
+    serverId,
     balance: currency,
-  })
+  });
 };
 
-export const transaction = async (idServer, idUserOut, idUserIn, currency) => {
-  const userOut = await users.get(idServer, idUserOut);
-  const userIn = await users.get(idServer, idUserIn);
+/**
+ * Переводит печеньки между пользователями
+ * @param {Number} serverId id сервера
+ * @param {Number} userOutId id пользователя у которого будут списаны печеньки
+ * @param {Number} userInId id пользователя которому будут добавлены печеньки
+ * @param {Number} currency сколько печенек перевести
+ */
+export const transaction = async (serverId, userOutId, userInId, currency) => {
+  const userOut = await users.get(serverId, userOutId);
+  const userIn = await users.get(serverId, userInId);
+
   await sequelize.transaction(async (t) => {
     userOut.update({
       balance: userOut.balance - currency,
@@ -53,9 +71,9 @@ export const transaction = async (idServer, idUserOut, idUserIn, currency) => {
     }
 
     User.create({
-      id: idUserIn,
-      idServer: idServer,
+      id: userInId,
+      serverId,
       balance: currency,
     }, { transaction: t });
-  })
+  });
 };

@@ -1,5 +1,5 @@
-let osu = require('../../modules/osu.js');
-let cache = require('../../bot.js');
+const osu = require('../../modules/osu.js');
+const cache = require('../../bot.js');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -14,14 +14,14 @@ module.exports = {
   execute(message, args, CooldownReset) {
     if (!args.length) {
       return message.reply('вы не указали сервер, который нужно использовать.');
-    };
+    }
 
-    let server = osu.getKeyFromSearchOnValueFromJson('server', args.join(' '));
+    const server = osu.getKeyFromSearchOnValueFromJson('server', args.join(' '));
     if (!server.searchResult) {
       return message.reply(server.result);
-    };
+    }
 
-    cache.setPlayer(message.guild.id, message.author.id, { 'server': server.result });
+    cache.setPlayer(message.guild.id, message.author.id, { server: server.result });
 
     message.reply(`используемый сервер: **${osu.getValueOnKeyFromJson('server', server.result)}**`);
   },

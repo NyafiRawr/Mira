@@ -1,4 +1,4 @@
-const Discord = require('discord.js')
+const Discord = require('discord.js');
 const osu = require('../../modules/osu.js');
 const tools = require('../../modules/tools.js');
 const players = require('../../modules/players.js');
@@ -13,14 +13,14 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args /*, CooldownReset */) {
+  async execute(message, args /* , CooldownReset */) {
     const victim = message.mentions.members.first() || message.author;
-    let embed = new Discord.RichEmbed()
+    const embed = new Discord.RichEmbed()
       .setAuthor(victim)
       .setTitle(`Аккаунты ${victim}`);
-        
+
     const list = await players.get(victim.id);
-        
+
     for (account of list) {
       for (mode of account.modes) {
         const user = await osu.getUser(account.gameServer, account.nickname, mode);
@@ -33,11 +33,11 @@ module.exports = {
         }
       }
     }
-    
+
     embed.setColor(tools.randomHexColor());
 
     embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
-    
+
     message.channel.send({ embed });
-  }
-}
+  },
+};

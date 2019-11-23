@@ -14,8 +14,8 @@ import * as cooldowns from './modules/kv';
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-async function CooldownReset(idServer, idUser, commandName) {
-  await cooldowns.reset(idServer, idUser, commandName);
+async function CooldownReset(serverId, userId, commandName) {
+  await cooldowns.reset(serverId, userId, commandName);
 }
 
 // Инициализация команд
@@ -113,7 +113,7 @@ client
       firstEntry: Date.now(),
     });
   })
-  .on('guildMemberRemove', async (member) => {
+  .on('guildMemberRemove', async () => {
     // todo: лог событий
   })
   .on('message', async (message) => {
@@ -123,12 +123,9 @@ client
 
     let { content } = message;
 
-    if (message.mentions.users != null) {
-      if (message.mentions.users.size == 1 && message.content.split(/ +/).length == 1) {
-        if (message.mentions.users.first().id = client.user.id) {
-          content = `${config.bot.prefix}about`;
-        }
-      }
+    if (message.mentions.users.size === 1 && message.content.split(/\s+/).length === 1) {
+      const itSelf = message.mentions.users.first().id === client.user.id;
+      content = itSelf ? `${config.bot.prefix}about` : content;
     }
 
     let prefix;
@@ -155,24 +152,33 @@ client
         .catch(console.error);
     }
 
-    if (message.channel.type === 'text') {
-      // todo: переписать, не очень так делать
-      setTimeout(() => message.delete().catch(console.error), 500);
-    } else if (command.guild) {
-      return message.reply('эта команда недоступна в ЛС!');
-    }
+    if (message.channel.type === 'text') await message.delete();
+    else if (command.guild) return message.reply('эта команда недоступна в ЛС!');
 
-    const timeLeft = await cooldowns.get((message.guild || message.author).id, message.author.id, command.name);
+    const timeLeft = await cooldowns.get(
+      (message.guild || message.author).id,
+      message.author.id,
+      command.name,
+    );
 
     if (!timeLeft) {
       const cooldown = command.cooldown || 3;
-      cooldowns.set((message.guild || message.author).id, message.author.id, command.name, cooldown);
+      cooldowns.set(
+        (message.guild || message.author).id,
+        message.author.id,
+        command.name,
+        cooldown,
+      );
     } else {
+      let reply;
+
       if (!command.cooldownMessage) {
-        return message.reply(`пожалуйста, подождите ${timeLeft} прежде, чем снова вызвать команду: ${command.name}!`);
+        reply = `пожалуйста, подождите ${timeLeft} прежде, чем снова вызвать команду: ${command.name}!`;
+      } else {
+        reply = command.cooldownMessage[randomInteger(0, command.cooldownMessage.length - 1)].replace('leftTime', timeLeft);
       }
 
-      return message.reply(command.cooldownMessage[randomInteger(0, command.cooldownMessage.length - 1)].replace('leftTime', timeLeft));
+      return message.reply(reply);
     }
 
     try {

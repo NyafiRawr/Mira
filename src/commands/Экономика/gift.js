@@ -21,14 +21,14 @@ module.exports = {
     const amount = parseInt(args[1], 10);
     if (!amount) {
       return message.reply('вы не указали количество печенья, которое хотите передать.');
-    } else if (amount <= 0) {
+    } if (amount <= 0) {
       return message.reply('количество передаваемого печенья не может быть отрицательным или равно нулю!');
     }
 
     const currency = economy.get(message.guild.id, message.author.id);
     if (!currency) {
       return message.reply('вам нечего передавать!');
-    } else if (currency < amount) {
+    } if (currency < amount) {
       return message.reply('не хватает!');
     }
 

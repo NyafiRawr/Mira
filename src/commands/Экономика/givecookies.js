@@ -24,9 +24,9 @@ module.exports = {
     let amount = parseInt(args[1], 10);
     if (!amount) {
       return message.reply('вы не указали количество печенья, которое нужно выдать.');
-    } else if (amount <= 0) {
+    } if (amount <= 0) {
       return message.reply('количество выдаваемого печенья не может быть отрицательным или равно нулю!');
-    } else if (amount > 1000000000000) {
+    } if (amount > 1000000000000) {
       amount = 1000000000000;
     }
 

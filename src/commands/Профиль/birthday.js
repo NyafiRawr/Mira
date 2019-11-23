@@ -18,14 +18,14 @@ module.exports = {
     const dateForValidate = new Date(date[2], date[1], date[0]);
     if (dateForValidate.getFullYear() !== date[2]) {
       return message.reply('неправильно указан год!');
-    } else if (dateForValidate.getMonth() !== date[1]) {
+    } if (dateForValidate.getMonth() !== date[1]) {
 	    return message.reply('неправильно указан месяц!');
-    } else if (dateForValidate.getDate() !== date[0]) {
+    } if (dateForValidate.getDate() !== date[0]) {
 	    return message.reply('неправильно указан день!');
     }
 
     users.set(message.guild.id, message.author.id, {
-      birthday: date[2] + '-' + date[1] + '-' + date[0]
+      birthday: `${date[2]}-${date[1]}-${date[0]}`,
     });
 
     const replyMessage = 'вы установили день своего рождения, ура!';

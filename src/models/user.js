@@ -7,7 +7,7 @@ User.init({
     type: Sequelize.STRING,
     primaryKey: true,
   },
-  idServer: {
+  serverId: {
     type: Sequelize.STRING,
     primaryKey: true,
   },

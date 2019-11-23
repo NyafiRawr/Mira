@@ -23,31 +23,31 @@ module.exports = {
       topSize = list.length;
     }
     // Заполняем его нулевым ID
-    let topList = [];
+    const topList = [];
     for (let i = 0; i < topSize; i++) {
       topList[i] = 0;
     }
     // Делаем копию оригинального списка, убираем: "invalid-user" и ботов
-    let copyList = [];
-    for (let userObject of list) {
-      let member = message.guild.members.get(userObject.id);
+    const copyList = [];
+    for (const userObject of list) {
+      const member = message.guild.members.get(userObject.id);
       if (!!member && !member.user.bot) {
         copyList[userObject.id] = userObject.balance;
       }
     }
     // Ставим участника для сравнения (любого, пусть будет первый)
-    topList[0] = list[0].id; 
+    topList[0] = list[0].id;
     // Формируем топ с помощью сортировки
     for (let i = 0; i < topSize; i++) {
-      for (let userObject of copyList) {
+      for (const userObject of copyList) {
         if (!(userObject.id in topList) && copyList[topList[i]] <= copyList[userObject.id]) {
-        topList[i] = userObject.id;
+          topList[i] = userObject.id;
         }
       }
     }
     // Красиво оформляем сообщение с топом
     let msg = '\n';
-    let rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII','VIII', 'IX', 'X'];
+    const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
     for (let i = 0; i < topSize; i++) {
       const user = message.guild.members.get(topList[i]);
       if (user) {

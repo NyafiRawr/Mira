@@ -1,7 +1,8 @@
+import * as users from './users';
+import config from '../config';
+
 const request = require('sync-request');
 const tools = require('./tools.js');
-const config = require('./../config.js');
-const cache = require('./../bot.js');
 
 module.exports.get_user = (idOrName, mode = 0, server = 'ppy') => {
   let url = `https://${tools.getValueOnKeyFromJson('server', server)}/api/get_user?m=${mode}&u=${idOrName}`;
@@ -165,7 +166,7 @@ module.exports.searchPlayer = (message, args) => {
   }
 
   function findPlayer(user, message) {
-    const findedPlayer = cache.getPlayer(message.guild.id, user.id);
+    const findedPlayer = users.get(message.guild.id, user.id);
 
     if (!findedPlayer.nick) {
       const member = message.guild.members.get(user.id);
@@ -177,7 +178,7 @@ module.exports.searchPlayer = (message, args) => {
     }
 
     if (user.id !== message.author.id) {
-      const requestPlayer = cache.getPlayer(message.guild.id, message.author.id);
+      const requestPlayer = users.get(message.guild.id, message.author.id);
 
       if (!findedPlayer.mode) {
         findedPlayer.mode = requestPlayer.mode;
@@ -196,7 +197,7 @@ module.exports.searchPlayer = (message, args) => {
       findedPlayer.server = 'ppy';
     }
 
-    return findedPlayer;
+    return { ...findedPlayer };
   }
 
   let player = {};

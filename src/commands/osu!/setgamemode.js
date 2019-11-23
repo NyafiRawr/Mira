@@ -1,5 +1,5 @@
-let osu = require('../../modules/osu.js');
-let cache = require('../../bot.js');
+const osu = require('../../modules/osu.js');
+const cache = require('../../bot.js');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -14,15 +14,15 @@ module.exports = {
   execute(message, args, CooldownReset) {
     if (!args.length) {
       return message.reply('вы не указали основной играемый режим, который нужно запомнить.');
-    };
+    }
 
-    let mode = osu.getKeyFromSearchOnValueFromJson('mode', args.join(' '));
+    const mode = osu.getKeyFromSearchOnValueFromJson('mode', args.join(' '));
 
     if (!mode.searchResult) {
       return message.reply(mode.result);
-    };
+    }
 
-    cache.setPlayer(message.guild.id, message.author.id, { 'mode': mode.result });
+    cache.setPlayer(message.guild.id, message.author.id, { mode: mode.result });
 
     message.reply(`выбранный режим: **${osu.getValueOnKeyFromJson('mode', mode.result)}**`);
   },
