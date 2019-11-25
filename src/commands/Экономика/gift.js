@@ -25,7 +25,7 @@ module.exports = {
       return message.reply('количество передаваемого печенья не может быть отрицательным или равно нулю!');
     }
 
-    const currency = economy.get(message.guild.id, message.author.id);
+    const currency = await economy.get(message.guild.id, message.author.id);
     if (!currency) {
       return message.reply('вам нечего передавать!');
     } if (currency < amount) {
