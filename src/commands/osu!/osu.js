@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const osu = require('../../modules/osu.js');
 const tools = require('../../modules/tools.js');
 const players = require('../../modules/players.js');
-const config = require('../../config.js');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -26,7 +25,7 @@ module.exports = {
 
     if (positionArgument !== -1) {
       specificMode = params.substr(positionArgument + 1);
-      specificMode = osu.getKeyFromSearchOnValueFromJson('../dats/osu!/mode.json', mode);
+      specificMode = require('../../data/osu!/mode.json')[mode];
       if (specificMode.resultSearch) {
         return message.reply(specificMode.content);
       }
@@ -52,7 +51,7 @@ module.exports = {
 
     const embed = new Discord.RichEmbed()
       .setAuthor(`${osuUser.username} (pp: ${tools.separateThousandth(Math.floor(osuUser.pp_raw))}) [${osuUser.country} #${tools.separateThousandth(osuUser.pp_country_rank)}]`, links.avatar.replace('ID', osuUser.user_id))
-      .setTitle('Профиль игрока на сайте')
+      .setTitle('Профиль на сайте')
       .setURL(links.user.replace('ID', osuUser.user_id))
 
       .addField('Количество игр', tools.separateThousandth(osuUser.playcount), true)
@@ -77,7 +76,9 @@ module.exports = {
     embed.setColor(tools.randomHexColor());
 
     const requestMember = message.guild.members.get(message.author.id);
-    embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
+
+    embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
+    //embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
 
     message.channel.send({ embed });
   },

@@ -4,8 +4,16 @@ import config from '../config';
 const request = require('sync-request');
 const tools = require('./tools.js');
 
+
+function getFile(nameFileData, key) {
+  const path = '../data/osu!/' + nameFileData + '.json';
+  const fileData = require(path);
+  const value = fileData[key][0];
+  return value;
+}
+
 module.exports.get_user = (idOrName, mode = 0, server = 'ppy') => {
-  let url = `https://${tools.getValueOnKeyFromJson('server', server)}/api/get_user?m=${mode}&u=${idOrName}`;
+  let url = `https://${getFile('server', server)}/api/get_user?m=${mode}&u=${idOrName}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
@@ -16,7 +24,7 @@ module.exports.get_user = (idOrName, mode = 0, server = 'ppy') => {
 };
 
 module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
-  let url = `https://${this.getValueOnKeyFromJson('server', server)}/api/get_user_recent?m=${mode}&u=${idOrName}&limit=${1}`;
+  let url = `https://${getFile('server', server)}/api/get_user_recent?m=${mode}&u=${idOrName}&limit=${1}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
@@ -31,7 +39,7 @@ module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) =
     limit = 10;
   }
 
-  let url = `https://${this.getValueOnKeyFromJson('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit}`;
+  let url = `https://${getFile('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
@@ -42,7 +50,7 @@ module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) =
 };
 
 module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
-  let url = `https://${this.getValueOnKeyFromJson('server', server)}/api/get_scores?m=${mode}&b=${idMap}&u=${idPlayer}&limit=${1}`;
+  let url = `https://${getFile('server', server)}/api/get_scores?m=${mode}&b=${idMap}&u=${idPlayer}&limit=${1}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
@@ -53,7 +61,7 @@ module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
 };
 
 module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
-  let url = `https://${this.getValueOnKeyFromJson('server', server)}/api/get_beatmaps?m=${mode}&b=${idMap}`;
+  let url = `https://${getFile('server', server)}/api/get_beatmaps?m=${mode}&b=${idMap}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
