@@ -1,7 +1,7 @@
 import config from '../../config';
 
 const Discord = require('discord.js');
-const request = require('sync-request');
+const request = require('axios');
 const tools = require('../../modules/tools.js');
 const gifs = require('../../data/gifs.json');
 
@@ -24,7 +24,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message /* , args, CooldownReset */) {
+  async execute(message /* , args, CooldownReset */) {
     const emotion = message.content.substr(config.bot.prefix.length).split(/ +/)[0];
 
     const embed = new Discord.RichEmbed();
@@ -39,7 +39,8 @@ module.exports = {
         embed.setDescription(msg.replace(/\$1/g, message.author).replace(/\$2/g, victim));
       }
 
-      embed.setImage(JSON.parse(request('GET', gif).getBody('utf8')).url);
+      const qq = await request.get(gif);
+      embed.setImage(qq.data.url);
 
       embed.setColor('#ffffff');
     } else {

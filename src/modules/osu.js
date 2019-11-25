@@ -1,9 +1,8 @@
+import request from 'axios';
 import * as users from './users';
 import config from '../config';
 
-const request = require('sync-request');
 const tools = require('./tools.js');
-
 
 function getFile(nameFileData, key) {
   const path = `../data/osu!/${nameFileData}.json`;
@@ -12,15 +11,14 @@ function getFile(nameFileData, key) {
   return value;
 }
 
-module.exports.get_user = (idOrName, mode = 0, server = 'ppy') => {
+module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
   let url = `https://${getFile('server', server)}/api/get_user?m=${mode}&u=${idOrName}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
   }
 
-  const res = request('GET', url);
-  return JSON.parse(res.getBody('utf8'));
+  return request.get(url);
 };
 
 module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
@@ -30,8 +28,7 @@ module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
     url += `&k=${config.osu_token}`;
   }
 
-  const res = request('GET', url);
-  return JSON.parse(res.getBody('utf8'));
+  return request.get(url);
 };
 
 module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
@@ -43,8 +40,7 @@ module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) =
     url += `&k=${config.osu_token}`;
   }
 
-  const res = request('GET', url);
-  return JSON.parse(res.getBody('utf8'));
+  return request.get(url);
 };
 
 module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
@@ -54,8 +50,7 @@ module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
     url += `&k=${config.osu_token}`;
   }
 
-  const res = request('GET', url);
-  return JSON.parse(res.getBody('utf8'));
+  return request.get(url);
 };
 
 module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
@@ -65,8 +60,7 @@ module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
     url += `&k=${config.osu_token}`;
   }
 
-  const res = request('GET', url);
-  return JSON.parse(res.getBody('utf8'));
+  return request.get(url);
 };
 
 module.exports.convertLength = (length) => {
@@ -276,5 +270,5 @@ module.exports.getValueOnKeyFromJson = (filename, key) => {
 
   const result = list[key];
 
-  return Array.isArray(result) ? result[0] : result || key;
+  return Array.isArray(result) ? result[0] : result;
 };
