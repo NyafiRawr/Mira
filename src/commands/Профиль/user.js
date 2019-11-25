@@ -18,7 +18,7 @@ module.exports = {
     const member = message.guild.members.get(user.id);
 
     let nickname = 'себе';
-    if (message.author.id != user.id) {
+    if (message.author.id !== user.id) {
       nickname = (!member || !member.nickname) ? user.username : member.nickname;
     }
 
@@ -68,5 +68,5 @@ module.exports = {
     embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send({ embed });
-  }
-}
+  },
+};

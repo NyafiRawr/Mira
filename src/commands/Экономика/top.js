@@ -24,11 +24,12 @@ module.exports = {
     }
     // Заполняем его нулевым ID
     const topList = [];
-    for (let i = 0; i < topSize; i++) {
+    for (let i = 0; i < topSize; i += 1) {
       topList[i] = 0;
     }
     // Делаем копию оригинального списка, убираем: "invalid-user" и ботов
     const copyList = [];
+    // eslint-disable-next-line no-restricted-syntax
     for (const userObject of list) {
       const member = message.guild.members.get(userObject.id);
       if (!!member && !member.user.bot) {
@@ -38,7 +39,8 @@ module.exports = {
     // Ставим участника для сравнения (любого, пусть будет первый)
     topList[0] = list[0].id;
     // Формируем топ с помощью сортировки
-    for (let i = 0; i < topSize; i++) {
+    for (let i = 0; i < topSize; i += 1) {
+      // eslint-disable-next-line no-restricted-syntax
       for (const userObject of copyList) {
         if (!(userObject.id in topList) && copyList[topList[i]] <= copyList[userObject.id]) {
           topList[i] = userObject.id;
@@ -48,7 +50,7 @@ module.exports = {
     // Красиво оформляем сообщение с топом
     let msg = '\n';
     const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-    for (let i = 0; i < topSize; i++) {
+    for (let i = 0; i < topSize; i += 1) {
       const user = message.guild.members.get(topList[i]);
       if (user) {
         msg += `  **${rangs[i]}. ${(!user || !user.nickname) ? user.user.username : user.nickname}** ${tools.separateThousandth(copyList[topList[i]])}:cookie:\n`;

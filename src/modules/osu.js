@@ -6,7 +6,7 @@ const tools = require('./tools.js');
 
 
 function getFile(nameFileData, key) {
-  const path = '../data/osu!/' + nameFileData + '.json';
+  const path = `../data/osu!/${nameFileData}.json`;
   const fileData = require(path);
   const value = fileData[key][0];
   return value;
@@ -35,11 +35,9 @@ module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
 };
 
 module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
-  if (limit > 10) {
-    limit = 10;
-  }
+  const limitMax = 10;
 
-  let url = `https://${getFile('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit}`;
+  let url = `https://${getFile('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit > limitMax ? limitMax : limit}`;
 
   if (server === 'ppy') {
     url += `&k=${config.osu_token}`;
@@ -89,7 +87,8 @@ module.exports.convertDatetime = (datetime) => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
-module.exports.calculateAccuracity = (mode, count300, count100, count50, countmiss, countkatu, countgeki) => {
+module.exports.calculateAccuracity = (mode, count300, count100, count50,
+  countmiss, countkatu, countgeki) => {
   let userScore;
   let totalScore;
   if (parseInt(mode, 10) === 0) {
@@ -101,14 +100,14 @@ module.exports.calculateAccuracity = (mode, count300, count100, count50, countmi
     totalScore += parseInt(count50, 10);
     totalScore += parseInt(countmiss, 10);
     totalScore *= 300;
-    return userScore / totalScore * 100;
+    return (userScore / totalScore) * 100;
   } if (parseInt(mode, 10) === 1) {
     userScore = parseInt(count100, 10) * 0.5;
     userScore += parseInt(count300, 10);
     totalScore = parseInt(countmiss, 10) + parseInt(count50, 10);
     totalScore += parseInt(count300, 10);
     totalScore += parseInt(count100, 10);
-    return userScore / totalScore * 100;
+    return (userScore / totalScore) * 100;
   } if (parseInt(mode, 10) === 2) {
     userScore = parseInt(count50, 10); // droplet!
     userScore += parseInt(count100, 10); // drop?
@@ -119,7 +118,7 @@ module.exports.calculateAccuracity = (mode, count300, count100, count50, countmi
     totalScore += parseInt(count50, 10); // droplet!
     totalScore += parseInt(count100, 10); // drop?
     totalScore += parseInt(count300, 10); // fruit?
-    return userScore / totalScore * 100;
+    return (userScore / totalScore) * 100;
   } if (parseInt(mode, 10) === 3) {
     userScore = parseInt(count50, 10) * 50;
     userScore += parseInt(count100, 10) * 100;
@@ -133,81 +132,79 @@ module.exports.calculateAccuracity = (mode, count300, count100, count50, countmi
     totalScore += parseInt(count50, 10);
     totalScore += parseInt(countmiss, 10);
     totalScore *= 300;
-    return userScore / totalScore * 100;
+    return (userScore / totalScore) * 100;
   }
   return null;
 };
 
-module.exports.showStatistic = (mode, count300, count100, count50, countmiss, countkatu, countgeki) => {
-  count300 = tools.separateThousandth(count300);
-  countgeki = tools.separateThousandth(countgeki);
-  count100 = tools.separateThousandth(count100);
-  countkatu = tools.separateThousandth(countkatu);
-  count50 = tools.separateThousandth(count50);
-  countmiss = tools.separateThousandth(countmiss);
-  mode = parseInt(mode, 10);
+module.exports.showStatistic = (mode, count300, count100, count50,
+  countmiss, countkatu, countgeki) => {
+  const reCount300 = tools.separateThousandth(count300);
+  const reCountgeki = tools.separateThousandth(countgeki);
+  const reCount100 = tools.separateThousandth(count100);
+  const reCountkatu = tools.separateThousandth(countkatu);
+  const reCount50 = tools.separateThousandth(count50);
+  const reCountmiss = tools.separateThousandth(countmiss);
+  const reMode = parseInt(mode, 10);
 
-  if (mode === 0) {
-    return `**300:** ${count300} **Geki:** ${countgeki}
-                **100:** ${count100}    **Katu:** ${countkatu}
-                **50:** ${count50}  **×:** ${countmiss}`;
-  } if (mode === 1) {
-    return `**✪:** ${count300}   **⍟:** ${countgeki}
-                **★:** ${count100}  **☆:** ${countkatu}
-                **×:** ${count50}`;
-  } if (mode === 2) {
-    return `**300:** ${count300} **×:** ${countgeki}
-                **100:** ${count100}    **×:** ${countkatu}
-                **50:** ${count50}  **×:** ${countmiss}`;
-  } if (mode === 3) {
-    return `**MAX:** ${countgeki}   **300:** ${count300}
-                **200:** ${countkatu}    **100:** ${count100}
-                **50:** ${count50}  **×:** ${countmiss}`;
+  if (reMode === 0) {
+    return `**300:** ${reCount300} **Geki:** ${reCountgeki}
+                **100:** ${reCount100}    **Katu:** ${reCountkatu}
+                **50:** ${reCount50}  **×:** ${reCountmiss}`;
+  } if (reMode === 1) {
+    return `**✪:** ${reCount300}   **⍟:** ${reCountgeki}
+                **★:** ${reCount100}  **☆:** ${reCountkatu}
+                **×:** ${reCount50}`;
+  } if (reMode === 2) {
+    return `**300:** ${reCount300} **×:** ${reCountgeki}
+                **100:** ${reCount100}    **×:** ${reCountkatu}
+                **50:** ${reCount50}  **×:** ${reCountmiss}`;
+  } if (reMode === 3) {
+    return `**MAX:** ${reCountgeki}   **300:** ${reCount300}
+                **200:** ${reCountkatu}    **100:** ${reCount100}
+                **50:** ${reCount50}  **×:** ${reCountmiss}`;
   }
 
   return '-';
 };
 
-module.exports.searchPlayer = (message, args) => {
-  if (Array.isArray(args)) {
-    args = args.join(' ');
+function findPlayer(user, message) {
+  const findedPlayer = users.get(message.guild.id, user.id);
+
+  if (!findedPlayer.nick) {
+    const member = message.guild.members.get(user.id);
+    if (member.nickname) {
+      findedPlayer.nick = member.nickname;
+    } else {
+      findedPlayer.nick = user.username;
+    }
   }
 
-  function findPlayer(user, message) {
-    const findedPlayer = users.get(message.guild.id, user.id);
-
-    if (!findedPlayer.nick) {
-      const member = message.guild.members.get(user.id);
-      if (member.nickname) {
-        findedPlayer.nick = member.nickname;
-      } else {
-        findedPlayer.nick = user.username;
-      }
-    }
-
-    if (user.id !== message.author.id) {
-      const requestPlayer = users.get(message.guild.id, message.author.id);
-
-      if (!findedPlayer.mode) {
-        findedPlayer.mode = requestPlayer.mode;
-      }
-
-      if (!findedPlayer.server) {
-        findedPlayer.server = requestPlayer.server;
-      }
-    }
+  if (user.id !== message.author.id) {
+    const requestPlayer = users.get(message.guild.id, message.author.id);
 
     if (!findedPlayer.mode) {
-      findedPlayer.mode = 0;
+      findedPlayer.mode = requestPlayer.mode;
     }
 
     if (!findedPlayer.server) {
-      findedPlayer.server = 'ppy';
+      findedPlayer.server = requestPlayer.server;
     }
-
-    return { ...findedPlayer };
   }
 
+  if (!findedPlayer.mode) {
+    findedPlayer.mode = 0;
+  }
+
+  if (!findedPlayer.server) {
+    findedPlayer.server = 'ppy';
+  }
+
+  return { ...findedPlayer };
+}
+
+module.exports.searchPlayer = (message, args) => {
+  const reArgs = args.join(' ');
   let player = {};
 
   if (message.mentions.users.size) {
@@ -215,8 +212,8 @@ module.exports.searchPlayer = (message, args) => {
   } else {
     player = findPlayer(message.author, message);
 
-    if (args.length) {
-      player.nick = args;
+    if (reArgs.length) {
+      player.nick = reArgs;
     }
   }
 
@@ -226,17 +223,17 @@ module.exports.searchPlayer = (message, args) => {
 module.exports.getModsFromJson = (code) => {
   // eslint-disable-next-line import/no-webpack-loader-syntax
   const mods = require('./../data/osu!/mods.json');
-  code = parseInt(code, 10);
+  let reCode = parseInt(code, 10);
   const result = [];
 
-  for (let i = 0; i < Object.keys(mods).length; i++) {
-    if (parseInt(Object.keys(mods)[i], 10) === code) {
+  for (let i = 0; i < Object.keys(mods).length; i += 1) {
+    if (parseInt(Object.keys(mods)[i], 10) === reCode) {
       result.push(Object.values(mods)[i]);
       break;
     }
 
-    if (parseInt(Object.keys(mods)[i], 10) > code) {
-      code -= Object.keys(mods)[i - 1];
+    if (parseInt(Object.keys(mods)[i], 10) > reCode) {
+      reCode -= Object.keys(mods)[i - 1];
       result.push(Object.values(mods)[i - 1]);
       i = 0;
     }
@@ -250,7 +247,8 @@ module.exports.getKeyFromSearchOnValueFromJson = (filename, value) => {
   let searchResult = false;
   let result;
 
-  for (key in list) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in list) {
     if (list[key].includes(value)) {
       result = key;
       searchResult = true;
@@ -260,7 +258,8 @@ module.exports.getKeyFromSearchOnValueFromJson = (filename, value) => {
 
   result = [];
 
-  for (key in list) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in list) {
     if (Array.isArray(list[key])) {
       result.push(list[key].join(', '));
     } else {
@@ -275,11 +274,7 @@ module.exports.getKeyFromSearchOnValueFromJson = (filename, value) => {
 module.exports.getValueOnKeyFromJson = (filename, key) => {
   const list = require(`../data/osu!/${filename}.json`);
 
-  let result = list[key];
+  const result = list[key];
 
-  if (Array.isArray(result)) {
-    result = result[0];
-  }
-
-  return result || key;
+  return Array.isArray(result) ? result[0] : result || key;
 };
