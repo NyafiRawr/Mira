@@ -4,7 +4,8 @@ import config from '../config';
 const logErrorFile = './errors.log';
 
 export const getValueOnKeyFromJson = (filename, key) => {
-  const list = require(`../data/osu!/${filename}.json`);
+  // todo: сделать чтение нужных файлов напрямую из файлов-команд
+  const list = require(`../data/${filename}.json`);
 
   const result = list[key];
 

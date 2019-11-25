@@ -17,11 +17,10 @@ module.exports = {
     const user = message.mentions.users.first() || message.client.users.find((u) => u.username === args.join(' ') || (`${u.username}#${u.discriminator}`) === args.join(' ')) || message.author;
     const member = message.guild.members.get(user.id);
 
-    const nickname = 'себе';
+    let nickname = 'себе';
     if (message.author.id != user.id) {
       nickname = (!member || !member.nickname) ? user.username : member.nickname;
     }
-
 
     const embed = new Discord.RichEmbed();
     embed.setAuthor(`Информация о ${nickname}`, user.avatarURL || user.user.avatarURL);
@@ -35,15 +34,32 @@ module.exports = {
       embed.addField('Дата создания', tools.toDate(user.createdAt), true);
     }
 
-    const dbUser = await users.get(message.guild.id, user.id);
+    let lastEntry;
+    let firstEntry;
+    let birthday;
 
-    if (!!member && !!member.joinedAt) {
-      embed.addField('Первый вход', tools.toDate(dbUser.entryDate || member.joinedAt), true);
-      embed.addField('Дата подключения', tools.toDate(member.joinedAt), true);
+    if (member) {
+      lastEntry = member.joinedAt;
+      firstEntry = lastEntry;
     }
 
-    if (dbUser.birthday) {
-      const birthday = dbUser.birthday.split('-').reverse().join('.');
+    const dbUser = await users.get(message.guild.id, user.id);
+
+    if (dbUser) {
+      firstEntry = dbUser.entryDate;
+      birthday = dbUser.birthday;
+    }
+
+    if (firstEntry) {
+      embed.addField('Первый вход', tools.toDate(firstEntry), true);
+    }
+
+    if (lastEntry) {
+      embed.addField('Дата подключения', tools.toDate(lastEntry), true);
+    }
+
+    if (birthday) {
+      birthday = dbUser.birthday.split('-').reverse().join('.');
       embed.addField('День рождения', birthday, true);
     }
 
@@ -52,5 +68,5 @@ module.exports = {
     embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send({ embed });
-  },
-};
+  }
+}

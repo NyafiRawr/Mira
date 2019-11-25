@@ -103,3 +103,4 @@ public
 # Temp files
 package-lock.json
 database.sqlite
+yarn.lock
