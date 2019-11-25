@@ -46,7 +46,7 @@ module.exports = {
     const dbUser = await users.get(message.guild.id, user.id);
 
     if (dbUser) {
-      firstEntry = dbUser.entryDate;
+      firstEntry = dbUser.entryDate || firstEntry;
       birthday = dbUser.birthday;
     }
 

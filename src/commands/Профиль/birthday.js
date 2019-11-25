@@ -14,13 +14,19 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message, args /* , CooldownReset */) {
+    if (!args.join(' ')) {
+      return message.reply(`укажите дату рождения! (${this.usage})`)
+    }
+
     const date = args[0].split('.');
+
     const dateForValidate = new Date(date[2], date[1], date[0]);
-    if (dateForValidate.getFullYear() !== date[2]) {
+    console.log(dateForValidate.getMonth().toString(), date[1]);
+    if (dateForValidate.getFullYear() !== parseInt(date[2])) {
       return message.reply('неправильно указан год!');
-    } if (dateForValidate.getMonth() !== date[1]) {
+    } if (dateForValidate.getMonth() !== parseInt(date[1])) {
 	    return message.reply('неправильно указан месяц!');
-    } if (dateForValidate.getDate() !== date[0]) {
+    } if (dateForValidate.getDate() !== parseInt(date[0])) {
 	    return message.reply('неправильно указан день!');
     }
 
