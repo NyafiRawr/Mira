@@ -29,3 +29,5 @@ User.init({
 });
 
 export default User;
+
+User.sync();

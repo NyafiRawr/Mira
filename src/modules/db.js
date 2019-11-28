@@ -15,13 +15,7 @@ export const sequelize = (() => {
     define: {
       timestamps: false,
     },
+    // logging: false,
     storage: config.db.storage,
   });
 })();
-
-sequelize.sync().then(() => {
-  console.log('----------------------------'
-    + '\nИнициализация таблиц завершена.'
-    + '\n----------------------------');
-})
-  .catch((err) => console.log(err));

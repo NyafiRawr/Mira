@@ -14,11 +14,16 @@ Player.init({
   },
   // 15 - максимальная длина ника (на официальном сервере)
   nickname: Sequelize.STRING(15),
-  // играемые моды
-  mods: Sequelize.ENUM('0', '1', '2', '3'),
+  // играемые режимы
+  modes: Sequelize.ENUM('0', '0,1', '0,2', '0,3', '0,1,2', '0,1,3', '0,2,3', '0,1,2,3',
+    '1', '1,2', '1,3', '1,2,3',
+    '2', '2,3',
+    '3'),
 }, {
   modelName: 'player',
   sequelize,
 });
 
 export default Player;
+
+Player.sync();

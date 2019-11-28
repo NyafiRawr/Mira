@@ -16,6 +16,9 @@ export const get = async (userId, gameServer = null) => {
         userId,
       },
     });
+    for (let i = 0; i < player.length; i += 1) {
+      player[i] = player[i].dataValues;
+    }
   }
 
   return player;
