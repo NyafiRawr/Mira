@@ -1,8 +1,21 @@
-import request from 'axios';
+import axios from 'axios';
 import * as users from './users';
 import config from '../config';
 
 const tools = require('./tools.js');
+
+
+// debug axios requests
+axios.interceptors.response.use(response => {
+  // tslint:disable-next-line:no-console
+  console.log(
+    response.status,
+    response.request.method,
+    response.request.res.responseUrl
+  );
+
+  return response;
+});
 
 function getData(nameFileData) {
   return require(`../data/osu!/${nameFileData}.json`);
@@ -20,57 +33,53 @@ function getKeyOnValue(nameFileData, value) {
   throw new Error();
 }
 
-module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
-  let url = `https://${getKeyOnValue('server', server)}/api/get_user?m=${mode}&u=${idOrName}`;
+module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') =>
+  axios.get(`https://${getKeyOnValue('server', server)}/api/get_user`, {
+    params: {
+      m: mode,
+      u: idOrName,
+      k: server === 'ppy' ? config.osu_token : ''
+    }
+  }).then(req => req.data);
 
-  if (server === 'ppy') {
-    url += `&k=${config.osu_token}`;
-  }
+module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') =>
+  axios.get(`https://${getKeyOnValue('server', server)}/api/get_user_recent`, {
+    params: {
+      m: mode,
+      u: idOrName,
+      limit: 1,
+      k: server === 'ppy' ? config.osu_token : ''
+    }
+  }).then(req => req.data);
 
-  return request.get(url);
-};
+module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) =>
+  axios.get(`https://${getKeyOnValue('server', server)}/api/get_user_best`, {
+    params: {
+      m: mode,
+      u: idOrName,
+      limit: limit > limitMax ? limitMax : limit,
+      k: server === 'ppy' ? config.osu_token : ''
+    }
+  }).then(req => req.data);
 
-module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
-  let url = `https://${getKeyOnValue('server', server)}/api/get_user_recent?m=${mode}&u=${idOrName}&limit=${1}`;
+module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') =>
+  axios.get(`https://${getKeyOnValue('server', server)}/api/get_scores`, {
+    params: {
+      m: mode,
+      u: idOrName,
+      b: idMap,
+      k: server === 'ppy' ? config.osu_token : ''
+    }
+  }).then(req => req.data);
 
-  if (server === 'ppy') {
-    url += `&k=${config.osu_token}`;
-  }
-
-  return request.get(url);
-};
-
-module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
-  const limitMax = 10;
-
-  let url = `https://${getKeyOnValue('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit > limitMax ? limitMax : limit}`;
-
-  if (server === 'ppy') {
-    url += `&k=${config.osu_token}`;
-  }
-
-  return request.get(url);
-};
-
-module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
-  let url = `https://${getKeyOnValue('server', server)}/api/get_scores?m=${mode}&b=${idMap}&u=${idPlayer}&limit=${1}`;
-
-  if (server === 'ppy') {
-    url += `&k=${config.osu_token}`;
-  }
-
-  return request.get(url);
-};
-
-module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
-  let url = `https://${getKeyOnValue('server', server)}/api/get_beatmaps?m=${mode}&b=${idMap}`;
-
-  if (server === 'ppy') {
-    url += `&k=${config.osu_token}`;
-  }
-
-  return request.get(url);
-};
+module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') =>
+  axios.get(`https://${getKeyOnValue('server', server)}/api/get_beatmaps`, {
+    params: {
+      m: mode,
+      b: idMap,
+      k: server === 'ppy' ? config.osu_token : ''
+    }
+  }).then(req => req.data);
 
 module.exports.convertLength = (length) => {
   const dt = new Date();
