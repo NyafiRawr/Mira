@@ -8,12 +8,12 @@ const tools = require('./tools.js');
 
 
 // debug axios requests
-axios.interceptors.response.use(response => {
+axios.interceptors.response.use((response) => {
   // tslint:disable-next-line:no-console
   console.log(
     response.status,
     response.request.method,
-    response.request.res.responseUrl
+    response.request.res.responseUrl,
   );
 
   return response;
