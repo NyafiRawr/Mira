@@ -1,7 +1,9 @@
-import request from 'axios';
+import axios from 'axios';
 import * as users from './users';
 import config from '../config';
 
+const convert = require('html-to-json-data');
+const { group, text, number, href, src, uniq } = require('html-to-json-data/definitions');
 const tools = require('./tools.js');
 
 function getData(nameFileData) {
@@ -11,6 +13,7 @@ function getData(nameFileData) {
 function getKeyOnValue(nameFileData, value) {
   const data = getData(nameFileData);
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(data)) {
     if (data[key].includes(value)) {
       return data[key][0];
@@ -20,14 +23,55 @@ function getKeyOnValue(nameFileData, value) {
   throw new Error();
 }
 
-module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
-  let url = `https://${getKeyOnValue('server', server)}/api/get_user?m=${mode}&u=${idOrName}`;
-
-  if (server === 'ppy') {
-    url += `&k=${config.osu_token}`;
+module.exports.getValueOnKey = (nameFileData, key) => {
+  const data = getData(nameFileData);
+  if (key in data) {
+    return data[key];
   }
+  return null;
+};
 
-  return request.get(url);
+function akatsukiHTMLConvertToData(html) {
+  return convert(html, {
+    user_id: text('.vcard-fullname'),
+    username: text('.vcard-fullname'),
+    count300: text('.vcard-username'),
+    count100: text('.vcard-username'),
+    count50: text('.vcard-username'),
+    playcount: text('.vcard-username'),
+    ranked_score: text('.vcard-username'),
+    total_score: text('.vcard-username'),
+    pp_rank: text('.vcard-username'),
+    level: text('.vcard-username'),
+    pp_raw: text('.vcard-username'),
+    accuracy: text('.vcard-username'),
+    count_rank_ss: text('.vcard-username'),
+    count_rank_ssh: text('.vcard-username'),
+    count_rank_s: text('.vcard-username'),
+    count_rank_sh: text('.vcard-username'),
+    count_rank_a: text('.vcard-username'),
+    country: text('.vcard-username'),
+    total_seconds_played: text('.vcard-username'),
+    pp_country_rank: text('.vcard-username'),
+  });
+}
+
+module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
+  const result = await axios.get('/api/get_user', {
+    baseURL: `http://${getKeyOnValue('server', server)}`,
+    params: {
+      m: mode,
+      u: idOrName,
+      k: server === 'ppy' ? config.osu_token : undefined,
+    },
+    transformResponse: [function (data) {
+      if (server === 'akatsuki-relax') {
+        return akatsukiHTMLConvertToData(data);
+      }
+      return JSON.parse(data)[0];
+    }],
+  });
+  return result.data;
 };
 
 module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
@@ -37,7 +81,7 @@ module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
     url += `&k=${config.osu_token}`;
   }
 
-  return request.get(url);
+  return axios.get(url);
 };
 
 module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
@@ -49,7 +93,7 @@ module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) =
     url += `&k=${config.osu_token}`;
   }
 
-  return request.get(url);
+  return axios.get(url);
 };
 
 module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
@@ -59,7 +103,7 @@ module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
     url += `&k=${config.osu_token}`;
   }
 
-  return request.get(url);
+  return axios.get(url);
 };
 
 module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
@@ -69,7 +113,7 @@ module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
     url += `&k=${config.osu_token}`;
   }
 
-  return request.get(url);
+  return axios.get(url);
 };
 
 module.exports.convertLength = (length) => {

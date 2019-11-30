@@ -15,13 +15,16 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message /* , args, CooldownReset */) {
-    const victim = message.mentions.members.first() || message.author;
-
+    const victim = message.mentions.members.first() || message.guild.members.get(message.author.id);
     const embed = new Discord.RichEmbed()
-      .setAuthor(victim)
-      .setTitle(`Аккаунты ${victim}`);
+      .setAuthor('Аккаунты в мире osu!')
+      .setTitle(victim.nickname || victim.username || victim.user.username);
 
     const accounts = await players.get(victim.id);
+
+    if (accounts.length === 0) {
+      return message.reply(`у ${victim} нет привязанных аккаунтов.`);
+    }
 
     // превращаем строки с модами в массивы для перебора далее
     for (let i = 0; i < accounts.length; i += 1) {
@@ -34,12 +37,13 @@ module.exports = {
       for (const mode of account.modes) {
         const user = await osu.get_user(account.nickname, mode, account.gameServer);
         if (user != null) {
-          const topScores = user.count_rank_ssh || 0 + user.count_rank_sh || 0 + user.count_rank_ss
-          + user.count_rank_s + user.count_rank_a;
+          const topScores = parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)
+          + parseInt(user.count_rank_a, 10)
+          + parseInt(user.count_rank_ssh, 10) || 0 + parseInt(user.count_rank_sh, 10) || 0;
           embed
-            .addField(account.gameServer, `Место: ${tools.separateThousandth(user.pp_rank)}\nТочность: ${tools.toTwoDecimalPlaces(user.accuracy)}`, true)
-            .addField(`Ник: ${user.username}`, `Уровень: ${Math.floor(user.level)}\nPP: ${tools.separateThousandth(Math.floor(user.pp_raw))}`, true)
-            .addField(`Режим: ${osu.getKeyFromSearchOnValueFromJson('mode', mode)}`, `Топ-скоры: ${tools.separateThousandth(topScores)}\nИгр: ${tools.separateThousandth(user.playcount)}`, true);
+            .addField(`**${account.gameServer.toUpperCase()}**`, `PP: ${tools.separateThousandth(Math.floor(user.pp_raw))}\nМесто: #${tools.separateThousandth(user.pp_rank)}`, true)
+            .addField(`**${(osu.getValueOnKey('mode', mode))[0].toUpperCase()}**`, `Уровень: ${Math.floor(user.level)}\nТочность: ${tools.toTwoDecimalPlaces(user.accuracy)}%`, true)
+            .addField(`Ник: **${user.username}**`, `Игр: ${tools.separateThousandth(user.playcount)}\nТоп-скоры: ${tools.separateThousandth(topScores)}`, true);
         }
       }
     }

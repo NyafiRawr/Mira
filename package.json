@@ -1,6 +1,6 @@
 {
   "name": "Mira",
-  "version": "24.11.2019",
+  "version": "29.11.2019",
   "description": "Hopefullness",
   "author": "NyafiRawr#7358",
   "license": "MIT",
@@ -14,6 +14,7 @@
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
     "eslint-config-airbnb": "^18.0.1",
+    "html-to-json-data": "^1.6.0",
     "keyv": "^3.1.0",
     "mysql": "^2.17.1",
     "mysql2": "^2.0.0",
