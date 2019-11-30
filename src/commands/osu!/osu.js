@@ -1,7 +1,9 @@
-const Discord = require('discord.js');
-const osu = require('../../modules/osu.js');
-const tools = require('../../modules/tools.js');
-const players = require('../../modules/players.js');
+import Discord from 'discord.js';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import modes from '../../data/osu!/mode.json';
+import osu from '../../modules/osu';
+import * as tools from '../../modules/tools';
+
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -25,7 +27,10 @@ module.exports = {
 
     if (positionArgument !== -1) {
       specificMode = params.substr(positionArgument + 1);
-      specificMode = require('../../data/osu!/mode.json')[mode];
+
+      specificMode = modes[
+        [...args].pop() // избавляемся от проксирования pop на оригинальный args
+      ];
       if (specificMode.resultSearch) {
         return message.reply(specificMode.content);
       }
@@ -40,7 +45,7 @@ module.exports = {
       mode = specificMode;
     }
 
-    let osuUser = osu.get_user(nick, mode, server);
+    let osuUser = await osu.get_user(nick, mode, server);
     if (!osuUser || !osuUser.length) {
       return message.reply(`игрок **${nick}** не найден.`);
     }
@@ -75,10 +80,13 @@ module.exports = {
 
     embed.setColor(tools.randomHexColor());
 
-    const requestMember = message.guild.members.get(message.author.id);
-
     embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
-    //embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
+    // embed.setFooter(
+    // `Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username}
+    // | ${config.bot_prefix}${this.name}${server === 'ppy' ?
+    // '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`}
+    // | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`,
+    // message.author.displayAvatarURL);
 
     message.channel.send({ embed });
   },

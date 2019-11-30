@@ -6,6 +6,19 @@ const convert = require('html-to-json-data');
 const { group, text, number, href, src, uniq } = require('html-to-json-data/definitions');
 const tools = require('./tools.js');
 
+
+// debug axios requests
+axios.interceptors.response.use(response => {
+  // tslint:disable-next-line:no-console
+  console.log(
+    response.status,
+    response.request.method,
+    response.request.res.responseUrl
+  );
+
+  return response;
+});
+
 function getData(nameFileData) {
   return require(`../data/osu!/${nameFileData}.json`);
 }
