@@ -1,11 +1,10 @@
+/* eslint-disable quote-props */
 import axios from 'axios';
 import * as users from './users';
 import config from '../config';
 
-const convert = require('html-to-json-data');
-const { group, text, number, href, src, uniq } = require('html-to-json-data/definitions');
+const osmosis = require('osmosis');
 const tools = require('./tools.js');
-
 
 // debug axios requests
 axios.interceptors.response.use((response) => {
@@ -45,28 +44,41 @@ module.exports.getValueOnKey = (nameFileData, key) => {
 };
 
 function akatsukiHTMLConvertToData(html) {
-  return convert(html, {
-    user_id: text('.vcard-fullname'),
-    username: text('.vcard-fullname'),
-    count300: text('.vcard-username'),
-    count100: text('.vcard-username'),
-    count50: text('.vcard-username'),
-    playcount: text('.vcard-username'),
-    ranked_score: text('.vcard-username'),
-    total_score: text('.vcard-username'),
-    pp_rank: text('.vcard-username'),
-    level: text('.vcard-username'),
-    pp_raw: text('.vcard-username'),
-    accuracy: text('.vcard-username'),
-    count_rank_ss: text('.vcard-username'),
-    count_rank_ssh: text('.vcard-username'),
-    count_rank_s: text('.vcard-username'),
-    count_rank_sh: text('.vcard-username'),
-    count_rank_a: text('.vcard-username'),
-    country: text('.vcard-username'),
-    total_seconds_played: text('.vcard-username'),
-    pp_country_rank: text('.vcard-username'),
-  });
+  return osmosis // todo: различие режимов (читает только первый 0)
+    .get(html)
+    .set({ 'username': 'meta[property="og:title"]@content' })
+    .set({ 'user_id': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > script' })
+    .set({ 'count300': null })
+    .set({ 'count100': null })
+    .set({ 'count50': null })
+    .set({ 'playcount': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(5) > td.right.aligned' })
+    .set({ 'ranked_score': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(3) > td.right.aligned' })
+    .set({ 'total_score': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(4) > td.right.aligned' })
+    .set({ 'pp_rank': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(1) > td.right.aligned' }) //0,1,2,3? - unknow! danger
+    .set({ 'level': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > div > div.label' })
+    .set({ 'pp_raw': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(2) > td.right.aligned' })
+    .set({ 'accuracy': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(10) > td.right.aligned' })
+    .set({ 'count_rank_ss': null })
+    .set({ 'count_rank_ssh': null })
+    .set({ 'count_rank_s': null })
+    .set({ 'count_rank_sh': null })
+    .set({ 'count_rank_a': null })
+    .set({ 'country': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(1) > b:nth-child(2)' })
+    .set({ 'total_seconds_played': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(7) > td.right.aligned' })
+    .set({ 'pp_country_rank': null })
+    // Уникальные для сервера строки:
+    .set({ 'playtime': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(6) > td.right.aligned' })
+    .set({ 'registration_date': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(1) > time:nth-child(4)' })
+    .set({ 'last_seen': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(1) > time:nth-child(6)' })
+    .set({ 'replay_watch': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(8) > td.right.aligned' })
+    .set({ 'total_hits': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(9) > td.right.aligned' })
+    .set({ 'followers': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(11) > td.right.aligned' })
+    .data(function (listing) {
+      // eslint-disable-next-line prefer-destructuring
+      listing.user_id = listing.user_id.split('window.')[2].split(' ')[3];
+      // todo: обработать данные (убрать ,# и тд)
+    })
+    .error(console.log);
 }
 
 module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
