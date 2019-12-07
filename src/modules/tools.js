@@ -99,11 +99,16 @@ export const myFooter = (message, nameCommand) => {
   return `Запрос от ${(!memberRequest || !memberRequest.nickname) ? message.author.username : memberRequest.nickname} | ${config.bot.prefix}${nameCommand}`;
 };
 
-export const logError = (e) => {
-  fs.appendFileSync(logErrorFile, `\n\n${e}`, (error) => {
+export const logError = (content, comment = null) => {
+  if (comment != null) {
+    console.log(comment);
+  }
+  const today = new Date();
+  const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+  fs.appendFileSync(logErrorFile, `${date} ${time}\n${comment}\n${content}\n\n`, (error) => {
     if (error) {
-      console.log('Не удалось записать ошибку:\n', logErrorFile, '\n\nпотому что:\n\n', error);
+      console.log(`Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${error}`);
     }
-    console.log('Ошибка записана в ', logErrorFile);
   });
 };

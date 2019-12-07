@@ -1,10 +1,9 @@
 /* eslint-disable quote-props */
 import axios from 'axios';
-import * as users from './users';
+import osmosis from 'osmosis';
+import users from './users';
 import config from '../config';
-
-const osmosis = require('osmosis');
-const tools = require('./tools.js');
+import tools from './tools';
 
 // debug axios requests
 axios.interceptors.response.use((response) => {
