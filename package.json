@@ -30,9 +30,6 @@
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "libxmljs": "^0.19.7",
-    "libxmljs-dom": "0.0.17",
-    "needle": "^2.4.0",
     "nodemon": "^2.0.1"
   },
   "scripts": {

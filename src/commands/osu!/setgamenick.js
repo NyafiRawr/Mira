@@ -1,5 +1,5 @@
-const osu = require('../../modules/osu.js');
-const cache = require('../../bot.js');
+import * as users from '../../modules/users';
+
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -11,12 +11,12 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message, args, CooldownReset) {
+  execute(message, args /* , CooldownReset */) {
     if (!args.length) {
       return message.reply('вы не указали ник, который нужно сохранить.');
     }
 
-    cache.setPlayer(message.guild.id, message.author.id, { nick: args.join(' ') });
+    users.set(message.guild.id, message.author.id, { nick: args.join(' ') });
 
     message.reply(`сохраненный никнейм: **${args.join(' ')}**`);
   },

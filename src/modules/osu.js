@@ -1,8 +1,8 @@
 /* eslint-disable quote-props */
 import axios from 'axios';
-import users from './users';
 import config from '../config';
-import tools from './tools';
+import * as users from './users';
+import * as tools from './tools';
 
 // debug axios requests
 axios.interceptors.response.use((response) => {
@@ -33,7 +33,7 @@ function getKeyOnValue(nameFileData, value) {
   throw new Error();
 }
 
-module.exports.getValueOnKey = (nameFileData, key) => {
+export const getValueOnKey = (nameFileData, key) => {
   const data = getData(nameFileData);
   if (key in data) {
     return data[key];
@@ -41,7 +41,8 @@ module.exports.getValueOnKey = (nameFileData, key) => {
   return null;
 };
 
-module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
+// eslint-disable-next-line camelcase
+export const get_user = async (idOrName, mode = 0, server = 'ppy') => {
   const result = await axios.get('/api/get_user', {
     baseURL: `http://${getKeyOnValue('server', server)}`,
     params: {
@@ -51,16 +52,14 @@ module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
     },
     // eslint-disable-next-line func-names
     transformResponse: [function (data) {
-      if (server === 'akatsuki-relax') {
-        return null;
-      }
       return JSON.parse(data)[0];
     }],
   });
   return result.data;
 };
 
-module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
+// eslint-disable-next-line camelcase
+export const get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
   let url = `https://${getKeyOnValue('server', server)}/api/get_user_recent?m=${mode}&u=${idOrName}&limit=${1}`;
 
   if (server === 'ppy') {
@@ -70,7 +69,8 @@ module.exports.get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
   return axios.get(url);
 };
 
-module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
+// eslint-disable-next-line camelcase
+export const get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
   const limitMax = 10;
 
   let url = `https://${getKeyOnValue('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit > limitMax ? limitMax : limit}`;
@@ -82,7 +82,8 @@ module.exports.get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) =
   return axios.get(url);
 };
 
-module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
+// eslint-disable-next-line camelcase
+export const get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
   let url = `https://${getKeyOnValue('server', server)}/api/get_scores?m=${mode}&b=${idMap}&u=${idPlayer}&limit=${1}`;
 
   if (server === 'ppy') {
@@ -92,7 +93,8 @@ module.exports.get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
   return axios.get(url);
 };
 
-module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
+// eslint-disable-next-line camelcase
+export const get_beatmap = (idMap, mode = 0, server = 'ppy') => {
   let url = `https://${getKeyOnValue('server', server)}/api/get_beatmaps?m=${mode}&b=${idMap}`;
 
   if (server === 'ppy') {
@@ -102,7 +104,7 @@ module.exports.get_beatmap = (idMap, mode = 0, server = 'ppy') => {
   return axios.get(url);
 };
 
-module.exports.convertLength = (length) => {
+export const convertLength = (length) => {
   const dt = new Date();
   dt.setTime(length * 1000);
   const seconds = dt.getUTCSeconds();
@@ -112,7 +114,7 @@ module.exports.convertLength = (length) => {
   return `${dt.getUTCMinutes()}:${seconds}`;
 };
 
-module.exports.convertDatetime = (datetime) => {
+export const convertDatetime = (datetime) => {
   const [date, time] = datetime.split(' ');
   const [year, month, day] = date.split('-');
   // eslint-disable-next-line no-unused-vars
@@ -120,7 +122,7 @@ module.exports.convertDatetime = (datetime) => {
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
-module.exports.calculateAccuracity = (mode, count300, count100, count50,
+export const calculateAccuracity = (mode, count300, count100, count50,
   countmiss, countkatu, countgeki) => {
   let userScore;
   let totalScore;
@@ -170,7 +172,7 @@ module.exports.calculateAccuracity = (mode, count300, count100, count50,
   return null;
 };
 
-module.exports.showStatistic = (mode, count300, count100, count50,
+export const showStatistic = (mode, count300, count100, count50,
   countmiss, countkatu, countgeki) => {
   const reCount300 = tools.separateThousandth(count300);
   const reCountgeki = tools.separateThousandth(countgeki);
@@ -236,7 +238,7 @@ function findPlayer(user, message) {
   return { ...findedPlayer };
 }
 
-module.exports.searchPlayer = (message, args) => {
+export const searchPlayer = (message, args) => {
   const reArgs = args.join(' ');
   let player = {};
 
@@ -253,7 +255,7 @@ module.exports.searchPlayer = (message, args) => {
   return player;
 };
 
-module.exports.getModsFromJson = (code) => {
+export const getModsFromJson = (code) => {
   // eslint-disable-next-line import/no-webpack-loader-syntax
   const mods = require('./../data/osu!/mods.json');
   let reCode = parseInt(code, 10);
@@ -275,7 +277,7 @@ module.exports.getModsFromJson = (code) => {
   return result.join(', ');
 };
 
-module.exports.getKeyFromSearchOnValueFromJson = (filename, value) => {
+export const getKeyFromSearchOnValueFromJson = (filename, value) => {
   const list = require(`../data/osu!/${filename}.json`);
   let searchResult = false;
   let result;
@@ -304,7 +306,7 @@ module.exports.getKeyFromSearchOnValueFromJson = (filename, value) => {
   return { result, searchResult };
 };
 
-module.exports.getValueOnKeyFromJson = (filename, key) => {
+export const getValueOnKeyFromJson = (filename, key) => {
   const list = require(`../data/osu!/${filename}.json`);
 
   const result = list[key];

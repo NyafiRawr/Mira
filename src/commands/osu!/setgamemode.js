@@ -1,5 +1,6 @@
-const osu = require('../../modules/osu.js');
-const cache = require('../../bot.js');
+import * as users from '../../modules/users';
+import * as osu from '../../modules/osu';
+
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -22,7 +23,7 @@ module.exports = {
       return message.reply(mode.result);
     }
 
-    cache.setPlayer(message.guild.id, message.author.id, { mode: mode.result });
+    users.set(message.guild.id, message.author.id, { mode: mode.result });
 
     message.reply(`выбранный режим: **${osu.getValueOnKeyFromJson('mode', mode.result)}**`);
   },
