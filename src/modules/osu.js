@@ -1,8 +1,8 @@
 /* eslint-disable quote-props */
 import axios from 'axios';
-import users from './users';
 import config from '../config';
-import tools from './tools';
+import * as users from './users';
+import * as tools from './tools';
 
 // debug axios requests
 axios.interceptors.response.use((response) => {

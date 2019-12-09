@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
-const Discord = require('discord.js');
-const osu = require('../../modules/osu.js');
-const tools = require('../../modules/tools.js');
-const players = require('../../modules/players.js');
+import Discord from 'discord.js';
+import * as osu from '../../modules/osu';
+import * as tools from '../../modules/tools';
+import * as players from '../../modules/players';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],

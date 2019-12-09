@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import modes from '../../data/osu!/mode.json';
-import osu from '../../modules/osu';
+import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 
 
