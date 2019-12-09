@@ -1,6 +1,5 @@
 /* eslint-disable quote-props */
 import axios from 'axios';
-import osmosis from 'osmosis';
 import users from './users';
 import config from '../config';
 import tools from './tools';
@@ -42,44 +41,6 @@ module.exports.getValueOnKey = (nameFileData, key) => {
   return null;
 };
 
-function akatsukiHTMLConvertToData(html) {
-  return osmosis // todo: различие режимов (читает только первый 0)
-    .get(html)
-    .set({ 'username': 'meta[property="og:title"]@content' })
-    .set({ 'user_id': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > script' })
-    .set({ 'count300': null })
-    .set({ 'count100': null })
-    .set({ 'count50': null })
-    .set({ 'playcount': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(5) > td.right.aligned' })
-    .set({ 'ranked_score': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(3) > td.right.aligned' })
-    .set({ 'total_score': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(4) > td.right.aligned' })
-    .set({ 'pp_rank': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(1) > td.right.aligned' }) //0,1,2,3? - unknow! danger
-    .set({ 'level': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > div > div.label' })
-    .set({ 'pp_raw': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(2) > td.right.aligned' })
-    .set({ 'accuracy': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(10) > td.right.aligned' })
-    .set({ 'count_rank_ss': null })
-    .set({ 'count_rank_ssh': null })
-    .set({ 'count_rank_s': null })
-    .set({ 'count_rank_sh': null })
-    .set({ 'count_rank_a': null })
-    .set({ 'country': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(1) > b:nth-child(2)' })
-    .set({ 'total_seconds_played': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(7) > td.right.aligned' })
-    .set({ 'pp_country_rank': null })
-    // Уникальные для сервера строки:
-    .set({ 'playtime': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(6) > td.right.aligned' })
-    .set({ 'registration_date': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(1) > time:nth-child(4)' })
-    .set({ 'last_seen': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(1) > time:nth-child(6)' })
-    .set({ 'replay_watch': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(8) > td.right.aligned' })
-    .set({ 'total_hits': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(9) > td.right.aligned' })
-    .set({ 'followers': 'body > div.ui.full.height.main.wrapper > div.h-container > div:nth-child(2) > div:nth-child(20) > div > div > div:nth-child(3) > div:nth-child(1) > table > tbody > tr:nth-child(11) > td.right.aligned' })
-    .data(function (listing) {
-      // eslint-disable-next-line prefer-destructuring
-      listing.user_id = listing.user_id.split('window.')[2].split(' ')[3];
-      // todo: обработать данные (убрать ,# и тд)
-    })
-    .error(console.log);
-}
-
 module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
   const result = await axios.get('/api/get_user', {
     baseURL: `http://${getKeyOnValue('server', server)}`,
@@ -88,9 +49,10 @@ module.exports.get_user = async (idOrName, mode = 0, server = 'ppy') => {
       u: idOrName,
       k: server === 'ppy' ? config.osu_token : undefined,
     },
+    // eslint-disable-next-line func-names
     transformResponse: [function (data) {
       if (server === 'akatsuki-relax') {
-        return akatsukiHTMLConvertToData(data);
+        return null;
       }
       return JSON.parse(data)[0];
     }],
