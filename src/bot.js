@@ -41,7 +41,7 @@ const loadCommands = async (defaultDir) => {
         if (cmd.aliases) cmd.aliases.forEach((al) => client.commands.set(al, cmd));
         console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
       } catch (err) {
-        console.error(err)
+        console.error(err);
         logError(err, `Ошибка импорта: ${item}`);
         return null;
       }

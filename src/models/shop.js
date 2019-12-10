@@ -1,11 +1,8 @@
 import Sequelize, { Model } from 'sequelize';
 import { sequelize } from '../modules/db';
 
-
-///Кажется это инициализации бдшки
-
-class Roles extends Model {}
-Roles.init({
+class Shop extends Model { }
+Shop.init({
   roleId: {
     type: Sequelize.STRING,
     primaryKey: true,
@@ -14,15 +11,15 @@ Roles.init({
     type: Sequelize.STRING,
     primaryKey: true,
   },
-  roleCost: {
+  cost: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
   },
 }, {
-  modelName: 'roles',
+  modelName: 'shop',
   sequelize,
 });
 
-export default Roles;
+export default Shop;
 
-Roles.sync();
+Shop.sync();
