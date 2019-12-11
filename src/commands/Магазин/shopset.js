@@ -12,6 +12,7 @@ module.exports = {
   permissions: ['MANAGE_ROLES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message, args) {
+    // todo: добавить возможность добавлять не пингуемые роли?
     const role = message.mentions.roles.first();
     const cost = parseInt(args[1], 10) || 0;
 

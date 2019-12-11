@@ -25,36 +25,30 @@ module.exports = {
     if (message.mentions.roles.size === 0) {
       embed.setTitle('Магазин');
       for (let i = 0; i < roles.length; i += 1) {
-        msg += `${i + 1}. ${message.guild.roles.get(roles[i].roleId)} за ${roles[i].cost}:cookie:`;
+        msg += `${i + 1}. ${message.guild.roles.get(roles[i].roleId)} ${roles[i].cost}:cookie:`;
       }
     } else {
-      const role = message.mentions.roles.first();
-      const listRoleIds = roles.map((r) => r.roleId);
-      if (!listRoleIds.includes(role.id)) {
+      const roleMention = message.mentions.roles.first();
+      const roleShop = await shop.get(message.guild.id, roleMention.id);
+      console.log(roleShop);
+      if (roleShop) {
         return message.reply('такой роли в продаже нет.');
       }
       // todo: добавить инвентарь (снятие/надевание ролей)
-      if (message.guild.member(message.author.id).roles.has(role.id)) {
+      if (message.guild.member(message.author.id).roles.has(roleMention.id)) {
         return message.reply('у вас уже есть эта роль!');
       }
 
-      // todo: переделать.
-      const cost = roles.map((r) => {
-        if (r.id === role.id) {
-          return r.cost;
-        }
-      })[0] || 0;
-
-      if (cost > 0) {
+      if (roleShop.cost > 0) {
         const balance = await economy.get(message.guild.id, message.author.id);
-        if (balance < cost) {
+        if (balance < roleShop.cost) {
           return message.reply('не хватает!');
         }
-        await economy.set(message.guild.id, message.author.id, -cost);
+        await economy.set(message.guild.id, message.author.id, -roleShop.cost);
       }
-      message.member.addRole(role);
+      message.member.addRole(roleMention);
 
-      msg += `Вы купили роль ${role} за ${cost}:cookie:`;
+      msg += `Вы купили роль ${roleMention} за ${roleShop.cost}:cookie:`;
     }
 
     embed.setDescription(msg);
