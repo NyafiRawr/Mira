@@ -3,8 +3,8 @@ import { randomInteger } from '../../modules/tools';
 const economy = require('../../modules/economy.js');
 
 const effects = [
-  'место для вашей рекламы ?! D: ',
-  'вы съели печеньку и чувствуете как вас переполняет решимость.',
+  'вы стали жирней на одну печеньку',
+  'вы съели печеньку и чувствуете переполняющую решимость.',
 ];
 
 module.exports = {

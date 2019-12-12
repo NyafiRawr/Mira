@@ -42,27 +42,48 @@ export const getValueOnKey = (nameFileData, key) => {
 };
 
 // eslint-disable-next-line camelcase
-export const get_user = async (idOrName, mode = 0, server = 'ppy') => {
-  const result = await axios.get('/api/get_user', {
-    baseURL: `http://${getKeyOnValue('server', server)}`,
+export const get_user = async (idOrName, mode = 0, server = 'bancho') => {
+  const configServer = getValueOnKey('server', server);
+  const configApi = {
+    url: null,
+    params: null,
+  };
+
+  if (configServer.api === 'bancho') {
+    configApi.url = '/api/get_user';
+    configApi.params = { u: idOrName };
+  } else if (configServer.api === 'ripple') {
+    configApi.url = '/api/v1/users/full';
+    configApi.params = Number.isNaN(idOrName) ? { name: idOrName } : { id: idOrName };
+  }
+
+  let result = await axios.get(configApi.url, {
+    baseURL: `http://${configServer.url}`,
     params: {
       m: mode,
-      u: idOrName,
-      k: server === 'ppy' ? config.osu_token : undefined,
+      k: server === 'bancho' ? config.osu_token : undefined,
+      ...configApi.params,
     },
-    // eslint-disable-next-line func-names
-    transformResponse: [function (data) {
-      return JSON.parse(data)[0];
-    }],
   });
-  return result.data;
+
+  // eslint-disable-next-line prefer-destructuring
+  result = result.data;
+  // todo: имена полей у апи разные, нужно привести к общему!!!
+  if (configServer.api === 'ripple') {
+    result = {
+      result,
+      ...result[getValueOnKey('mode', mode)[0]],
+    };
+  }
+
+  return result;
 };
 
 // eslint-disable-next-line camelcase
-export const get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
+export const get_user_recent = (idOrName, mode = 0, server = 'bancho') => {
   let url = `https://${getKeyOnValue('server', server)}/api/get_user_recent?m=${mode}&u=${idOrName}&limit=${1}`;
 
-  if (server === 'ppy') {
+  if (server === 'bancho') {
     url += `&k=${config.osu_token}`;
   }
 
@@ -70,12 +91,12 @@ export const get_user_recent = (idOrName, mode = 0, server = 'ppy') => {
 };
 
 // eslint-disable-next-line camelcase
-export const get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => {
+export const get_user_best = (idOrName, mode = 0, server = 'bancho', limit = 5) => {
   const limitMax = 10;
 
   let url = `https://${getKeyOnValue('server', server)}/api/get_user_best?m=${mode}&u=${idOrName}&limit=${limit > limitMax ? limitMax : limit}`;
 
-  if (server === 'ppy') {
+  if (server === 'bancho') {
     url += `&k=${config.osu_token}`;
   }
 
@@ -83,10 +104,10 @@ export const get_user_best = (idOrName, mode = 0, server = 'ppy', limit = 5) => 
 };
 
 // eslint-disable-next-line camelcase
-export const get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
+export const get_scores = (idMap, idPlayer, mode = 0, server = 'bancho') => {
   let url = `https://${getKeyOnValue('server', server)}/api/get_scores?m=${mode}&b=${idMap}&u=${idPlayer}&limit=${1}`;
 
-  if (server === 'ppy') {
+  if (server === 'bancho') {
     url += `&k=${config.osu_token}`;
   }
 
@@ -94,10 +115,10 @@ export const get_scores = (idMap, idPlayer, mode = 0, server = 'ppy') => {
 };
 
 // eslint-disable-next-line camelcase
-export const get_beatmap = (idMap, mode = 0, server = 'ppy') => {
+export const get_beatmap = (idMap, mode = 0, server = 'bancho') => {
   let url = `https://${getKeyOnValue('server', server)}/api/get_beatmaps?m=${mode}&b=${idMap}`;
 
-  if (server === 'ppy') {
+  if (server === 'bancho') {
     url += `&k=${config.osu_token}`;
   }
 
@@ -232,7 +253,7 @@ function findPlayer(user, message) {
   }
 
   if (!findedPlayer.server) {
-    findedPlayer.server = 'ppy';
+    findedPlayer.server = 'bancho';
   }
 
   return { ...findedPlayer };

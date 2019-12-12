@@ -35,6 +35,7 @@ module.exports = {
 
     for (const account of accounts) {
       for (const mode of account.modes) {
+        // eslint-disable-next-line no-await-in-loop
         const user = await osu.get_user(account.nickname, mode, account.gameServer);
         if (user != null) {
           const topScores = parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)
