@@ -1,6 +1,6 @@
 {
   "name": "Mira",
-  "version": "07.12.2019",
+  "version": "13.12.2019",
   "description": "Hopefullness",
   "author": "NyafiRawr#7358",
   "license": "MIT",
@@ -21,7 +21,6 @@
     "keyv": "^4.0.0",
     "mysql": "^2.17.1",
     "mysql2": "^2.0.2",
-    "rippleapi": "^1.1.0",
     "sequelize": "^5.21.1",
     "sqlite3": "^4.1.1"
   },
