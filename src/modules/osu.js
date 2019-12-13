@@ -55,6 +55,10 @@ export const get_user = async (idOrName, mode = 0, server = 'bancho') => {
   } else if (configServer.api === 'ripple') {
     configApi.url = '/api/v1/users/full';
     configApi.params = Number.isNaN(idOrName) ? { name: idOrName } : { id: idOrName };
+  } else if (configServer.api === 'gatari') {
+    // todo: настроить!
+    configApi.url = '/api/get_user';
+    configApi.params = { u: idOrName };
   }
 
   let result = await axios.get(configApi.url, {

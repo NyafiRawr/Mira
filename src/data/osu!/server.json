@@ -61,5 +61,13 @@
 			"enjuu.click",
 			"enjuu"
 		]
+	},
+	"gatari": {
+		"api": "gatari",
+		"url": "gatari.pw",
+		"aliases": [
+			"gatari.pw",
+			"gatari"
+		]
 	}
 }
