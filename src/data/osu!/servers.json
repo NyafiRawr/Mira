@@ -34,7 +34,7 @@
 	},
 	"relax": {
 		"api": "ripple",
-		"url": "akatsuki.pw/rx",
+		"url": "akatsuki.pw",
 		"aliases": [
 			"akatsuki.pw/rx",
 			"relax",
@@ -64,7 +64,7 @@
 	},
 	"gatari": {
 		"api": "gatari",
-		"url": "gatari.pw",
+		"url": "api.gatari.pw",
 		"aliases": [
 			"gatari.pw",
 			"gatari"

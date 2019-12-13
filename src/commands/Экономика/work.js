@@ -5,7 +5,7 @@ const tools = require('../../modules/tools.js');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Ежедневное печенье!',
-  aliases: ['timely'],
+  aliases: ['timely', 'цщкл'],
   usage: undefined,
   guild: true,
   hide: false,

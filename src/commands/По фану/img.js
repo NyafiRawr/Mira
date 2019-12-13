@@ -32,7 +32,7 @@ module.exports = {
       .setImage(user.displayAvatarURL)
       .setColor('#ffffff');
 
-    embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
+    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send({ embed });
   },

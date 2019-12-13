@@ -46,16 +46,16 @@ module.exports = {
       mode = specificMode;
     }
 
-    let osuUser = osu.get_user(nick, mode, server);
+    let osuUser = osu.getUser(nick, mode, server);
     if (!osuUser || !osuUser.length) {
       return message.reply(`игрок **${nick}** не найден.`);
     }
     osuUser = osuUser[0];
 
-    let osuMap = osu.get_beatmap(idMap, mode, server);
+    let osuMap = osu.getBeatmap(idMap, mode, server);
 
     if ((!osuMap || !osuMap.length) && mode !== 0) {
-      osuMap = osu.get_beatmap(idMap, 0, server);
+      osuMap = osu.getBeatmap(idMap, 0, server);
     }
 
     if (!osuMap || !osuMap.length) {
@@ -63,7 +63,7 @@ module.exports = {
     }
     osuMap = osuMap[0];
 
-    let osuScore = osu.get_scores(idMap, nick, mode, server);
+    let osuScore = osu.getScores(idMap, nick, mode, server);
     if (!osuScore || !osuScore.length) {
       return message.reply(`игрок **${nick}** не имеет результатов на указанной карте id: ${idMap} (режим: ${osu.getValueOnKeyFromJson('mode', mode)}).`);
     }
@@ -72,12 +72,12 @@ module.exports = {
     const links = osu.getValueOnKeyFromJson('links', server);
 
     const embed = new Discord.RichEmbed()
-      .setAuthor(`${osuScore.username}, лучший результат (${osu.convertDatetime(osuScore.date)}):`, links.avatar.replace('ID', osuUser.user_id), links.user.replace('ID', osuScore.user_id))
+      .setAuthor(`${osuScore.username}, лучший результат (${osu.styleDatetimeInDMYHMS(osuScore.date)}):`, links.avatar.replace('ID', osuUser.user_id), links.user.replace('ID', osuScore.user_id))
       .setTitle(`${osuMap.artist} - ${osuMap.title} // ${osuMap.creator}`)
       .setURL(links.beatmap.replace('ID', idMap));
 
     let text = `**Сложность:** ${osuMap.version} (★${tools.toTwoDecimalPlaces(osuMap.difficultyrating)}) ${mode === '3' ? `${osuMap.diff_size}K` : ''}`;
-    text += `\n**Длина:** ${osu.convertLength(osuMap.total_length)} **BPM:** ${osuMap.bpm} ${mode === '3' ? '' : `**CS:** ${osuMap.diff_size} `}**AR:** ${osuMap.diff_approach} **OD:** ${osuMap.diff_overall} **HP:** ${osuMap.diff_drain}`;
+    text += `\n**Длина:** ${osu.styleLengthInMS(osuMap.total_length)} **BPM:** ${osuMap.bpm} ${mode === '3' ? '' : `**CS:** ${osuMap.diff_size} `}**AR:** ${osuMap.diff_approach} **OD:** ${osuMap.diff_overall} **HP:** ${osuMap.diff_drain}`;
     text += `\n**Моды:** ${osu.getModsFromJson(osuScore.enabled_mods)}`;
     embed.setDescription(text);
 
@@ -91,8 +91,8 @@ module.exports = {
     text += `\n**PP:** ${!osuScore.pp ? '-' : osuScore.pp}`;
     embed.addField('Статистика', text, true);
 
-    text = `**Последнее обновление:** ${osu.convertDatetime(osuMap.last_update)}`;
-    text += `\n**Статус:** ${osu.getValueOnKeyFromJson('approved', osuMap.approved)} (${osu.convertDatetime(osuMap.approved_date)})`;
+    text = `**Последнее обновление:** ${osu.styleDatetimeInDMYHMS(osuMap.last_update)}`;
+    text += `\n**Статус:** ${osu.getValueOnKeyFromJson('approved', osuMap.approved)} (${osu.styleDatetimeInDMYHMS(osuMap.approved_date)})`;
     text += `\n**Жанр:** ${osu.getValueOnKeyFromJson('genre', osuMap.genre_id)} **Язык:** ${osu.getValueOnKeyFromJson('lang', osuMap.language_id)}`;
     text += `\n**Источник:** ${osuMap.source ? osuMap.source : '-'}`;
     embed.addField('О карте', text, true);

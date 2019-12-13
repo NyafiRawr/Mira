@@ -36,14 +36,15 @@ module.exports = {
     for (const account of accounts) {
       for (const mode of account.modes) {
         // eslint-disable-next-line no-await-in-loop
-        const user = await osu.get_user(account.nickname, mode, account.gameServer);
+        const user = await osu.getUser(account.gameServer, account.nickname, mode);
         if (user != null) {
+          console.log(user);
           const topScores = parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)
           + parseInt(user.count_rank_a, 10)
           + parseInt(user.count_rank_ssh, 10) || 0 + parseInt(user.count_rank_sh, 10) || 0;
           embed
             .addField(`**${account.gameServer.toUpperCase()}**`, `PP: ${tools.separateThousandth(Math.floor(user.pp_raw))}\nМесто: #${tools.separateThousandth(user.pp_rank)}`, true)
-            .addField(`**${(osu.getValueOnKey('mode', mode))[0].toUpperCase()}**`, `Уровень: ${Math.floor(user.level)}\nТочность: ${tools.toTwoDecimalPlaces(user.accuracy)}%`, true)
+            .addField(`**${(tools.getDataValueOnKey('osu!/mode', mode))[0].toUpperCase()}**`, `Уровень: ${Math.floor(user.level)}\nТочность: ${tools.toTwoDecimalPlaces(user.accuracy)}%`, true)
             .addField(`Ник: **${user.username}**`, `Игр: ${tools.separateThousandth(user.playcount)}\nТоп-скоры: ${tools.separateThousandth(topScores)}`, true);
         }
       }
@@ -51,7 +52,7 @@ module.exports = {
 
     embed.setColor(tools.randomHexColor());
 
-    embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
+    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send({ embed });
   },

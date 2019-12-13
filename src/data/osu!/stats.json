@@ -1,0 +1,22 @@
+{
+  "0": [
+    "**300:** count300 **Geki:** countgeki",
+    "**100:** count100    **Katu:** countkatu",
+    "**50:** count50  **×:** countmiss"
+  ],
+  "1": [
+    "**✪:** count300   **⍟:** countgeki",
+    "**★:** count100  **☆:** countkatu",
+    "**×:** count50"
+  ],
+  "2": [
+    "**300:** count300 **×:** countgeki",
+    "**100:** count100    **×:** countkatu",
+    "**50:** count50  **×:** countmiss"
+  ],
+  "3": [
+    "**MAX:** countgeki   **300:** count300",
+    "**200:** countkatu    **100:** count100",
+    "**50:** count50  **×:** countmiss"
+  ]
+}

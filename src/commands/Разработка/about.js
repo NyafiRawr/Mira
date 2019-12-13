@@ -27,7 +27,7 @@ module.exports = {
       .setColor(tools.randomHexColor());
 
     if (message.guild !== null) {
-      embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
+      embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
     }
 
     message.channel.send({ embed });

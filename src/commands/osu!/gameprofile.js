@@ -45,7 +45,7 @@ module.exports = {
       mode = specificMode;
     }
 
-    let osuUser = await osu.get_user(nick, mode, server);
+    let osuUser = await osu.getUser(nick, mode, server);
     if (!osuUser || !osuUser.length) {
       return message.reply(`игрок **${nick}** не найден.`);
     }
@@ -80,7 +80,7 @@ module.exports = {
 
     embed.setColor(tools.randomHexColor());
 
-    embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
+    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
     // embed.setFooter(
     // `Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username}
     // | ${config.bot_prefix}${this.name}${server === 'ppy' ?

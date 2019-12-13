@@ -50,7 +50,7 @@ module.exports = {
     }
     osuUser = osuUser[0];
 
-    const osuUserBest = osu.get_user_best(nick, mode, server, amount);
+    const osuUserBest = osu.getUserTop(nick, mode, server, amount);
     if (!osuUserBest || !osuUserBest.length) {
       return message.reply(`игрок **${nick}** не имеет результатов в режиме ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`);
     }

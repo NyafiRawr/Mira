@@ -3,39 +3,12 @@ import config from '../config';
 
 const logErrorFile = './errors.log';
 
-export const getValueOnKeyFromJson = (filename, key) => {
-  // todo: сделать чтение нужных файлов напрямую из файлов-команд
-  const list = require(`../data/${filename}.json`);
-
-  const result = list[key];
-
-  if (Array.isArray(result)) {
-    return result[0];
-  }
-
-  return key;
-};
-
-export const getKeyOnValueFromJson = (filename, value) => {
-  const list = require(`../data/${filename}.json`);
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key of list) {
-    if (list[key].includes(value)) {
-      return key;
-    }
-  }
-
-  return value;
-};
-
 export const separateThousandth = (number) => {
   if (number) {
     return number.toString().replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,');
   }
   return '-';
 };
-
 
 export const toDate = (value) => {
   const date = new Date(value);
@@ -94,7 +67,7 @@ export const randomBoolean = () => Math.random() >= 0.5;
 
 export const randomHexColor = () => `#${Math.random().toString(16).slice(2, 8)}`;
 
-export const myFooter = (message, nameCommand) => {
+export const embedFooter = (message, nameCommand) => {
   const memberRequest = message.guild.members.get(message.author.id);
   return `Запрос от ${(!memberRequest || !memberRequest.nickname) ? message.author.username : memberRequest.nickname} | ${config.bot.prefix}${nameCommand}`;
 };
@@ -111,4 +84,29 @@ export const logError = (content, comment = null) => {
       console.log(`Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${error}`);
     }
   });
+};
+
+export const getData = (pathData) => require(`../data/${pathData}.json`);
+
+export const getDataKeyOnValue = (pathData, value) => {
+  const data = getData(pathData);
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of Object.keys(data)) {
+    if (data[key].includes(value)) {
+      return key;
+    }
+  }
+
+  return null;
+};
+
+export const getDataValueOnKey = (pathData, key) => {
+  const data = getData(pathData);
+
+  if (key in data) {
+    return data[key];
+  }
+
+  return null;
 };

@@ -18,7 +18,7 @@ module.exports = {
 
     const embed = new Discord.RichEmbed()
       .setDescription(`Роль **${role}** удалена из магазина`);
-    embed.setFooter(tools.myFooter(message, this.name), message.author.displayAvatarURL);
+    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send(embed);
   },

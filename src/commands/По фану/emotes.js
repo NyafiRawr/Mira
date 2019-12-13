@@ -49,7 +49,7 @@ module.exports = {
       embed.setColor(tools.randomHexColor());
     }
 
-    embed.setFooter(tools.myFooter(message, emotion), message.author.displayAvatarURL);
+    embed.setFooter(tools.embedFooter(message, emotion), message.author.displayAvatarURL);
 
     message.channel.send({ embed });
   },
