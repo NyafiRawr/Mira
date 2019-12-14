@@ -3,7 +3,7 @@ import * as economy from '../../modules/economy';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Каталог ролей',
-  aliases: ['channel'],
+  aliases: ['tc'],
   usage: '[create/invite] <@упоминание>',
   guild: true,
   hide: false,
@@ -63,6 +63,16 @@ module.exports = {
       await tempChannel.setTopic('Канал будет удален сразу после того как все участники выйдут из него!');
 
       await message.reply(`Канал ${tempChannel.toString()} создан!`);
+
+      const deleteChannel = () => tempChannel.delete()
+        .then(() => message.reply(`Так как вы не вошли в канал ${tempChannel.toString()} то он был удален из за ненадобности!`))
+        .catch(console.error);
+
+      setTimeout(() => {
+        if (!tempChannel.members.first()) deleteChannel();
+
+        setInterval(() => tempChannel.members.size === 0 && deleteChannel(), 2e4);
+      }, 1e4);
     }
   },
 };
