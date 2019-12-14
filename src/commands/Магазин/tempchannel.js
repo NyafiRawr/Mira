@@ -39,28 +39,29 @@ module.exports = {
 
       const tempChannel = await message.guild.createChannel(
         `Private ${message.member.displayName}`,
-        'voice',
-        [
-          {
-            type: 'member',
-            id: message.member.id,
-            allow: 17825808,
-          },
-          {
-            type: 'role',
-            id: tempRole.id,
-            allow: 17825808,
-          },
-          {
-            type: 'role',
-            id: message.guild.defaultRole,
-            deny: 1024,
-          },
-        ],
-        (`Created by ${message.member.displayName}`),
+        {
+          type: 'voice',
+          role: [
+            {
+              type: 'member',
+              id: message.member.id,
+              allow: 17825808,
+            },
+            {
+              type: 'role',
+              id: tempRole.id,
+              allow: 17825808,
+            },
+            {
+              type: 'role',
+              id: message.guild.defaultRole,
+              deny: 1024,
+            },
+          ],
+          parent: this.categoryId,
+          topic: 'Канал будет удален сразу после того как все участники выйдут из него!',
+        },
       );
-      await tempChannel.setParent(this.categoryId);
-      await tempChannel.setTopic('Канал будет удален сразу после того как все участники выйдут из него!');
 
       await message.reply(`Канал ${tempChannel.toString()} создан!`);
 
