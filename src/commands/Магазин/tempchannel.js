@@ -14,7 +14,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
 
   // todo: вынести в конфиг
-  price: 4000,
+  price: 400,
   categoryId: '655718840650563585',
 
   /**
@@ -27,15 +27,30 @@ module.exports = {
 
     if (args[0] === 'invite') {
       // валидация параметров комманды
-      if (args.length !== 2) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
+      if (args.length <= 1) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
 
       const tempChannel = message.guild.channels.find("name", tempChannelName);
       for await (const target of message.mentions.members.array()) {
-        tempChannel.permissionsFor({
-          type: 'member',
-          id: target.id,
-          allow: 36701184,
+        tempChannel.overwritePermissions(target.id, {
+          VIEW_CHANNEL: true,
+          CONNECT: true,
+          SPEAK: true,
+          USE_VAD: true,
         });
+
+        await message.reply(`Пользователь ${target.displayName} был добавлен в ${tempChannelName}`);
+      }
+    } else if (args[0] === 'remove') {
+      // валидация параметров комманды
+      if (args.length <= 1) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
+
+      const tempChannel = message.guild.channels.find("name", tempChannelName);
+      for await (const target of message.mentions.members.array()) {
+        tempChannel.replacePermissionOverwrites({
+          'overwrites': tempChannel.permissionOverwrites.filter(perm => perm.id !== target.id),
+        });
+
+        await message.reply(`Пользователь ${target.displayName} был удален из ${tempChannelName}`);
       }
     } else if (args[0] === 'create') {
       await economy.pay(message.guild.id, message.author.id, this.price);
@@ -44,11 +59,14 @@ module.exports = {
         tempChannelName,
         {
           type: 'voice',
-          role: [
+          permissionOverwrites: [
             {
-              type: 'member',
               id: message.member.id,
-              allow: 66061568,
+              allow: ['VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'USE_VAD', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS'],
+            },
+            {
+              id: message.guild.defaultRole,
+              deny: ['VIEW_CHANNEL'],
             },
           ],
           parent: this.categoryId,
