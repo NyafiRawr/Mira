@@ -66,11 +66,11 @@ module.exports = {
       await message.reply(`Канал ${tempChannel.toString()} создан!`);
 
       const deleteChannel = () => tempChannel.delete()
-        .then(() => message.reply(`Так как вы не вошли в канал ${tempChannel.toString()} то он был удален из за ненадобности!`))
+        .then(() => message.reply(`Так как в канале ${tempChannel.toString()} ни кого не было то он был удален из за ненадобности!`))
         .catch(console.error);
 
       setTimeout(() => {
-        setInterval(() => tempChannel.members.size === 0 && deleteChannel(), 2e4);
+        const watcher = setInterval(() => tempChannel.members.size === 0 && deleteChannel() && clearInterval(watcher), 2e4);
       }, 1e4);
     }
   },
