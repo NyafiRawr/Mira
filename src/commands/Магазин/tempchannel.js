@@ -27,7 +27,7 @@ module.exports = {
 
     if (args[0] === 'invite') {
       // валидация параметров комманды
-      if (args.length !== 2) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');;
+      if (args.length !== 2) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
 
       const tempChannel = message.guild.channels.find("name", tempChannelName);
       for await (const target of message.mentions.members.array()) {
