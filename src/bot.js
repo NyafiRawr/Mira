@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import path from 'path';
 
+import CustomError from './modules/customError';
 import fs from './modules/fs';
 import config from './config';
 import { randomInteger, logError } from './modules/tools';
@@ -183,10 +184,11 @@ client
 
     try {
       await command.execute(message, args, CooldownReset);
-    } catch (error) {
-      console.error(error);
-      logError(error);
-      message.reply('при вызове команды произошла ошибка ;(');
+    } catch (err) {
+      logError(err);
+
+      if (err instanceof CustomError) err.send(message);
+      else message.reply('при вызове команды произошла ошибка ;(');
     }
   });
 

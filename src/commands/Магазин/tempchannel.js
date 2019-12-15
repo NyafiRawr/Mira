@@ -1,4 +1,5 @@
 import Discord from 'discord.js';
+import CustomError from '../../modules/customError';
 import * as economy from '../../modules/economy';
 
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
 
   // todo: вынести в конфиг
-  price: 4,
+  price: 4000,
   categoryId: '655718840650563585',
 
   /**
@@ -26,7 +27,7 @@ module.exports = {
 
     if (args[0] === 'invite') {
       // валидация параметров комманды
-      if (args.length !== 2) return message.reply('Не хватает параметров, пример команды: !tempchannel invite @admin');
+      if (args.length !== 2) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');;
 
       const tempChannel = message.guild.channels.find("name", tempChannelName);
       for await (const target of message.mentions.members.array()) {
@@ -37,10 +38,7 @@ module.exports = {
         });
       }
     } else if (args[0] === 'create') {
-      // проверяем баланс и списываем за временный канал
-      const balance = await economy.get(message.guild.id, message.author.id);
-      if (balance < this.price) return message.reply('У вас нет сколько печенек!');
-      await economy.set(message.guild.id, message.author.id, -this.price);
+      await economy.pay(message.guild.id, message.author.id, this.price);
 
       const tempChannel = await message.guild.createChannel(
         tempChannelName,
@@ -51,11 +49,6 @@ module.exports = {
               type: 'member',
               id: message.member.id,
               allow: 66061568,
-            },
-            {
-              type: 'role',
-              id: message.guild.defaultRole,
-              deny: 1024,
             },
           ],
           parent: this.categoryId,
