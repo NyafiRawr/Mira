@@ -11,6 +11,8 @@ import * as users from './modules/users';
 
 import * as cooldowns from './modules/kv';
 
+import * as emotes from './modules/emotes';
+
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
@@ -116,6 +118,32 @@ client
   .on('guildMemberRemove', async () => {
     // todo: лог событий
   })
+  .on(`messageReactionAdd`,async (reaction ,user) => {
+    //Отличаем дефолтное или серверное эмодзи
+    const emoteName = reaction._emoji.id != null ? reaction._emoji.id : reaction._emoji.name;
+    // смотрим в бд
+    const emoteDB = await emotes.get(reaction.message.channel.id, reaction.message.id, emoteName);
+    // я все ещне понял промисом так пользваться или нет
+    if (emoteDB) {
+      const customer = await reaction.message.guild.fetchMember(user.id); //ищем мембера
+      if (customer )
+        customer.addRole(emoteDB.roleId); // накидываем роль
+    }
+
+  })
+  .on(`messageReactionRemove`, async (reaction ,user) => {
+
+    //Тоже самое просто в обратную сторону
+    const emoteName = reaction._emoji.id != null ? reaction._emoji.id : reaction._emoji.name;
+    const emoteDB = await emotes.get(reaction.message.channel.id, reaction.message.id, emoteName);
+
+    if (emoteDB) {
+      const customer = await reaction.message.guild.fetchMember(user.id)
+     if (customer )
+        customer.removeRole(emoteDB.roleId);
+    }
+  })
+
   .on('message', async (message) => {
     if (message.author.bot) {
       return;
