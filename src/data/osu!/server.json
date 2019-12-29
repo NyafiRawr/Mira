@@ -1,44 +1,73 @@
 {
-	"ppy": [
-		"osu.ppy.sh",
-		"ppy",
-		"default",
-		"ppy.sh",
-		"std",
-		"official",
-		"standart",
-		"default",
-		"bancho",
-		"банчо",
-		"peppy"
-	],
-	"regular": [
-		"akatsuki.pw",
-		"regular",
-		"regularakatsuki",
-		"regular akatsuki",
-		"akatsuki regular",
-		"akatsukiregular",
-		"akatsukire",
-		"akatsukireg",
-		"akatsuki"
-	],
-	"relax": [
-		"akatsuki.pw/rx",
-		"relax",
-		"relaxakatsuki",
-		"relax akatsuki",
-		"akatsuki relax",
-		"akatsukirelax",
-		"akatsukirx",
-		"akatsuki-relax"
-	],
-	"ripple": [
-		"ripple.moe",
-		"ripple"
-	],
-	"enjuu": [
-		"enjuu.click",
-		"enjuu"
-	]
+	"bancho": {
+		"api": "bancho",
+		"url": "osu.ppy.sh",
+		"aliases": [
+			"osu.ppy.sh",
+			"ppy",
+			"default",
+			"ppy.sh",
+			"std",
+			"official",
+			"standart",
+			"default",
+			"bancho",
+			"банчо",
+			"peppy"
+		]
+	},
+	"regular": {
+		"api": "ripple",
+		"url": "akatsuki.pw",
+		"aliases": [
+			"akatsuki.pw",
+			"regular",
+			"regularakatsuki",
+			"regular akatsuki",
+			"akatsuki regular",
+			"akatsukiregular",
+			"akatsukire",
+			"akatsukireg",
+			"akatsuki",
+			"osu.akatsuki.pw"
+		]
+	},
+	"relax": {
+		"api": "ripple",
+		"url": "akatsuki.pw/rx",
+		"aliases": [
+			"akatsuki.pw/rx",
+			"relax",
+			"relaxakatsuki",
+			"relax akatsuki",
+			"akatsuki relax",
+			"akatsukirelax",
+			"akatsukirx",
+			"akatsuki-relax"
+		]
+	},
+	"ripple": {
+		"api": "ripple",
+		"url": "ripple.moe",
+		"aliases": [
+			"ripple.moe",
+			"ripple"
+		]
+	},
+	"enjuu": {
+		"api": "ripple",
+		"url": "enjuu.click",
+		"aliases": [
+			"enjuu.click",
+			"enjuu"
+		]
+	},
+	"gatari": {
+		"api": "gatari",
+		"url": "gatari.pw",
+		"aliases": [
+			"gatari.pw",
+			"gatari"
+		]
+	}
 }

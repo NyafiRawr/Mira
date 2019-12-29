@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
-const Discord = require('discord.js');
-const osu = require('../../modules/osu.js');
-const tools = require('../../modules/tools.js');
-const players = require('../../modules/players.js');
+import Discord from 'discord.js';
+import * as osu from '../../modules/osu';
+import * as tools from '../../modules/tools';
+import * as players from '../../modules/players';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -35,6 +35,7 @@ module.exports = {
 
     for (const account of accounts) {
       for (const mode of account.modes) {
+        // eslint-disable-next-line no-await-in-loop
         const user = await osu.get_user(account.nickname, mode, account.gameServer);
         if (user != null) {
           const topScores = parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)

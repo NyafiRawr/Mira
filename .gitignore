@@ -102,5 +102,8 @@ public
 
 # Temp files
 package-lock.json
-database.sqlite
+database.*
 yarn.lock
+
+# idea files
+.idea

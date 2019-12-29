@@ -14,11 +14,14 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message /* , args, CooldownReset */) {
     const embed = new Discord.RichEmbed()
-      .setAuthor('Благодарю за интерес к разработке!')
-      // nyafi: добавить все доступные способы .-.
-      .setTitle('Помочь Яндекс.Деньгами')
-      .setURL('https://money.yandex.ru/to/410014841265118')
-      .setDescription('Помимо монетки Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось o/')
+      .setAuthor('Спасибо за интерес к разработке!')
+      .setDescription(
+        '[Яндекс.Доширак: 410014841265118](https://money.yandex.ru/to/410014841265118)'
+        + '[Фрукт QIWI, на никнейм: NyafiRawr](https://qiwi.com/payment/form/99999)'
+        + '[WebMoney WMR: R119858043867](https://www.webmoney.ru/rus/inout/topup.shtml#bank-card_method)'
+        + '[PayPal: NyafiRawr](http://paypal.me/NyafiRawr)'
+        + '\nПомимо монетки Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось',
+      )
       .setColor('#6DC066');
 
     message.author.send({ embed }).catch(() => {

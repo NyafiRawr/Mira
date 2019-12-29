@@ -1,10 +1,10 @@
 {
 	"0": [
-		"standart",
+		"std",
 		"osu!std",
 		"osu!",
 		"osu",
-		"std",
+		"standart",
 		"osu!standart",
 		"default",
 		"0",
@@ -17,12 +17,13 @@
 		"тайко"
 	],
 	"2": [
-		"catch the beat",
+		"ctb",
 		"osu!catch",
 		"osu!ctb",
-		"ctb",
+		"catch the beat",
 		"fruit",
-		"2"
+		"2",
+		"фрукты"
 	],
 	"3": [
 		"mania",

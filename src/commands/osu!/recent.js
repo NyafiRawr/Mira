@@ -1,7 +1,8 @@
-const Discord = require('discord.js');
-const osu = require('../../modules/osu.js');
-const tools = require('../../modules/tools.js');
-const config = require('../../config.js');
+import Discord from 'discord.js';
+import * as osu from '../../modules/osu';
+import * as tools from '../../modules/tools';
+import config from '../../config';
+
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -14,8 +15,6 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message, args, CooldownReset) {
-    args = args.join(' ');
-
     let specificMode;
 
     if (args.lastIndexOf('/') !== -1) {

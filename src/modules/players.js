@@ -25,12 +25,7 @@ export const get = async (userId, gameServer = null) => {
 };
 
 export const set = async (userId, gameServer, fields) => {
-  const player = await Player.findOne({
-    where: {
-      userId,
-      gameServer,
-    },
-  });
+  const player = await get(userId, gameServer);
 
   if (player != null) {
     return player.update(fields);
