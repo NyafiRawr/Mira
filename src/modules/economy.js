@@ -1,5 +1,5 @@
 import User from '../models/user';
-import CustomError from '../modules/customError';
+import CustomError from './customError';
 import { sequelize } from './db';
 
 const users = require('./users');

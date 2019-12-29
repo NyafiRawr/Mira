@@ -29,7 +29,7 @@ module.exports = {
       // валидация параметров комманды
       if (args.length <= 1) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
 
-      const tempChannel = message.guild.channels.find("name", tempChannelName);
+      const tempChannel = message.guild.channels.find('name', tempChannelName);
       for await (const target of message.mentions.members.array()) {
         tempChannel.overwritePermissions(target.id, {
           VIEW_CHANNEL: true,
@@ -44,10 +44,10 @@ module.exports = {
       // валидация параметров комманды
       if (args.length <= 1) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
 
-      const tempChannel = message.guild.channels.find("name", tempChannelName);
+      const tempChannel = message.guild.channels.find('name', tempChannelName);
       for await (const target of message.mentions.members.array()) {
         tempChannel.replacePermissionOverwrites({
-          'overwrites': tempChannel.permissionOverwrites.filter(perm => perm.id !== target.id),
+          overwrites: tempChannel.permissionOverwrites.filter((perm) => perm.id !== target.id),
         });
 
         await message.reply(`Пользователь ${target.displayName} был удален из ${tempChannelName}`);

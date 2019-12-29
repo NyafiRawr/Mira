@@ -20,7 +20,7 @@ module.exports = {
         + '[Фрукт QIWI, на никнейм: NyafiRawr](https://qiwi.com/payment/form/99999)'
         + '[WebMoney WMR: R119858043867](https://www.webmoney.ru/rus/inout/topup.shtml#bank-card_method)'
         + '[PayPal: NyafiRawr](http://paypal.me/NyafiRawr)'
-        + '\nПомимо монетки Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось'
+        + '\nПомимо монетки Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось',
       )
       .setColor('#6DC066');
 

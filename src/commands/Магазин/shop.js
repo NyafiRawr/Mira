@@ -1,9 +1,9 @@
+import CustomError from '../../modules/customError';
+
 const Discord = require('discord.js');
 const shop = require('../../modules/shop.js');
 const economy = require('../../modules/economy.js');
 const tools = require('../../modules/tools.js');
-
-import CustomError from '../../modules/customError';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -36,8 +36,7 @@ module.exports = {
       if (roleShop) throw new CustomError('такой роли в продаже нет.');
 
       // todo: добавить инвентарь (снятие/надевание ролей)
-      if (message.guild.member(message.author.id).roles.has(roleMention.id))
-        throw new CustomError('у вас уже есть эта роль!');
+      if (message.guild.member(message.author.id).roles.has(roleMention.id)) throw new CustomError('у вас уже есть эта роль!');
 
       if (roleShop.cost > 0) {
         await economy.pay(message.guild.id, message.author.id, -roleShop.cost);
