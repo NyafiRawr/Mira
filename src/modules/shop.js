@@ -1,27 +1,17 @@
 import Shop from '../models/shop';
 
-export const get = async (serverId, roleId = null) => {
-  let shop;
+export const get = async (serverId, roleId) => Shop.findOne({
+  where: { roleId, serverId },
+});
 
-  if (roleId) {
-    shop = await Shop.findOne({
-      where: {
-        roleId,
-        serverId,
-      },
-    });
-  } else {
-    shop = await Shop.findAll({
-      where: {
-        serverId,
-      },
-    });
-    for (let i = 0; i < shop.length; i += 1) {
-      shop[i] = shop[i].dataValues;
-    }
-  }
+export const getAll = async (serverId) => {
+  const shop = await Shop.findAll({
+    where: {
+      serverId,
+    },
+  });
 
-  return shop;
+  return shop.map((v) => v.dataValues);
 };
 
 export const set = async (serverId, roleId, cost = 0) => {
