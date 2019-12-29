@@ -1,59 +1,20 @@
 import Discord from 'discord.js';
-import path from 'path';
 
 import CustomError from './modules/customError';
-import fs from './modules/fs';
 import config from './config';
 import { randomInteger, logError } from './modules/tools';
 
-import './modules/db';
-
+import { commands } from './loader';
 import * as users from './modules/users';
-
 import * as cooldowns from './modules/kv';
 
+
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
+client.commands = commands;
 
 async function CooldownReset(serverId, userId, commandName) {
   await cooldowns.reset(serverId, userId, commandName);
 }
-
-// Инициализация команд
-const loadCommands = async (defaultDir) => {
-  const getFilePaths = async (dir) => {
-    let files = await fs.readdir(dir);
-    files = await Promise.all(files.map(async (file) => {
-      const filePath = path.join(dir, file);
-      const stats = await fs.stat(filePath);
-      if (stats.isDirectory()) return getFilePaths(filePath);
-      if (stats.isFile()) return filePath;
-    }));
-
-    return files.reduce((all, folderContents) => all.concat(folderContents), []);
-  };
-
-  console.log('------ Загрузка команд ------');
-  await Promise.all(
-    (await getFilePaths(defaultDir)).map(async (item) => {
-      try {
-        const cmd = await import(item);
-        client.commands.set(cmd.name, cmd);
-        if (cmd.aliases) cmd.aliases.forEach((al) => client.commands.set(al, cmd));
-        console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
-      } catch (err) {
-        console.error(err);
-        logError(err, `Ошибка импорта: ${item}`);
-        return null;
-      }
-    }),
-  );
-  console.log('----------------------------');
-};
-
-loadCommands(
-  path.join(path.resolve(__dirname), 'commands'),
-);
 
 // Регистрация добавления реакций
 const events = {
