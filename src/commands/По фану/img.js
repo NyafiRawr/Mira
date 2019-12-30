@@ -21,18 +21,17 @@ module.exports = {
     };
 
     const user = message.mentions.users.first()
-            || findMember(args.join(' '))
-            || message.client.users.find((u) => u.tag === args.join(' ') || u.username === args.join(' '))
-            || message.author;
+      || findMember(args.join(' '))
+      || message.client.users.find((u) => u.tag === args.join(' ') || u.username === args.join(' '))
+      || message.author;
 
     const member = message.guild.members.get(user.id);
 
     const embed = new Discord.RichEmbed()
       .setTitle(`Аватар: ${(!member || !member.nickname) ? user.username : member.nickname}`)
       .setImage(user.displayAvatarURL)
-      .setColor('#ffffff');
-
-    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
+      .setColor('#ffffff')
+      .setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send({ embed });
   },

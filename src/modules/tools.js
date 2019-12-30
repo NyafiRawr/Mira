@@ -37,7 +37,7 @@ export const toDate = (value) => {
 
 export const toTitle = (string) => string.replace(/\b\w/g, (l) => l.toUpperCase());
 
-export const toTwoDecimalPlaces = (num, decimals = 2) => {
+export const roundDecimalPlaces = (num, decimals = 2) => {
   const sign = num >= 0 ? 1 : -1;
   return (Math.round((num * 10 ** decimals) + (sign * 0.001)) / 10 ** decimals).toFixed(decimals);
 };

@@ -5,10 +5,10 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Выдать печенье',
   aliases: ['gco'],
-  usage: '<@кому> <сколько>',
+  usage: '<@кому, @, ...> <сколько>',
   guild: true,
   hide: false,
-  cooldown: undefined,
+  cooldown: 0.5,
   cooldownMessage: undefined,
   permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
@@ -17,11 +17,13 @@ module.exports = {
       return message.reply('недостаточно привилегий!');
     }
 
-    if (!(message.mentions.users.size && args[0].length)) {
+    if (!(message.mentions.members.size)) {
       return message.reply('вы никого не упомянули.');
     }
 
-    let amount = parseInt(args[1], 10);
+    const victims = new Set(message.mentions.members.map((member) => member));
+
+    let amount = parseInt(Math.abs(args[message.mentions.members.size]), 10);
     if (!amount) {
       return message.reply('вы не указали количество печенья, которое нужно выдать.');
     } if (amount <= 0) {
@@ -30,10 +32,9 @@ module.exports = {
       amount = 1000000000000;
     }
 
-    const victim = message.mentions.users.first();
+    victims.forEach((member) =>
+      economy.set(message.guild.id, member.id, amount));
 
-    await economy.set(message.guild.id, victim.id, amount);
-
-    message.reply(`пользователю ${victim} выдано ${tools.separateThousandth(amount)}:cookie:`);
+    message.reply(`вы выдали ${Array.from(victims).join(', ')} ${tools.separateThousandth(amount)}:cookie:`);
   },
 };

@@ -8,7 +8,7 @@ module.exports = {
   usage: '<@у кого> <сколько>',
   guild: true,
   hide: false,
-  cooldown: undefined,
+  cooldown: 0.5,
   cooldownMessage: undefined,
   permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],

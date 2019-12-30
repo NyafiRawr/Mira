@@ -4,7 +4,7 @@ const tools = require('../../modules/tools.js');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Информация о сервере',
-  aliases: ['infoserver', 'aboutserver'],
+  aliases: ['aboutserver', 'serverinfo'],
   usage: undefined,
   guild: true,
   hide: false,

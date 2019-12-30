@@ -3,7 +3,6 @@ import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 import config from '../../config';
 
-
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Лучший результат на карте',
@@ -15,6 +14,7 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message, args, CooldownReset) {
+    /*
     let idMap = args[0];
 
     if (!!idMap && idMap.indexOf('/b') !== -1 && !!idMap.match(/[0-9]+$/g)) {
@@ -105,5 +105,6 @@ module.exports = {
     embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name} ${idMap}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
 
     message.channel.send({ embed });
+    */
   },
 };

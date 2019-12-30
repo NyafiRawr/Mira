@@ -26,7 +26,7 @@ module.exports = {
         ],
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message/* , args, CooldownReset */) {
+  async execute(message /* , args, CooldownReset */) {
     const earned = tools.randomInteger(49, 101);
 
     await economy.set(message.guild.id, message.author.id, earned);

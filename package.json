@@ -1,8 +1,12 @@
 {
   "name": "Mira",
-  "version": "13.12.2019",
+  "version": "27.12.2019",
   "description": "Hopefullness",
-  "author": "NyafiRawr#7358",
+  "author": {
+    "name": "NyafiRawr",
+    "tag": "NyafiRawr#7358",
+    "id": "197999736035344384"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

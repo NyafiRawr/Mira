@@ -1,7 +1,6 @@
+import Discord from 'discord.js';
 import * as tools from '../../modules/tools';
-
-const Discord = require('discord.js');
-const packageFile = require('../../../package.json');
+import * as packageJson from '../../../package.json';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -16,10 +15,10 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message /* , args, CooldownReset */) {
     const embed = new Discord.RichEmbed()
-      .setAuthor('Спасибо за интерес!')
-      .setTitle('Исходный код на GitHub-е')
-      .setURL(`https://github.com/${packageFile.author.split('#')[0]}/${packageFile.name}`)
-      .setDescription('К сожалению, бот недоступен для приглашений из-за того, что находится в режиме активной разработки и стоит на слабом сервере')
+      .setAuthor('Я уже иду!')
+      .setTitle('Пригласить к себе')
+      .setURL(`https://discordapp.com/oauth2/authorize?client_id=${message.client.user.id}&scope=bot&permissions=305261782`)
+      .setDescription(`[Код на GitHub-е](https://github.com/${packageJson.author.name}/${packageJson.name})`)
       .setColor('#99D8E9');
 
     message.author.send({ embed }).catch(() => {

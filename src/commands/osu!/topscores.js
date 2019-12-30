@@ -15,6 +15,7 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message, args /* , CooldownReset */) {
+    /*
     let specificMode;
 
     if (args.lastIndexOf('/') !== -1) {
@@ -95,5 +96,6 @@ module.exports = {
     embed.setDescription(scores.join('\n\n'));
 
     message.channel.send({ embed });
+    */
   },
 };

@@ -1,6 +1,8 @@
 const economy = require('../../modules/economy.js');
 const tools = require('../../modules/tools.js');
 
+const topSize = 10;
+
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые богачи',
@@ -8,55 +10,35 @@ module.exports = {
   usage: undefined,
   guild: true,
   hide: false,
-  cooldown: 60,
+  cooldown: 1,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message /* , args, CooldownReset */) {
-    const list = await economy.get(message.guild.id);
-    if (!list) {
+    const base = await economy.get(message.guild.id);
+    if (!base) {
       return message.reply('в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!');
     }
-    // Определяем размер топа
-    let topSize = 10;
-    if (topSize > list.length) {
-      topSize = list.length;
-    }
-    // Заполняем его нулевым ID
-    const topList = [];
-    for (let i = 0; i < topSize; i += 1) {
-      topList[i] = 0;
-    }
-    // Делаем копию оригинального списка, убираем: "invalid-user" и ботов
-    const copyList = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const userObject of list) {
-      const member = message.guild.members.get(userObject.id);
-      if (!!member && !member.user.bot) {
-        copyList[userObject.id] = userObject.balance;
-      }
-    }
-    // Ставим участника для сравнения (любого, пусть будет первый)
-    topList[0] = list[0].id;
-    // Формируем топ с помощью сортировки
-    for (let i = 0; i < topSize; i += 1) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const userObject of copyList) {
-        if (!(userObject.id in topList) && copyList[topList[i]] <= copyList[userObject.id]) {
-          topList[i] = userObject.id;
-        }
-      }
-    }
-    // Красиво оформляем сообщение с топом
-    let msg = '\n';
-    const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-    for (let i = 0; i < topSize; i += 1) {
-      const user = message.guild.members.get(topList[i]);
-      if (user) {
-        msg += `  **${rangs[i]}. ${(!user || !user.nickname) ? user.user.username : user.nickname}** ${tools.separateThousandth(copyList[topList[i]])}:cookie:\n`;
-      }
-    }
 
-    message.reply(`**печеньковые богачи:** ${msg}`);
+    const baseCleared = new Map();
+    base.forEach((user) => {
+      const member = message.guild.members.get(user.id);
+      if (!!member && !member.user.bot) {
+        baseCleared.set(user.id, user.balance);
+      }
+    });
+
+    const top = new Map([...baseCleared.entries()].sort((x, y) => baseCleared[x] - baseCleared[y]));
+
+    const msg = [];
+    const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    top.forEach((balance, userId) => {
+      const member = message.guild.members.get(userId);
+      if (member) {
+        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(balance)}:cookie:`);
+      }
+    });
+
+    message.reply(`**печеньковые богачи:**\n${msg.join('\n')}`);
   },
 };

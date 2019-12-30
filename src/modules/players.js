@@ -34,5 +34,15 @@ export const set = async (userId, gameServer, fields) => {
   return Player.create({
     userId,
     gameServer,
-  }, fields);
+    ...fields,
+  });
+};
+
+export const remove = async (userId, gameServer) => {
+  return Player.destroy({
+    where: {
+      userId,
+      gameServer,
+    },
+  });
 };

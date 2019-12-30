@@ -21,7 +21,7 @@ module.exports = {
     const date = args[0].split('.');
 
     const dateForValidate = new Date(date[2], date[1], date[0]);
-    console.log(dateForValidate.getMonth().toString(), date[1]);
+
     if (dateForValidate.getFullYear() !== parseInt(date[2], 10)) {
       return message.reply('неправильно указан год!');
     } if (dateForValidate.getMonth() !== parseInt(date[1], 10)) {
@@ -34,7 +34,7 @@ module.exports = {
       birthday: `${date[2]}-${date[1]}-${date[0]}`,
     });
 
-    const replyMessage = 'вы установили день своего рождения, ура!';
+    const replyMessage = `${message.author}, ура! Вы родились!`;
     const embed = new Discord.RichEmbed()
       .setColor(tools.randomHexColor())
       .setDescription(`Вы родились ${date.join('.')}`);

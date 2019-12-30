@@ -1,10 +1,13 @@
-const packageFile = require('../../../package.json');
+/* eslint-disable no-unused-vars */
+import * as packageJson from '../../../package.json';
+import * as tools from '../../modules/tools';
 
+const Discord = require('discord.js');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Выполнить код',
-  aliases: ['developer'],
+  aliases: undefined,
   usage: '<код>',
   guild: false,
   hide: true,
@@ -13,7 +16,7 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message, args /* , CooldownReset */) {
-    if (message.author.tag !== packageFile.author) {
+    if (message.author.id !== packageJson.author.id) {
       return message.reply(`команда ${this.name} доступна только разработчику!`);
     }
 

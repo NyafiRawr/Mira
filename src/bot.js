@@ -81,7 +81,7 @@ client.on('raw', async (event) => {
   const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
   const reaction = message.reactions.get(emojiKey);
 
-  client.emit(events[event.t], reaction, user);
+  client.emit(events[event.t], reaction, user, message);
 });
 
 client
@@ -94,13 +94,13 @@ client
     console.warn('Переподключение.');
   })
   .on('ready', async () => {
-    console.log(`* ${client.user.tag} на связи! Подключения: ${client.guilds.size} Всего пользователей: ${client.users.size}`);
-    console.log('Подключенные сервера:');
+    console.log(`* ${client.user.tag} на связи! Пользователи: ${client.users.size}`);
+    console.log(`Подключенные сервера (${client.guilds.size}):`);
     client.guilds
       .forEach((g) => console.log(' ', g.name));
     console.log('----------------------------');
 
-    client.user.setActivity(`${config.bot.prefix}help`);
+    client.user.setActivity('Новый год!');
   })
   .on('guildCreate', (guild) => {
     console.log(`Новое подключение: ${guild.name} (id: ${guild.id}). Участники: ${guild.memberCount}`);

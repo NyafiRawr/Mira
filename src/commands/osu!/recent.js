@@ -1,7 +1,6 @@
 import Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
-import config from '../../config';
 
 
 module.exports = {
@@ -14,7 +13,8 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args, CooldownReset) {
+  async execute(message, args /* , CooldownReset */) {
+    /*
     let specificMode;
 
     if (args.lastIndexOf('/') !== -1) {
@@ -92,5 +92,6 @@ module.exports = {
     embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
 
     message.channel.send({ embed });
+    */
   },
 };

@@ -15,14 +15,13 @@ module.exports = {
   execute(message /* , args, CooldownReset */) {
     const embed = new Discord.RichEmbed()
       .setAuthor('Спасибо за интерес к разработке!')
-      .setDescription(
-        '[Яндекс.Доширак: 410014841265118](https://money.yandex.ru/to/410014841265118)'
-        + '[Фрукт QIWI, на никнейм: NyafiRawr](https://qiwi.com/payment/form/99999)'
-        + '[WebMoney WMR: R119858043867](https://www.webmoney.ru/rus/inout/topup.shtml#bank-card_method)'
-        + '[PayPal: NyafiRawr](http://paypal.me/NyafiRawr)'
-        + '\nПомимо монетки Вы можете поддержать меня словом: рассказывая об ошибках или о том, что понравилось'
-      )
-      .setColor('#6DC066');
+      .setDescription('[Яндекс.Доширак: 410014841265118](https://money.yandex.ru/to/410014841265118)'
+        + '\n[Фрукт QIWI, на никнейм: NyafiRawr](https://qiwi.com/payment/form/99999)'
+        + '\n[WebMoney WMR: R119858043867](https://www.webmoney.ru/rus/inout/topup.shtml#bank-card_method)'
+        + '\n[PayPal: NyafiRawr](http://paypal.me/NyafiRawr)'
+        + '\n\nИ поддержите словом: рассказав об ошибках или о том, что понравилось!')
+      .setColor('#6DC066')
+      .setImage('http://img.nga.178.com/attachments/mon_201911/01/-64xyuQ5-a59uXsZ7pT3cShs-a0.gif');
 
     message.author.send({ embed }).catch(() => {
       embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);

@@ -1,0 +1,50 @@
+{
+	"0": {
+		"name": "Standart",
+		"mode": "osu",
+		"aliases": [
+			"std",
+			"osu!std",
+			"osu!",
+			"osu",
+			"standart",
+			"osu!standart",
+			"default",
+			"0",
+			"стандарт"
+		]
+	},
+	"1": {
+		"name": "Taiko",
+		"mode": "taiko",
+		"aliases": [
+			"taiko",
+			"osu!taiko",
+			"1",
+			"тайко"
+		]
+	},
+	"2": {
+		"name": "Catch the Beat",
+		"mode": "fruits",
+		"aliases": [
+			"ctb",
+			"osu!catch",
+			"osu!ctb",
+			"catch the beat",
+			"fruit",
+			"2",
+			"фрукты"
+		]
+	},
+	"3": {
+		"name": "Mania",
+		"mode": "mania",
+		"aliases": [
+			"mania",
+			"osu!mania",
+			"3",
+			"мания"
+		]
+	}
+}

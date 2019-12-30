@@ -23,6 +23,10 @@ User.init({
     type: Sequelize.INTEGER,
     defaultValue: 0,
   },
+  weight: {
+    type: Sequelize.DOUBLE,
+    defaultValue: 0,
+  },
 }, {
   modelName: 'user',
   sequelize,

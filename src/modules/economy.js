@@ -9,10 +9,10 @@ const users = require('./users');
  * @param {Number} userId id пользователя
  */
 export const get = async (serverId, userId = null) => {
-  if (userId != null) {
+  if (userId !== null) {
     const user = await users.get(serverId, userId);
 
-    if (user != null) {
+    if (user !== null) {
       return user.balance;
     }
 
@@ -35,7 +35,7 @@ export const get = async (serverId, userId = null) => {
 export const set = async (serverId, userId, currency) => {
   const user = await users.get(serverId, userId);
 
-  if (user != null) {
+  if (user !== null) {
     return user.update({
       balance: user.balance + currency,
     });
@@ -64,7 +64,7 @@ export const transaction = async (serverId, userOutId, userInId, currency) => {
       balance: userOut.balance - currency,
     }, { transaction: t });
 
-    if (userIn != null) {
+    if (userIn !== null) {
       userIn.update({
         balance: userIn.balance + currency,
       }, { transaction: t });
@@ -76,4 +76,30 @@ export const transaction = async (serverId, userOutId, userInId, currency) => {
       balance: currency,
     }, { transaction: t });
   });
+};
+
+export const setWeight = async (serverId, userId, weight) => {
+  const user = await users.get(serverId, userId);
+
+  if (user !== null) {
+    return user.update({
+      weight: user.weight + weight,
+    });
+  }
+
+  return User.create({
+    id: userId,
+    serverId,
+    weight,
+  });
+};
+
+export const getWeight = async (serverId, userId) => {
+  const user = await users.get(serverId, userId);
+
+  if (user !== null) {
+    return user.weight;
+  }
+
+  return 0;
 };

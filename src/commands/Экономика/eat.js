@@ -3,8 +3,8 @@ import { randomInteger } from '../../modules/tools';
 const economy = require('../../modules/economy.js');
 
 const effects = [
-  'вы стали жирней на одну печеньку',
-  'вы съели печеньку и чувствуете переполняющую решимость.',
+  'ура! Вы стали на newWeight кг жирней! (totalWeight кг)',
+  'вы чувствуете переполняющую решимость от +newWeight кг печенья (totalWeight кг)',
 ];
 
 module.exports = {
@@ -14,11 +14,11 @@ module.exports = {
   usage: undefined,
   guild: true,
   hide: false,
-  cooldown: undefined,
+  cooldown: 30,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message /* , args, CooldownReset */) {
+  async execute(message, args, CooldownReset) {
     const currency = await economy.get(message.guild.id, message.author.id);
 
     if (!currency) {
@@ -27,8 +27,20 @@ module.exports = {
       return message.reply('есть нечего.');
     }
 
-    economy.set(message.guild.id, message.author.id, -1);
+    const amount = Math.abs(args[0] || 1);
+    if (Number.isNaN(amount) || amount < 1) {
+      CooldownReset();
+      return message.reply(`:boom: \`-help ${this.name}\`?`);
+    } if (amount > currency) {
+      CooldownReset();
+      return message.reply('вы трёте глаза и осознаёте, что у вас гораздо меньше печенья, чем вы думали...');
+    }
 
-    message.reply(effects[randomInteger(0, effects.length - 1)]);
+    const newWeight = amount / 100;
+    await economy.set(message.guild.id, message.author.id, -amount);
+    await economy.setWeight(message.guild.id, message.author.id, newWeight);
+    const totalWeight = await economy.getWeight(message.guild.id, message.author.id);
+
+    message.reply(effects[randomInteger(0, effects.length - 1)].replace('newWeight', newWeight).replace('totalWeight', totalWeight));
   },
 };
