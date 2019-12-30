@@ -44,6 +44,9 @@ client
   .on('guildCreate', handler.onGuildCreate)
   .on('guildDelete', handler.onGuildDelete)
   .on('guildMemberAdd', handler.onGuildMemberAdd)
+  .on('messageReactionAdd', handler.onMessageReactionAdd)
+  .on('messageReactionRemove', handler.onMessageReactionRemove)
+
   .on('message', handler.onMessage);
 
 client.login(config.bot.token);
