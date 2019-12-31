@@ -21,6 +21,7 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "start": "ts-node .",
+    "start:dev": "node -r ts-node/register --inspect=9229 .",
     "start:prod": "npm run build && node ./lib/index.js",
     "clean": "rimraf lib && rimraf coverage",
     "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
