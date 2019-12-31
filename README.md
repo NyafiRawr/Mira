@@ -7,5 +7,3 @@
 2. Заполняем файл `.env.example` данными для подключений ([Discord](https://discordapp.com/developers/applications/), [MySQL](http://dev.mysql.com/downloads/installer/), [osu!](https://github.com/ppy/osu-api/wiki/)) и пересохраняем с именем `.env` без формата
 3. Устанавливаем зависимости - открываем командную строку в папке с ботом и вводим: `npm i`
 4. Запускаем бота командой: `npm start`
-
-*Для работы бота используется [https://babeljs.io](https://babeljs.io/) из-за этого используется `@babel/register`, альтернатива: компиляция исходников в ES5 код.*
