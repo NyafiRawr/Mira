@@ -73,6 +73,8 @@ export const embedFooter = (message, nameCommand) => {
 };
 
 export const logError = (content, comment = null) => {
+  console.error(content);
+
   if (comment != null) {
     console.log(comment);
   }

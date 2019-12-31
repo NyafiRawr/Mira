@@ -1,4 +1,5 @@
 import User from '../models/user';
+import CustomError from './customError';
 import { sequelize } from './db';
 
 const users = require('./users');
@@ -47,6 +48,20 @@ export const set = async (serverId, userId, currency) => {
     balance: currency,
   });
 };
+
+/**
+ * Списывает у пользователя печенье
+ * @param {Number} serverId id сервера
+ * @param {Number} userId id пользователя у которого будут списаны печеньки
+ * @param {Number} currency сколько печенек списать
+ */
+export const pay = async (serverId, userId, currency = 0) => {
+  const balance = await get(serverId, userId);
+  if (balance < currency) throw new CustomError('У вас нет сколько печенек!');
+
+  await set(serverId, userId, -currency);
+};
+
 
 /**
  * Переводит печеньки между пользователями
