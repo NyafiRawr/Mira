@@ -1,9 +1,10 @@
+import { GuildMember, MessageReaction } from 'discord.js';
 import * as emotes from '../modules/emotes';
 
 
-export default async (reaction, user) => {
+export default async (reaction: MessageReaction, user: GuildMember) => {
   // eslint-disable-next-line no-underscore-dangle
-  const emoteName = reaction._emoji.id != null ? reaction._emoji.id : reaction._emoji.name;
+  const emoteName = reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
   const emoteDB = await emotes.get(reaction.message.channel.id, reaction.message.id, emoteName);
 
   if (!emoteDB) return;

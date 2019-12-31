@@ -1,6 +1,4 @@
 import client from '../client';
-// eslint-disable-next-line no-unused-vars
-import config from '../config';
 
 /**
  * Обработчик для события onReady

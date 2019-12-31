@@ -1,3 +1,4 @@
+import { Message, TextChannel } from 'discord.js';
 import client from '../client';
 import config from '../config';
 
@@ -6,7 +7,7 @@ import { randomInteger, logError } from '../modules/tools';
 import * as cooldowns from '../modules/kv';
 
 
-export default async (message) => {
+export default async (message: Message) => {
   if (message.author.bot) {
     return;
   }
@@ -31,18 +32,16 @@ export default async (message) => {
 
   const args = content.slice(prefix.length).split(/ +/);
 
-  const commandName = args.shift().toLowerCase();
-  const command = client.commands.get(commandName);
+  const commandName = args.shift()!.toLowerCase();
+  const command = (client as any).commands.get(commandName);
 
-  if (!command) {
-    return;
-  }
+  if (!command) return;
 
-  if (message.guild && !message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) {
-    return message.author
-      .send(`${message.author}, нет разрешения отправлять сообщения в ${message.channel} на сервере **${message.guild}**!`)
-      .catch(console.error);
-  }
+  // if (message.guild && !message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) {
+  //   return message.author
+  //     .send(`${message.author}, нет разрешения отправлять сообщения в ${message.channel} на сервере **${message.guild}**!`)
+  //     .catch(console.error);
+  // }
 
   if (message.channel.type === 'text') await message.delete();
   else if (command.guild) return message.reply('эта команда недоступна в ЛС!');
