@@ -87,7 +87,7 @@ export const logError = async (content: any, comment = null) => {
   });
 };
 
-export const getData = (pathData: string) => require(`../data/${pathData}.json`);
+export const getData = (pathData: string) => require(`../../data/${pathData}.json`);
 
 export const getDataKeyOnValue = (pathData: string, value: string) => {
   const data = getData(pathData);
