@@ -28,14 +28,14 @@ export default async (message: Message) => {
     prefix = config.bot.prefix;
   }
 
-  if (!prefix) return;
+  if (!prefix) { return; }
 
   const args = content.slice(prefix.length).split(/ +/);
 
   const commandName = args.shift()!.toLowerCase();
   const command = (client as any).commands.get(commandName);
 
-  if (!command) return;
+  if (!command) { return; }
 
   // if (message.guild && !message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) {
   //   return message.author
@@ -43,8 +43,8 @@ export default async (message: Message) => {
   //     .catch(console.error);
   // }
 
-  if (message.channel.type === 'text') await message.delete();
-  else if (command.guild) return message.reply('эта команда недоступна в ЛС!');
+  if (message.channel.type === 'text') { await message.delete(); }
+  else if (command.guild) { return message.reply('эта команда недоступна в ЛС!'); }
 
   const timeLeft = await cooldowns.get(
     (message.guild || message.author).id,
@@ -77,7 +77,7 @@ export default async (message: Message) => {
   } catch (err) {
     logError(err);
 
-    if (err instanceof CustomError) err.send(message);
-    else message.reply('при вызове команды произошла ошибка ;(');
+    if (err instanceof CustomError) { err.send(message); }
+    else { message.reply('при вызове команды произошла ошибка ;('); }
   }
 };

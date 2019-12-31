@@ -63,7 +63,7 @@ export const getBeatmap = async (server: string, idBeatmap: string, mode: string
   }
 
   const { data } = response;
-  const difficulties: {[key: string]: any}[] = [];
+  const difficulties: Array<{[key: string]: any}> = [];
 
   data.forEach((diff: any) => difficulties.push({
     approved: diff.approved,
@@ -110,7 +110,7 @@ export const getBeatmap = async (server: string, idBeatmap: string, mode: string
 
 export const getUserRecents = async (
   server: string, idOrName: string, limit: number, mode: string
-): Promise<{[key: string]: any}[] | null> => {
+): Promise<Array<{[key: string]: any}> | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/api/get_user_recent', {
@@ -127,7 +127,7 @@ export const getUserRecents = async (
   }
 
   const { data } = response;
-  const recents: {[key: string]: any}[] = [];
+  const recents: Array<{[key: string]: any}> = [];
 
   data.forEach(async (recent: any) => recents.push({
     beatmap_id: recent.beatmap_id,
@@ -158,7 +158,7 @@ export const getUserRecents = async (
 
 export const getUserTops = async (
   server: string, idOrName: string, limit: number, mode: string
-): Promise<{[key: string]: any}[] | null> => {
+): Promise<Array<{[key: string]: any}> | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/api/get_user_best', {
@@ -175,7 +175,7 @@ export const getUserTops = async (
   }
 
   const { data } = response;
-  const bests: {[key: string]: any}[] = [];
+  const bests: Array<{[key: string]: any}> = [];
 
   data.forEach(async (best: any) => bests.push({
     beatmap_id: best.beatmap_id,
@@ -208,7 +208,7 @@ export const getUserTops = async (
 
 export const getScores = async (
   server: string, idOrName: string, idBeatmap: string, limit: number, mode: string
-): Promise<{[key: string]: any}[] | null> => {
+): Promise<Array<{[key: string]: any}> | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/api/get_scores', {
@@ -226,7 +226,7 @@ export const getScores = async (
   }
 
   const { data } = response;
-  const scoresOnBeatmap: {[key: string]: any}[] = [];
+  const scoresOnBeatmap: Array<{[key: string]: any}> = [];
 
   data.forEach((score: any) => scoresOnBeatmap.push({
     score_id: score.score_id,

@@ -10,8 +10,8 @@ export default async (reaction: MessageReaction, user: GuildMember) => {
   // смотрим в бд
   const emoteDB = await emotes.get(reaction.message.channel.id, reaction.message.id, emoteName);
 
-  if (!emoteDB) return;
+  if (!emoteDB) { return; }
 
   const customer = await reaction.message.guild.fetchMember(user.id); // ищем мембера
-  if (customer) customer.addRole(emoteDB.roleId); // накидываем роль
+  if (customer) { customer.addRole(emoteDB.roleId); } // накидываем роль
 };

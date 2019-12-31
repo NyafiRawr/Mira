@@ -57,7 +57,7 @@ export const set = async (serverId: string, userId: string, currency: number) =>
  */
 export const pay = async (serverId: string, userId: string, currency: number = 0) => {
   const balance = await get(serverId, userId);
-  if (balance < currency) throw new CustomError('У вас нет сколько печенек!');
+  if (balance < currency) { throw new CustomError('У вас нет сколько печенек!'); }
 
   await set(serverId, userId, -currency);
 };
