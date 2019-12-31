@@ -1,6 +1,6 @@
 import Player from '../models/player';
 
-export const get = async (userId, gameServer = null) => {
+export const get = async (userId: string, gameServer: string = '') => {
   let player;
 
   if (gameServer) {
@@ -24,7 +24,7 @@ export const get = async (userId, gameServer = null) => {
   return player;
 };
 
-export const set = async (userId, gameServer, fields) => {
+export const set = async (userId: string, gameServer: string, fields: Object) => {
   const player = await get(userId, gameServer);
 
   if (player != null) {
@@ -38,7 +38,7 @@ export const set = async (userId, gameServer, fields) => {
   });
 };
 
-export const remove = async (userId, gameServer) => {
+export const remove = async (userId: string, gameServer: string) => {
   return Player.destroy({
     where: {
       userId,

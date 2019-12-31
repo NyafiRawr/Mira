@@ -1,6 +1,6 @@
 import Emoji from '../models/emoji';
 
-export const get = async (channelId, messageId, emojiId) => {
+export const get = async (channelId: string, messageId: string, emojiId: string) => {
 
   const role = await Emoji.findOne({
     where: {
@@ -14,7 +14,7 @@ export const get = async (channelId, messageId, emojiId) => {
 };
 
 
-export const set = async (channelId, messageId, emojiId, roleId) => {
+export const set = async (channelId: string, messageId: string, emojiId: string, roleId: string) => {
   const role = await get(channelId, messageId, emojiId);
 
   if (role != null) {

@@ -6,10 +6,10 @@ const users = require('./users');
 
 /**
  * Получение пользователя
- * @param {Number} serverId id сервера
- * @param {Number} userId id пользователя
+ * @param {String} serverId id сервера
+ * @param {String} userId id пользователя
  */
-export const get = async (serverId, userId = null) => {
+export const get = async (serverId: string, userId: string | null = null) => {
   if (userId !== null) {
     const user = await users.get(serverId, userId);
 
@@ -29,11 +29,11 @@ export const get = async (serverId, userId = null) => {
 
 /**
  * Установка пользователю печенек, при необходимости добавляет в базу пользователя
- * @param {Number} serverId id сервера
- * @param {Number} userId id пользователя
+ * @param {String} serverId id сервера
+ * @param {String} userId id пользователя
  * @param {Number} currency сколько печенек установить
  */
-export const set = async (serverId, userId, currency) => {
+export const set = async (serverId: string, userId: string, currency: number) => {
   const user = await users.get(serverId, userId);
 
   if (user !== null) {
@@ -51,11 +51,11 @@ export const set = async (serverId, userId, currency) => {
 
 /**
  * Списывает у пользователя печенье
- * @param {Number} serverId id сервера
- * @param {Number} userId id пользователя у которого будут списаны печеньки
+ * @param {String} serverId id сервера
+ * @param {String} userId id пользователя у которого будут списаны печеньки
  * @param {Number} currency сколько печенек списать
  */
-export const pay = async (serverId, userId, currency = 0) => {
+export const pay = async (serverId: string, userId: string, currency: number = 0) => {
   const balance = await get(serverId, userId);
   if (balance < currency) throw new CustomError('У вас нет сколько печенек!');
 
@@ -65,12 +65,12 @@ export const pay = async (serverId, userId, currency = 0) => {
 
 /**
  * Переводит печеньки между пользователями
- * @param {Number} serverId id сервера
- * @param {Number} userOutId id пользователя у которого будут списаны печеньки
- * @param {Number} userInId id пользователя которому будут добавлены печеньки
+ * @param {String} serverId id сервера
+ * @param {String} userOutId id пользователя у которого будут списаны печеньки
+ * @param {String} userInId id пользователя которому будут добавлены печеньки
  * @param {Number} currency сколько печенек перевести
  */
-export const transaction = async (serverId, userOutId, userInId, currency) => {
+export const transaction = async (serverId: string, userOutId: string, userInId: string, currency: number) => {
   const userOut = await users.get(serverId, userOutId);
   const userIn = await users.get(serverId, userInId);
 
@@ -93,7 +93,7 @@ export const transaction = async (serverId, userOutId, userInId, currency) => {
   });
 };
 
-export const setWeight = async (serverId, userId, weight) => {
+export const setWeight = async (serverId: string, userId: string, weight: number) => {
   const user = await users.get(serverId, userId);
 
   if (user !== null) {
@@ -109,7 +109,7 @@ export const setWeight = async (serverId, userId, weight) => {
   });
 };
 
-export const getWeight = async (serverId, userId) => {
+export const getWeight = async (serverId: string, userId: string) => {
   const user = await users.get(serverId, userId);
 
   if (user !== null) {

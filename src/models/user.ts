@@ -1,30 +1,30 @@
-import Sequelize, { Model } from 'sequelize';
+import { Model, STRING, DATE, DATEONLY, INTEGER, DOUBLE, NOW } from 'sequelize';
 import { sequelize } from '../modules/db';
 
 class User extends Model {}
 User.init({
   id: {
-    type: Sequelize.STRING,
+    type: STRING,
     primaryKey: true,
   },
   serverId: {
-    type: Sequelize.STRING,
+    type: STRING,
     primaryKey: true,
   },
   firstEntry: {
-    type: Sequelize.DATE,
-    defaultValue: Sequelize.NOW,
+    type: DATE,
+    defaultValue: NOW,
   },
   birthday: {
-    type: Sequelize.DATEONLY,
+    type: DATEONLY,
     allowNull: true,
   },
   balance: {
-    type: Sequelize.INTEGER,
+    type: INTEGER,
     defaultValue: 0,
   },
   weight: {
-    type: Sequelize.DOUBLE,
+    type: DOUBLE,
     defaultValue: 0,
   },
 }, {

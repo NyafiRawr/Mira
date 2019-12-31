@@ -1,5 +1,5 @@
-import Discord from 'discord.js';
-import path from 'path';
+import * as Discord from 'discord.js';
+import * as path from 'path';
 import fs from './modules/fs';
 
 import config from './config';
@@ -15,13 +15,13 @@ client.commands = new Discord.Collection();
  * Иницилизация всех команд
  * @param {String} defaultDir папка в которой будут искаться команды
  */
-const loadCommands = async defaultDir => {
+const loadCommands = async (defaultDir: string) => {
   // рекурсивно обходим все дочерние папки и файлы
   // вернется список файлов которые были найдены
   const getFilePaths = async (dir: string) => {
     let files = await fs.readdir(dir);
     files = await Promise.all<any>(
-      files.map(async file => {
+      files.map(async (file: string) => {
         const filePath = path.join(dir, file);
         const stats = await fs.stat(filePath);
         if (stats.isDirectory()) {
@@ -34,7 +34,7 @@ const loadCommands = async defaultDir => {
     );
 
     return files.reduce(
-      (all, folderContents) => all.concat(folderContents),
+      (all: any, folderContents: any) => all.concat(folderContents),
       []
     );
   };
@@ -42,13 +42,13 @@ const loadCommands = async defaultDir => {
   // параллельно выполняем все промисы и дожидаемся их
   console.log('------ Загрузка команд ------');
   const res = await Promise.all(
-    (await getFilePaths(defaultDir)).map(async filePath => import(filePath))
+    (await getFilePaths(defaultDir)).map(async (filePath: string) => import(filePath))
   );
 
-  res.forEach(cmd => {
+  res.forEach((cmd: any) => {
     client.commands.set(cmd.name, cmd);
     if (cmd.aliases) {
-      cmd.aliases.forEach(al => client.commands.set(al, cmd));
+      cmd.aliases.forEach((al: any) => client.commands.set(al, cmd));
     }
     console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
   });

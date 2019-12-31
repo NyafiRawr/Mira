@@ -1,6 +1,6 @@
 import User from '../models/user';
 
-export const get = async (serverId, userId) => {
+export const get = async (serverId: string, userId: string) => {
   const user = await User.findOne({
     where: {
       id: userId,
@@ -10,7 +10,7 @@ export const get = async (serverId, userId) => {
   return user;
 };
 
-export const set = async (serverId, userId, fields) => {
+export const set = async (serverId: string, userId: string, fields: Object) => {
   const user = await get(serverId, userId);
   if (user != null) {
     return user.update(fields);
