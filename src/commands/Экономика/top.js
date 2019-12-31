@@ -23,7 +23,7 @@ module.exports = {
     const baseCleared = new Map();
     base.forEach((user) => {
       const member = message.guild.members.get(user.id);
-      if (!!member && !member.user.bot) {
+      if (!!member && !member.user.bot && user.balance > 0) {
         baseCleared.set(user.id, user.balance);
       }
     });
@@ -32,12 +32,15 @@ module.exports = {
 
     const msg = [];
     const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-    top.forEach((balance, userId) => {
+    const topEntries = top.entries();
+    const limit = top.size < topSize ? top.size : topSize;
+    for (let i = 0; i < limit; i += 1) {
+      const [userId, balance] = topEntries.next().value;
       const member = message.guild.members.get(userId);
       if (member) {
         msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(balance)}:cookie:`);
       }
-    });
+    }
 
     message.reply(`**печеньковые богачи:**\n${msg.join('\n')}`);
   },
