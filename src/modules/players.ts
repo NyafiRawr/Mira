@@ -24,7 +24,7 @@ export const get = async (userId: string, gameServer: string = '') => {
   return player;
 };
 
-export const set = async (userId: string, gameServer: string, fields: Object) => {
+export const set = async (userId: string, gameServer: string, fields: {[key: string]: any}) => {
   const player = await get(userId, gameServer);
 
   if (player != null) {

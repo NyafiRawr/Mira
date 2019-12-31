@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as tools from '../tools';
 
-export const getUser = async (server, idOrName, mode) => {
+export const getUser = async (server: string, idOrName: string, mode: string): Promise<{[key: string]: any} | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10)) ? { u: idOrName } : { id: idOrName };
 
@@ -48,7 +48,7 @@ export const getUser = async (server, idOrName, mode) => {
   return gameUser;
 };
 
-export const getUserRecents = async (server, idOrName, limit, mode) => {
+export const getUserRecents = async (server: string, idOrName: string, limit: number, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10)) ? { u: idOrName } : { id: idOrName };
 
@@ -67,9 +67,9 @@ export const getUserRecents = async (server, idOrName, limit, mode) => {
   }
 
   const { scores } = response.data;
-  const recents = [];
+  const recents: {[key: string]: any}[] = [];
 
-  scores.forEach((recent) => recents.push({
+  scores.forEach((recent: any) => recents.push({
     beatmap_id: recent.beatmap.beatmap_id,
     score: recent.score,
     maxcombo: recent.max_combo,
@@ -94,7 +94,7 @@ export const getUserRecents = async (server, idOrName, limit, mode) => {
   return recents;
 };
 
-export const getBeatmap = async (server, idBeatmap, mode) => {
+export const getBeatmap = async (server: string, idBeatmap: string, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/beatmaps/get', {
@@ -109,9 +109,9 @@ export const getBeatmap = async (server, idBeatmap, mode) => {
   }
 
   const { data } = response;
-  const difficulties = [];
+  const difficulties: {[key: string]: any}[] = [];
 
-  data.forEach((diff) => difficulties.push({
+  data.forEach((diff: any) => difficulties.push({
     approved: null, // diff.ranked_status_freezed, // это оно?
     submit_date: null,
     approved_date: null, // diff.ranking_data, // это оно? тип данных не дата, а большое число
@@ -159,17 +159,17 @@ export const getBeatmap = async (server, idBeatmap, mode) => {
   return difficulties;
 };
 
-export const getUserTops = async (server, idOrName, limit, mode) => {
+export const getUserTops = async (server: string, idOrName: string, limit: number, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   let osuUser = {
     user_id: idOrName,
   };
   // Важно: API принимает только USER_ID
   if (Number.isNaN(parseInt(osuUser.user_id, 10))) {
-    osuUser = await getUser(server, idOrName, mode);
-    if (osuUser === null) {
-      return null;
-    }
+    const res = await getUser(server, idOrName, mode);
+    if (osuUser === null) return null;
+
+    osuUser = res as any;
   }
 
   const response = await axios.get('/user/scores/best', {
@@ -185,9 +185,9 @@ export const getUserTops = async (server, idOrName, limit, mode) => {
   }
 
   const { scores } = response.data;
-  const bests = [];
+  const bests: {[key: string]: any}[] = [];
 
-  scores.forEach((best) => bests.push({
+  scores.forEach((best: any) => bests.push({
     beatmap_id: best.beatmap.beatmap_id,
     score_id: best.id,
     score: best.score,
@@ -213,13 +213,11 @@ export const getUserTops = async (server, idOrName, limit, mode) => {
   return bests;
 };
 
-export const getScores = async (server, idOrName, idBeatmap, limit, mode) => {
+export const getScores = async (server: string, idOrName: string, idBeatmap: string, limit: number, mode: string): Promise<{[key: string]: any} | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   // Важно: API принимает только USER_ID
   const osuUser = await getUser(server, idOrName, mode);
-  if (osuUser === null) {
-    return null;
-  }
+  if (osuUser === null) return null;
 
   const response = await axios.get('/beatmap/user/score', {
     baseURL: `http://${configServer.api.url}`,

@@ -10,7 +10,7 @@ export const get = async (serverId: string, userId: string) => {
   return user;
 };
 
-export const set = async (serverId: string, userId: string, fields: Object) => {
+export const set = async (serverId: string, userId: string, fields: {[key: string]: any}) => {
   const user = await get(serverId, userId);
   if (user != null) {
     return user.update(fields);

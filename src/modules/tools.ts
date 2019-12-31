@@ -4,7 +4,7 @@ import config from '../config';
 
 const logErrorFile = './errors.log';
 
-export const separateThousandth = (number: number) => {
+export const separateThousandth = (number: string) => {
   if (number) {
     return number.toString().replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,');
   }
@@ -13,7 +13,7 @@ export const separateThousandth = (number: number) => {
 
 export const toDate = (value: string) => {
   const date = new Date(value);
-  let day = date.getDate();
+  let day: any = date.getDate();
 
   if (day < 10) {
     day = `0${day}`;
@@ -73,7 +73,7 @@ export const embedFooter = (message: Message, nameCommand: string) => {
   return `Запрос от ${(!memberRequest || !memberRequest.nickname) ? message.author.username : memberRequest.nickname} | ${config.bot.prefix}${nameCommand}`;
 };
 
-export const logError = (content: any, comment = null) => {
+export const logError = async (content: any, comment = null) => {
   console.error(content);
 
   if (comment != null) {
@@ -82,10 +82,8 @@ export const logError = (content: any, comment = null) => {
   const today = new Date();
   const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
   const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-  fs.appendFileSync(logErrorFile, `${date} ${time}\n${comment}\n${content}\n\n`, (error) => {
-    if (error) {
-      console.log(`Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${error}`);
-    }
+  fs.appendFile(logErrorFile, `${date} ${time}\n${comment}\n${content}\n\n`, (err: any) => {
+    console.log(`Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${err}`);
   });
 };
 

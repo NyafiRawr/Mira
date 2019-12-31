@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as tools from '../tools';
-import calculateAccuracy from '../osu';
+import { calculateAccuracy } from '../osu';
 
-export const getUser = async (server, idOrName, mode) => {
+export const getUser = async (server: string, idOrName: string, mode: string): Promise<{[key: string]: any} | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10)) ? { name: idOrName } : { id: idOrName };
 
@@ -42,7 +42,7 @@ export const getUser = async (server, idOrName, mode) => {
   return gameUser;
 };
 
-export const getUserRecents = async (server, idOrName, limit, mode) => {
+export const getUserRecents = async (server: string, idOrName: string, limit: number, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10)) ? { name: idOrName } : { id: idOrName };
 
@@ -59,9 +59,9 @@ export const getUserRecents = async (server, idOrName, limit, mode) => {
   }
 
   const { scores } = response.data;
-  const recents = [];
+  const recents: {[key: string]: any}[] = [];
 
-  scores.forEach((recent) => recents.push({
+  scores.forEach((recent: any) => recents.push({
     beatmap_id: recent.beatmap.beatmap_id,
     score: recent.score,
     maxcombo: recent.max_combo,
@@ -87,7 +87,7 @@ export const getUserRecents = async (server, idOrName, limit, mode) => {
 };
 
 
-export const getBeatmap = async (server, idBeatmap, mode) => {
+export const getBeatmap = async (server: string, idBeatmap: string, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/beatmaps', {
@@ -102,9 +102,9 @@ export const getBeatmap = async (server, idBeatmap, mode) => {
   }
 
   const { data } = response;
-  const difficulties = [];
+  const difficulties: {[key: string]: any}[] = [];
 
-  data.forEach((diff) => difficulties.push({
+  data.forEach((diff: any) => difficulties.push({
     approved: null, // diff.ranked_status_frozen ?
     submit_date: null,
     approved_date: null,
@@ -157,7 +157,7 @@ export const getBeatmap = async (server, idBeatmap, mode) => {
 };
 
 
-export const getUserTops = async (server, idOrName, limit, mode) => {
+export const getUserTops = async (server: string, idOrName: string, limit: number, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10)) ? { name: idOrName } : { id: idOrName };
 
@@ -174,9 +174,9 @@ export const getUserTops = async (server, idOrName, limit, mode) => {
   }
 
   const { scores } = response.data;
-  const bests = [];
+  const bests: {[key: string]: any}[] = [];
 
-  scores.forEach((best) => bests.push({
+  scores.forEach((best: any) => bests.push({
     beatmap_id: best.beatmap.beatmap_id,
     score_id: best.id,
     score: best.score,
@@ -197,7 +197,7 @@ export const getUserTops = async (server, idOrName, limit, mode) => {
     // Only on gatari & ripple
     beatmap: best.beatmap,
     // Added
-    accuracy: String.toString(calculateAccuracy(
+    accuracy: String(calculateAccuracy(
       mode, best.count300, best.count100, best.count50,
       best.countmiss, best.countkatu, best.countgeki,
     )),
@@ -206,7 +206,7 @@ export const getUserTops = async (server, idOrName, limit, mode) => {
   return bests;
 };
 
-export const getScores = async (server, idOrName, idBeatmap, limit, mode) => {
+export const getScores = async (server: string, idOrName: string, idBeatmap: string, limit: number, mode: string): Promise<{[key: string]: any}[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10)) ? { name: idOrName } : { id: idOrName };
 
@@ -225,9 +225,9 @@ export const getScores = async (server, idOrName, idBeatmap, limit, mode) => {
 
   const { scores } = response.data;
 
-  const scoresOnBeatmap = [];
+  const scoresOnBeatmap: {[key: string]: any}[] = [];
   // выкидывает все скорсы на сервере !!!!!
-  scores.forEach((score) => scoresOnBeatmap.push({
+  scores.forEach((score: any) => scoresOnBeatmap.push({
     score_id: score.id,
     score: score.score,
     username: score.user.user_id,
@@ -246,7 +246,7 @@ export const getScores = async (server, idOrName, idBeatmap, limit, mode) => {
     pp: score.pp,
     replay_available: null,
     // Added
-    accuracy: String.toString(calculateAccuracy(
+    accuracy: String(calculateAccuracy(
       mode, score.count300, score.count100, score.count50,
       score.countmiss, score.countkatu, score.countgeki,
     )),

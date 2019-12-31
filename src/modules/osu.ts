@@ -1,27 +1,28 @@
+import * as Discord from 'discord.js';
 import * as players from './players';
 import * as tools from './tools';
 
-function selectApi(server) {
+function selectApi(server: string) {
   const servers = tools.getData('osu!/servers');
   return require(`./osu-api/${servers[server].api.base}`);
 }
 
-export const getUser = (server, idOrName, mode = 0) =>
+export const getUser = (server: string, idOrName: string, mode = 0) =>
   selectApi(server).getUser(server, idOrName, mode);
 
-export const getUserRecents = (server, idOrName, limit = 1, mode = 0) =>
+export const getUserRecents = (server: string, idOrName: string, limit = 1, mode = 0) =>
   selectApi(server).getUserRecents(server, idOrName, limit, mode);
 
-export const getUserTops = (server, idOrName, limit = 3, mode = 0) =>
+export const getUserTops = (server: string, idOrName: string, limit = 3, mode = 0) =>
   selectApi(server).getUserTops(server, idOrName, limit, mode);
 
-export const getScores = (server, idOrName, idBeatmap, limit = 1, mode = 0) =>
+export const getScores = (server: string, idOrName: string, idBeatmap: string, limit = 1, mode = 0) =>
   selectApi(server).getScores(server, idOrName, idBeatmap, limit, mode);
 
-export const getBeatmap = (server, idBeatmap, mode = 0) =>
+export const getBeatmap = (server: string, idBeatmap: string, mode = 0) =>
   selectApi(server).getBeatmap(server, idBeatmap, mode);
 
-export const styleLengthInMS = (length) => {
+export const styleLengthInMS = (length: number): string => {
   const dt = new Date();
   dt.setTime(length * 1000);
   const seconds = dt.getUTCSeconds();
@@ -31,15 +32,17 @@ export const styleLengthInMS = (length) => {
   return `${dt.getUTCMinutes()}:${seconds}`;
 };
 
-export const styleDatetimeInDMYHMS = (datetime) => {
+export const styleDatetimeInDMYHMS = (datetime: string): string => {
   const [date, time] = datetime.split(' ');
   const [year, month, day] = date.split('-');
   const [hours, minutes, seconds] = time.split(':');
   return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 };
 
-export const calculateAccuracy = (mode, count300, count100, count50,
-  countmiss, countkatu, countgeki) => {
+export const calculateAccuracy = (
+  mode: string, count300: string, count100: string,
+  count50: string, countmiss: string, countkatu: string, countgeki: string
+): number | null  => {
   let userScore;
   let totalScore;
   if (parseInt(mode, 10) === 0) {
@@ -88,8 +91,10 @@ export const calculateAccuracy = (mode, count300, count100, count50,
   return null;
 };
 
-export const showStats = (mode, count300, count100, count50,
-  countmiss, countkatu, countgeki) => {
+export const showStats = (
+  mode: string, count300: string, count100: string,
+  count50: string, countmiss: string, countkatu: string, countgeki: string
+) => {
   const reMode = parseInt(mode, 10);
 
   const template = tools.getData('osu!/stats');
@@ -104,7 +109,7 @@ export const showStats = (mode, count300, count100, count50,
     .replace('countmiss', tools.separateThousandth(countmiss));
 };
 
-export const decodeMods = (code) => {
+export const decodeMods = (code: string) => {
   const mods = tools.getData('osu!/mods');
   let enCode = parseInt(code, 10);
   const result = [];
@@ -115,8 +120,9 @@ export const decodeMods = (code) => {
       break;
     }
 
-    if (parseInt(Object.keys(mods)[i], 10) > enCode) {
-      enCode -= Object.keys(mods)[i - 1];
+    const parsed = parseInt(Object.keys(mods)[i], 10);
+    if (parsed > enCode) {
+      enCode -= parsed;
       result.push(Object.values(mods)[i - 1]);
       i = 0;
     }
@@ -125,7 +131,7 @@ export const decodeMods = (code) => {
   return result.join(', ');
 };
 
-export const getPlayerFromMessage = async (message, args) => {
+export const getPlayerFromMessage = async (message: Discord.Message, args: string[]) => {
   const parsingArgs = args.filter((arg) => arg.startsWith('/')).map((arg) => arg.substr(1));
   let specificServer;
   let specificMode;
@@ -138,7 +144,7 @@ export const getPlayerFromMessage = async (message, args) => {
   if (parsingArgs.length !== 0) {
     const servers = tools.getData('osu!/servers');
     const modes = tools.getData('osu!/modes');
-    let element;
+    let element: any;
 
     while (parsingArgs.length !== 0) {
       element = parsingArgs.pop();
@@ -170,8 +176,7 @@ export const getPlayerFromMessage = async (message, args) => {
       }
     }
 
-    if ((parsingArgs.length === 2 && !specificServer && !specificMode)
-      || (!specificServer && !specificMode)) {
+    if ((!specificServer && !specificMode) || (!specificServer && !specificMode)) {
       message.reply(`дополнительные параметры указаны с ошибкой: ${args}
         \nСервер: ${specificServer}\nРежим: ${specificMode}`);
       return null;
