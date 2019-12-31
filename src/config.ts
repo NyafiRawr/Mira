@@ -1,9 +1,13 @@
+import * as dotenv from 'dotenv';
+
+// загружаем .env файл в переменные окружения
+dotenv.config({ debug: Boolean(process.env.DEBUG) });
 
 /**
  * Требует что бы обязательно была указана переменная окружения
  * @param {string} name название переменной
  */
-const requireProcessEnv = (name) => {
+const requireProcessEnv = (name: string) => {
   if (!process.env[name]) {
     throw new Error(`Необходимо указать ${name} переменную окружения`);
   }
