@@ -58,6 +58,6 @@ const loadCommands = async (defaultDir: string) => {
 
 // не ждем загрузки всех команд для
 // того что бы бот появился в сети как можно быстрее
-// loadCommands(path.join(path.resolve(__dirname), 'commands'));
+loadCommands(path.join(path.resolve(__dirname), 'commands'));
 
 export default client;

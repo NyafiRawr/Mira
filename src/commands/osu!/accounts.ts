@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 import * as players from '../../modules/players';
@@ -14,11 +14,11 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message /* , args, CooldownReset */) {
+  async execute(message: Discord.Message /* , args, CooldownReset */) {
     const victim = message.mentions.members.first() || message.guild.members.get(message.author.id);
     const embed = new Discord.RichEmbed()
       .setAuthor('Аккаунты в мире osu!')
-      .setTitle(victim.nickname || victim.username || victim.user.username);
+      .setTitle(victim.nickname || victim.user.username);
 
     const accounts = await players.get(victim.id);
 
