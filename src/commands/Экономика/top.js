@@ -2,11 +2,12 @@ const economy = require('../../modules/economy.js');
 const tools = require('../../modules/tools.js');
 
 const topSize = 10;
+const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые богачи',
-  aliases: ['cootop', 'moneytop'],
+  aliases: ['cootop'],
   usage: undefined,
   guild: true,
   hide: false,
@@ -23,7 +24,7 @@ module.exports = {
     const baseCleared = new Map();
     base.forEach((user) => {
       const member = message.guild.members.get(user.id);
-      if (!!member && !member.user.bot) {
+      if (!!member && !member.user.bot && user.balance > 0) {
         baseCleared.set(user.id, user.balance);
       }
     });
@@ -31,11 +32,10 @@ module.exports = {
     const top = new Map([...baseCleared.entries()].sort((x, y) => baseCleared[x] - baseCleared[y]));
 
     const msg = [];
-    const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-    top.forEach((balance, userId) => {
+    [...top.keys()].slice(0, topSize > top.size ? top.size : topSize).forEach((userId) => {
       const member = message.guild.members.get(userId);
       if (member) {
-        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(balance)}:cookie:`);
+        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(top.get(userId))}:cookie:`);
       }
     });
 
