@@ -6,7 +6,7 @@ const topSize = 10;
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые богачи',
-  aliases: ['cootop', 'moneytop'],
+  aliases: ['cootop'],
   usage: undefined,
   guild: true,
   hide: false,
@@ -32,15 +32,12 @@ module.exports = {
 
     const msg = [];
     const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
-    const topEntries = top.entries();
-    const limit = top.size < topSize ? top.size : topSize;
-    for (let i = 0; i < limit; i += 1) {
-      const [userId, balance] = topEntries.next().value;
+    [...top.keys()].slice(0, topSize > top.size ? top.size : topSize).forEach((userId) => {
       const member = message.guild.members.get(userId);
       if (member) {
-        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(balance)}:cookie:`);
+        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(top.get(userId))}:cookie:`);
       }
-    }
+    });
 
     message.reply(`**печеньковые богачи:**\n${msg.join('\n')}`);
   },
