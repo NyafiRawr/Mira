@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as tools from '../../modules/tools';
 import * as menu from '../../modules/menu';
 import * as players from '../../modules/players';
@@ -16,15 +16,15 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message /* , args , CooldownReset */) {
+  async execute(message: Discord.Message /* , args , CooldownReset */) {
     // eslint-disable-next-line prefer-const
-    let embed = new Discord.RichEmbed()
+    const embed = new Discord.RichEmbed()
       .setAuthor('Настройка аккаунта osu!')
       .setTitle('Меню')
       .setDescription('1️⃣ Добавить/Изменить\n2️⃣ Удалить')
       .setColor(tools.randomHexColor())
       .setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
-    let embedMessage = await message.channel.send(message.author, { embed });
+    let embedMessage = await message.channel.send(message.author, { embed }) as Discord.Message;
     const change = await menu.waitReaction(embedMessage,
       menu.emojiNumbers.slice(1, 3), message.author.id);
     switch (change) {
@@ -33,16 +33,17 @@ module.exports = {
         // Выбор игрового сервера
         let changeServer = '**Выбери игровой сервер:**\n';
         for (let i = 0; i < Object.keys(servers).length; i += 1) {
-          changeServer += `${menu.emojiNumbers[i + 1]} ${Object.values(servers)[i].name}\n`;
+          changeServer += `${menu.emojiNumbers[i + 1]} ${Object.values<any>(servers)[i].name}\n`;
         }
         embed.setDescription(changeServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(embedMessage,
           menu.emojiNumbers.slice(1, Object.keys(servers).length + 1), message.author.id);
+        if (osuServerIndex === null) { return; }
         // Выбор играемых режимов
         let changeMode = '**Выбери играемые режимы:**\n';
         for (let i = 0; i < Object.keys(modes).length; i += 1) {
-          changeMode += `${menu.emojiNumbers[i + 1]} ${Object.values(modes)[i].name}\n`;
+          changeMode += `${menu.emojiNumbers[i + 1]} ${Object.values<any>(modes)[i].name}\n`;
         }
         embed.setDescription(changeMode);
         embedMessage = await embedMessage.edit(message.author, { embed });
@@ -55,10 +56,10 @@ module.exports = {
         await embedMessage.edit(message.author, { embed });
         const osuName = await menu.waitMessage(message.channel, message.author.id);
         embed.setTitle('Успех!');
-        embed.setDescription(`Игрок **${osuName}** на сервере **${Object.values(servers)[osuServerIndex].name}**
+        embed.setDescription(`Игрок **${osuName}** на сервере **${Object.values<any>(servers)[osuServerIndex as any].name}**
          играет **${osuModesIndexes.map((mode) => modes[mode].name).join(', ')}**!`);
         await embedMessage.edit(message.author, { embed });
-        await players.set(message.author.id, Object.keys(servers)[osuServerIndex], {
+        await players.set(message.author.id, Object.keys(servers)[osuServerIndex as any], {
           modes: osuModesIndexes.join(','),
           nickname: osuName,
         });

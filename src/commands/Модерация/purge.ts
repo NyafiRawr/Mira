@@ -1,3 +1,5 @@
+import * as Discord from 'discord.js';
+
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Удаление сообщений',
@@ -9,10 +11,12 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: ['MANAGE_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message, args /* , CooldownReset */) {
-    if (!message.channel.permissionsFor(message.member).has(this.permissions[0])) {
+  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+    const channel = message.guild.channels.find('id', message.channel.id);
+
+    if (!channel.permissionsFor(message.member)!.has(this.permissions[0])) {
       return message.reply('у тебя недостаточно прав!');
-    } if (!message.channel.permissionsFor(message.client.user).has(this.permissions[0])) {
+    } if (!channel.permissionsFor(message.client.user)!.has(this.permissions[0])) {
       return message.reply('у меня нет прав управлять сообщениями!');
     }
 
@@ -29,7 +33,7 @@ module.exports = {
     message.channel.fetchMessages({
       limit: amount,
     }).then((messages) => {
-      let userMsg = messages;
+      let userMsg = messages.array();
       if (user) {
         const filterBy = user ? user.id : message.client.user.id;
         userMsg = messages.filter((m) => m.author.id === filterBy).array().slice(0, amount);
@@ -37,7 +41,7 @@ module.exports = {
       message.channel.bulkDelete(userMsg)
         .then((msgs) => {
           message.channel.send(`Удалено сообщений: **${msgs.size}** ${message.author}\nСамоуничтожение через несколько секунд :alarm_clock:`)
-            .then((msg) => {
+            .then((msg: any) => {
               setTimeout(() => msg.delete(), 3000);
             });
         })

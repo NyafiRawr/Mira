@@ -26,31 +26,22 @@ module.exports = {
       return message.reply(`у ${victim} нет привязанных аккаунтов.`);
     }
 
-    // превращаем строки с модами в массивы для перебора далее
-    for (let i = 0; i < accounts.length; i += 1) {
-      if (accounts[i].modes.length > 1) {
-        accounts[i].modes = accounts[i].modes.split(',');
-      }
-    }
-
     for (const account of accounts) {
-      for (const mode of account.modes) {
-        // eslint-disable-next-line no-await-in-loop
+      for (const mode of account.modes.split(',')) {
         const user = await osu.getUser(account.gameServer, account.nickname, mode);
         if (user != null) {
           const topScores = parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)
           + parseInt(user.count_rank_ssh, 10) || 0 + parseInt(user.count_rank_sh, 10) || 0
           + parseInt(user.count_rank_a, 10);
           embed
-            .addField(`**${account.gameServer.toUpperCase()}**`, `PP: ${tools.separateThousandth(Math.floor(user.pp_raw))}\nМесто: #${tools.separateThousandth(user.pp_rank)}`, true)
-            .addField(`**${(tools.getDataValueOnKey('osu!/mode', mode))[0].toUpperCase()}**`, `Уровень: ${Math.floor(user.level)}\nТочность: ${tools.toTwoDecimalPlaces(user.accuracy)}%`, true)
-            .addField(`Ник: **${user.username}**`, `Игр: ${tools.separateThousandth(user.playcount)}\nТоп-скоры: ${tools.separateThousandth(topScores)}`, true);
+            .addField(`**${account.gameServer.toUpperCase()}**`, `PP: ${tools.separateThousandth(user.pp_raw)}\nМесто: #${tools.separateThousandth(user.pp_rank)}`, true)
+            .addField(`**${(tools.getDataValueOnKey('osu!/mode', mode))[0].toUpperCase()}**`, `Уровень: ${Math.floor(user.level)}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`, true)
+            .addField(`Ник: **${user.username}**`, `Игр: ${tools.separateThousandth(user.playcount)}\nТоп-скоры: ${tools.separateThousandth(`${topScores}`)}`, true);
         }
       }
     }
 
     embed.setColor(tools.randomHexColor());
-
     embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
 
     message.channel.send({ embed });

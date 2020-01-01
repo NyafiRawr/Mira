@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import { randomBoolean } from '../../modules/tools';
 
 module.exports = {
@@ -10,15 +11,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message /* , args, CooldownReset */) {
-    let result;
-
-    if (randomBoolean()) {
-      result = 'выпала **решка** :sparkles:';
-    } else {
-      result = 'выпал **орёл** :eagle:';
-    }
-
-    message.reply(result);
+  execute(message: Discord.Message /* , args, CooldownReset */) {
+    message.reply(randomBoolean() ? 'выпала **решка** :sparkles:' : 'выпал **орёл** :eagle:');
   },
 };

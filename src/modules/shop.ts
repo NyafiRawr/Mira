@@ -14,7 +14,7 @@ export const getAll = async (serverId: string) => {
   return shop.map((v: any) => v.dataValues);
 };
 
-export const set = async (serverId: string, roleId: string, cost = 0) => {
+export const set = async (serverId: string, roleId: string, cost: number = 0) => {
   const role = await get(serverId, roleId);
 
   if (role != null) {

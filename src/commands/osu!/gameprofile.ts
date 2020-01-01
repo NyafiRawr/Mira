@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 
@@ -12,7 +12,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args /* , CooldownReset */) {
+  async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
     const player = await osu.getPlayerFromMessage(message, args);
     if (player === null) {
       return;
@@ -45,7 +45,7 @@ module.exports = {
           .replace('AZ', osuUser.country)
           .replace('P', Math.ceil(osuUser.pp_country_rank / 50))}))`
         + `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}`
-        + `\n**PP:** ${tools.separateThousandth(Math.floor(osuUser.pp_raw))}`
+        + `\n**PP:** ${tools.separateThousandth(osuUser.pp_raw)}`
         + `\n**Точность:** ${tools.roundDecimalPlaces(osuUser.accuracy, 2)}%`
         + `\n**Сыграно карт:** ${tools.separateThousandth(osuUser.playcount)}`)
       .setThumbnail(serverLinks.avatar.replace('ID', osuUser.user_id))

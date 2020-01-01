@@ -21,7 +21,7 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "start": "ts-node .",
-    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'node' -r ts-node/register --inspect=9229 .",
+    "start:dev": "nodemon --watch 'src/**/*.ts' --ext 'ts' --exec 'node' -r ts-node/register --inspect=9229 .",
     "start:prod": "npm run build && node ./lib/index.js",
     "clean": "rimraf lib && rimraf coverage",
     "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",

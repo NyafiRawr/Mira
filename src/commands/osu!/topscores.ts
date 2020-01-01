@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 import config from '../../config';
@@ -14,7 +14,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args /* , CooldownReset */) {
+  async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
     /*
     let specificMode;
 

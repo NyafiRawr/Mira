@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import CustomError from '../../modules/customError';
 import * as economy from '../../modules/economy';
 
@@ -22,12 +22,12 @@ module.exports = {
    * @param {Discord.Message} message сообщение
    * @param {string[]} args параметры запроса
    */
-  async execute(message, args) {
+  async execute(message: Discord.Message, args: string[]) {
     const tempChannelName = `Private room ${message.member.displayName}`;
 
     if (args[0] === 'invite') {
       // валидация параметров комманды
-      if (args.length <= 1) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
+      if (args.length <= 1) { throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin'); }
 
       const tempChannel = message.guild.channels.find('name', tempChannelName);
       for await (const target of message.mentions.members.array()) {
@@ -42,7 +42,7 @@ module.exports = {
       }
     } else if (args[0] === 'remove') {
       // валидация параметров комманды
-      if (args.length <= 1) throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin');
+      if (args.length <= 1) { throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin'); }
 
       const tempChannel = message.guild.channels.find('name', tempChannelName);
       for await (const target of message.mentions.members.array()) {
@@ -72,7 +72,7 @@ module.exports = {
           parent: this.categoryId,
           topic: 'Канал будет удален сразу после того как все участники выйдут из него!',
         },
-      );
+      ) as Discord.VoiceChannel;
 
       await message.reply(`Канал ${tempChannel.toString()} создан!`);
 

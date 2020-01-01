@@ -42,17 +42,17 @@ const loadCommands = async (defaultDir: string) => {
 
   // параллельно выполняем все промисы и дожидаемся их
   console.log('------ Загрузка команд ------');
-  const res = await Promise.all(
-    (await getFilePaths(defaultDir)).map(async (filePath: string) => import(filePath))
-  );
+  await Promise.all(
+    (await getFilePaths(defaultDir)).map(async (filePath: string) => {
+      const cmd = await import(filePath);
 
-  res.forEach((cmd: any) => {
-    (client as any).commands.set(cmd.name, cmd);
-    if (cmd.aliases) {
-      cmd.aliases.forEach((al: any) => (client as any).commands.set(al, cmd));
-    }
-    console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
-  });
+      (client as any).commands.set(cmd.name, cmd);
+      if (cmd.aliases) {
+        cmd.aliases.forEach((al: any) => (client as any).commands.set(al, cmd));
+      }
+      console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
+    })
+  );
   console.log('----------------------------');
 };
 
