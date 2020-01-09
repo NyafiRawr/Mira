@@ -1,5 +1,6 @@
-const economy = require('../../modules/economy.js');
-const tools = require('../../modules/tools.js');
+import * as Discord from 'discord.js';
+import * as tools from '../../modules/tools';
+import * as economy from '../../modules/economy';
 
 const topSize = 10;
 
@@ -14,28 +15,38 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message /* , args, CooldownReset */) {
+  async execute(message: Discord.Message /* , args, CooldownReset */) {
     const base = await economy.get(message.guild.id);
     if (!base) {
-      return message.reply('в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!');
+      return message.reply(
+        'в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!'
+      );
     }
 
     const baseCleared = new Map();
-    base.forEach((user) => {
+    base.forEach((user: any) => {
       const member = message.guild.members.get(user.id);
       if (!!member && !member.user.bot) {
         baseCleared.set(user.id, user.balance);
       }
     });
 
-    const top = new Map([...baseCleared.entries()].sort((x, y) => baseCleared[x] - baseCleared[y]));
+    const top = new Map(
+      [...baseCleared.entries()].sort(
+        (x, y) => baseCleared.get(x) - baseCleared.get(y)
+      )
+    );
 
-    const msg = [];
+    const msg: any[] = [];
     const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
     top.forEach((balance, userId) => {
       const member = message.guild.members.get(userId);
       if (member) {
-        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(balance)}:cookie:`);
+        msg.push(
+          `  **${rangs[msg.length]}. ${
+            !member || !member.nickname ? member.user.username : member.nickname
+          }** ${tools.separateThousandth(balance)}:cookie:`
+        );
       }
     });
 

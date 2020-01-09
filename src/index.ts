@@ -1,4 +1,4 @@
-import client from './client';
+import { client } from './client';
 
 import config from './config';
 import handler from './events';

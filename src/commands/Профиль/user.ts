@@ -1,6 +1,7 @@
-const Discord = require('discord.js');
-const users = require('../../modules/users.js');
-const tools = require('../../modules/tools.js');
+import * as Discord from 'discord.js';
+
+import * as tools from '../../modules/tools';
+import * as users from '../../modules/users';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -13,17 +14,30 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args /* , CooldownReset */) {
-    const user = message.mentions.users.first() || message.client.users.find((u) => u.username === args.join(' ') || (`${u.username}#${u.discriminator}`) === args.join(' ')) || message.author;
+  async execute(
+    message: Discord.Message,
+    args: string[] /* , CooldownReset */
+  ) {
+    const user: any =
+      message.mentions.users.first() ||
+      message.client.users.find(
+        u =>
+          u.username === args.join(' ') ||
+          `${u.username}#${u.discriminator}` === args.join(' ')
+      ) ||
+      message.author;
     const member = message.guild.members.get(user.id);
 
     let nickname = 'себе';
     if (message.author.id !== user.id) {
-      nickname = (!member || !member.nickname) ? user.username : member.nickname;
+      nickname = !member || !member.nickname ? user.username : member.nickname;
     }
 
     const embed = new Discord.RichEmbed();
-    embed.setAuthor(`Информация о ${nickname}`, user.avatarURL || user.user.avatarURL);
+    embed.setAuthor(
+      `Информация о ${nickname}`,
+      user.avatarURL || user.user.avatarURL
+    );
 
     embed.setThumbnail(user.avatarURL || user.user.avatarURL);
 
@@ -43,7 +57,7 @@ module.exports = {
       firstEntry = lastEntry;
     }
 
-    const dbUser = await users.get(message.guild.id, user.id);
+    const dbUser = await users.get<any>(message.guild.id, user.id);
 
     if (dbUser) {
       firstEntry = dbUser.entryDate || firstEntry;
@@ -55,17 +69,27 @@ module.exports = {
     }
 
     if (lastEntry) {
-      embed.addField('Дата подключения', tools.toDate(lastEntry), true);
+      embed.addField(
+        'Дата подключения',
+        tools.toDate(lastEntry.toISOString()),
+        true
+      );
     }
 
     if (birthday) {
-      birthday = dbUser.birthday.split('-').reverse().join('.');
+      birthday = dbUser.birthday
+        .split('-')
+        .reverse()
+        .join('.');
       embed.addField('День рождения', birthday, true);
     }
 
     embed.setColor(tools.randomHexColor());
 
-    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
+    embed.setFooter(
+      tools.embedFooter(message, this.name),
+      message.author.displayAvatarURL
+    );
 
     message.channel.send({ embed });
   },

@@ -1,6 +1,6 @@
+import * as Discord from 'discord.js';
 import { randomInteger } from '../../modules/tools';
-
-const economy = require('../../modules/economy.js');
+import * as economy from '../../modules/economy';
 
 const effects = [
   'ура! Вы стали на newWeight кг жирней! (totalWeight кг)',
@@ -18,29 +18,44 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message, args, CooldownReset) {
+  async execute(
+    message: Discord.Message,
+    args: string[],
+    cooldownReset: () => void
+  ) {
     const currency = await economy.get(message.guild.id, message.author.id);
 
     if (!currency) {
       return message.reply('у вас нет печенья, чтобы его съедать!');
-    } if (currency < 1) {
+    }
+    if (currency < 1) {
       return message.reply('есть нечего.');
     }
 
-    const amount = Math.abs(args[0] || 1);
-    if (Number.isNaN(amount) || amount < 1) {
-      CooldownReset();
+    const amount = parseInt(args[0], 1) || 1;
+    if (amount < 1) {
+      cooldownReset();
       return message.reply(`:boom: \`-help ${this.name}\`?`);
-    } if (amount > currency) {
-      CooldownReset();
-      return message.reply('вы трёте глаза и осознаёте, что у вас гораздо меньше печенья, чем вы думали...');
+    }
+    if (amount > currency) {
+      cooldownReset();
+      return message.reply(
+        'вы трёте глаза и осознаёте, что у вас гораздо меньше печенья, чем вы думали...'
+      );
     }
 
     const newWeight = amount / 100;
     await economy.set(message.guild.id, message.author.id, -amount);
     await economy.setWeight(message.guild.id, message.author.id, newWeight);
-    const totalWeight = await economy.getWeight(message.guild.id, message.author.id);
+    const totalWeight = await economy.getWeight(
+      message.guild.id,
+      message.author.id
+    );
 
-    message.reply(effects[randomInteger(0, effects.length - 1)].replace('newWeight', newWeight).replace('totalWeight', totalWeight));
+    message.reply(
+      effects[randomInteger(0, effects.length - 1)]
+        .replace('newWeight', newWeight.toString())
+        .replace('totalWeight', totalWeight)
+    );
   },
 };

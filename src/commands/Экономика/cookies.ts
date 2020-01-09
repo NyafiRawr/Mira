@@ -1,6 +1,7 @@
-import { separateThousandth } from '../../modules/tools';
+import { Message } from 'discord.js';
 
-const economy = require('../../modules/economy.js');
+import { separateThousandth } from '../../modules/tools';
+import * as economy from '../../modules/economy';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -13,10 +14,12 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message /* , args, CooldownReset */) {
-    let victims = new Set(message.mentions.members.map((member) => member));
+  async execute(message: Message /* , args, CooldownReset */) {
+    let victims = new Set(
+      message.mentions.members.map((member: any) => member)
+    );
     if (victims.size === 0) {
-      victims = [message.author];
+      victims = new Set([message.author]);
     }
 
     let msg = '';

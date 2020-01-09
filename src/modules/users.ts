@@ -1,13 +1,17 @@
 import User from '../models/user';
 
-export const get = async (serverId: string, userId: string) => {
+export const get = async <T = User>(
+  serverId: string,
+  userId: string
+): Promise<T | null> => {
   const user = await User.findOne({
     where: {
       id: userId,
       serverId,
     },
   });
-  return user;
+
+  return user as any;
 };
 
 export const set = async (

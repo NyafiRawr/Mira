@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import client from '../client';
+import { client, commands } from '../client';
 import config from '../config';
 
 import CustomError from '../modules/customError';
@@ -35,7 +35,7 @@ export default async (message: Message) => {
   const args = content.slice(prefix.length).split(/ +/);
 
   const commandName = args.shift()!.toLowerCase();
-  const command = (client as any).commands.get(commandName);
+  const command = commands.get(commandName);
 
   if (!command) {
     return;

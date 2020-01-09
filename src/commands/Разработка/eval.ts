@@ -1,8 +1,8 @@
-/* eslint-disable no-unused-vars */
-import * as packageJson from '../../../package.json';
+import * as Discord from 'discord.js';
 import * as tools from '../../modules/tools';
 
-const Discord = require('discord.js');
+// tslint:disable-next-line: no-var-requires
+const packageJson = require('../../../package.json');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -15,9 +15,11 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message, args /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
     if (message.author.id !== packageJson.author.id) {
-      return message.reply(`команда ${this.name} доступна только разработчику!`);
+      return message.reply(
+        `команда ${this.name} доступна только разработчику!`
+      );
     }
 
     if (args[0] === undefined) {

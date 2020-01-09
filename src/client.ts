@@ -8,9 +8,9 @@ import config from './config';
 // иначе она иницилизируется только при первом обращении из команд
 import './modules/db';
 
-const client = new Discord.Client();
-// fixme: нельзя так делать
-(client as any).commands = new Discord.Collection();
+export const client = new Discord.Client();
+// todo: интерфейс команд
+export const commands = new Discord.Collection<string, any>();
 
 /**
  * Иницилизация всех команд
@@ -46,9 +46,9 @@ const loadCommands = async (defaultDir: string) => {
     (await getFilePaths(defaultDir)).map(async (filePath: string) => {
       const cmd = await import(filePath);
 
-      (client as any).commands.set(cmd.name, cmd);
+      commands.set(cmd.name, cmd);
       if (cmd.aliases) {
-        cmd.aliases.forEach((al: any) => (client as any).commands.set(al, cmd));
+        cmd.aliases.forEach((al: any) => commands.set(al, cmd));
       }
       console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
     })
@@ -59,5 +59,3 @@ const loadCommands = async (defaultDir: string) => {
 // не ждем загрузки всех команд для
 // того что бы бот появился в сети как можно быстрее
 loadCommands(path.join(path.resolve(__dirname), 'commands'));
-
-export default client;
