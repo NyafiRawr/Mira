@@ -16,9 +16,13 @@ module.exports = {
 
     if (args[0]) {
       limit = parseInt(args[0], 10);
-      return message.reply(Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?');
+      return message.reply(
+        Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?'
+      );
     }
 
-    message.reply(`вы бросаете кости и выпадает **${randomInteger(0, limit)} из ${limit}!**`);
+    message.reply(
+      `вы бросаете кости и выпадает **${randomInteger(0, limit)} из ${limit}!**`
+    );
   },
 };

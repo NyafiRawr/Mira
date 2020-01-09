@@ -19,7 +19,11 @@ export default class CustomError extends Error {
    * @param {Discord.Message} message сообщение
    * @returns {Promise<void>}
    */
-  public async send(message: Discord.Message): Promise<Discord.Message | Discord.Message[]> {
-    return message.reply(this.reply || 'при вызове команды произошла ошибка ;(');
+  public async send(
+    message: Discord.Message
+  ): Promise<Discord.Message | Discord.Message[]> {
+    return message.reply(
+      this.reply || 'при вызове команды произошла ошибка ;('
+    );
   }
 }

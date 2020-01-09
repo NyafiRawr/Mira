@@ -1,14 +1,22 @@
 import { GuildMember, MessageReaction } from 'discord.js';
 import * as emotes from '../modules/emotes';
 
-
 export default async (reaction: MessageReaction, user: GuildMember) => {
   // eslint-disable-next-line no-underscore-dangle
-  const emoteName = reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
-  const emoteDB = await emotes.get(reaction.message.channel.id, reaction.message.id, emoteName);
+  const emoteName =
+    reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
+  const emoteDB = await emotes.get<any>(
+    reaction.message.channel.id,
+    reaction.message.id,
+    emoteName
+  );
 
-  if (!emoteDB) { return; }
+  if (emoteDB == null) {
+    return;
+  }
 
   const customer = await reaction.message.guild.fetchMember(user.id);
-  if (customer) { customer.removeRole(emoteDB.roleId); }
+  if (customer) {
+    customer.removeRole(emoteDB.roleId);
+  }
 };

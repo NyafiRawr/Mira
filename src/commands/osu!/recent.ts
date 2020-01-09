@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 
-
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Последняя игра',
@@ -13,7 +12,10 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  async execute(
+    message: Discord.Message,
+    args: string[] /* , CooldownReset */
+  ) {
     /*
     let specificMode;
 

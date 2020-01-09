@@ -11,7 +11,10 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: ['MANAGE_MESSAGES', 'SEND_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  async execute(
+    message: Discord.Message,
+    args: string[] /* , CooldownReset */
+  ) {
     let edit = false;
     let targetChannel: Discord.GuildChannel;
     let targetMessageId = '';
@@ -38,19 +41,33 @@ module.exports = {
         .fetchMessage(targetMessageId)
         .then((targetMessage: any) => targetMessage.edit(targetText))
         .catch((error: any) => {
-          message.reply(`сообщение для редактирования не найдено!\nКанал: ${targetChannel}\nID: ${targetMessageId}\nОтправляемый текст: \`\`\`fix\n${targetText.substr(0, 1424)}\`\`\` ${error}`);
+          message.reply(
+            `сообщение для редактирования не найдено!\nКанал: ${targetChannel}\nID: ${targetMessageId}\nОтправляемый текст: \`\`\`fix\n${targetText.substr(
+              0,
+              1424
+            )}\`\`\` ${error}`
+          );
         });
     } else if (message.mentions.channels.size > 0) {
-      targetChannel = message.guild.channels.find('id', message.mentions.channels.first().id);
-      if (!targetChannel.permissionsFor(message.member)!.has(this.permissions)) {
-        return message.reply('у тебя недостаточно привилегий в указанном канале!');
+      targetChannel = message.guild.channels.find(
+        'id',
+        message.mentions.channels.first().id
+      );
+      if (
+        !targetChannel.permissionsFor(message.member)!.has(this.permissions)
+      ) {
+        return message.reply(
+          'у тебя недостаточно привилегий в указанном канале!'
+        );
       }
 
       targetText = targetText.replace(`<#${targetChannel.id}>`, '');
       message.mentions.channels.first().send(targetText);
     } else {
-      targetChannel =  message.guild.channels.find('id', message.channel.id);
-      if (!targetChannel.permissionsFor(message.member)!.has(this.permissions)) {
+      targetChannel = message.guild.channels.find('id', message.channel.id);
+      if (
+        !targetChannel.permissionsFor(message.member)!.has(this.permissions)
+      ) {
         return message.reply('недостаточно привилегий!');
       }
 

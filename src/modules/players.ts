@@ -1,7 +1,10 @@
 import Player from '../models/player';
 
-export const get = async (userId: string, gameServer: string = '') => {
-  let player;
+export const get = async <T = Player>(
+  userId: string,
+  gameServer: string = ''
+): Promise<T> => {
+  let player: any;
 
   if (gameServer) {
     player = await Player.findOne({
@@ -24,7 +27,11 @@ export const get = async (userId: string, gameServer: string = '') => {
   return player;
 };
 
-export const set = async (userId: string, gameServer: string, fields: {[key: string]: any}) => {
+export const set = async (
+  userId: string,
+  gameServer: string,
+  fields: { [key: string]: any }
+) => {
   const player = await get(userId, gameServer);
 
   if (player != null) {

@@ -6,17 +6,17 @@ import CustomError from '../modules/customError';
 import { randomInteger, logError } from '../modules/tools';
 import * as cooldowns from '../modules/kv';
 
-
 export default async (message: Message) => {
   if (message.author.bot) {
     return;
   }
 
-  let {
-    content,
-  } = message;
+  let { content } = message;
 
-  if (message.mentions.users.size === 1 && message.content.split(/\s+/).length === 1) {
+  if (
+    message.mentions.users.size === 1 &&
+    message.content.split(/\s+/).length === 1
+  ) {
     const itSelf = message.mentions.users.first().id === client.user.id;
     content = itSelf ? `${config.bot.prefix}about` : content;
   }
@@ -28,14 +28,18 @@ export default async (message: Message) => {
     prefix = config.bot.prefix;
   }
 
-  if (!prefix) { return; }
+  if (!prefix) {
+    return;
+  }
 
   const args = content.slice(prefix.length).split(/ +/);
 
   const commandName = args.shift()!.toLowerCase();
   const command = (client as any).commands.get(commandName);
 
-  if (!command) { return; }
+  if (!command) {
+    return;
+  }
 
   // if (message.guild && !message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) {
   //   return message.author
@@ -43,13 +47,16 @@ export default async (message: Message) => {
   //     .catch(console.error);
   // }
 
-  if (message.channel.type === 'text') { await message.delete(); }
-  else if (command.guild) { return message.reply('эта команда недоступна в ЛС!'); }
+  if (message.channel.type === 'text') {
+    await message.delete();
+  } else if (command.guild) {
+    return message.reply('эта команда недоступна в ЛС!');
+  }
 
   const timeLeft = await cooldowns.get(
     (message.guild || message.author).id,
     message.author.id,
-    command.name,
+    command.name
   );
 
   if (!timeLeft) {
@@ -58,7 +65,7 @@ export default async (message: Message) => {
       (message.guild || message.author).id,
       message.author.id,
       command.name,
-      cooldown,
+      cooldown
     );
   } else {
     let reply;
@@ -66,7 +73,9 @@ export default async (message: Message) => {
     if (!command.cooldownMessage) {
       reply = `пожалуйста, подождите ${timeLeft} прежде, чем снова вызвать команду: ${command.name}!`;
     } else {
-      reply = command.cooldownMessage[randomInteger(0, command.cooldownMessage.length - 1)].replace('leftTime', timeLeft);
+      reply = command.cooldownMessage[
+        randomInteger(0, command.cooldownMessage.length - 1)
+      ].replace('leftTime', timeLeft);
     }
 
     return message.reply(reply);
@@ -77,7 +86,10 @@ export default async (message: Message) => {
   } catch (err) {
     logError(err);
 
-    if (err instanceof CustomError) { err.send(message); }
-    else { message.reply('при вызове команды произошла ошибка ;('); }
+    if (err instanceof CustomError) {
+      err.send(message);
+    } else {
+      message.reply('при вызове команды произошла ошибка ;(');
+    }
   }
 };

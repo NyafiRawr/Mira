@@ -1,7 +1,10 @@
 import Emoji from '../models/emoji';
 
-export const get = async (channelId: string, messageId: string, emojiId: string) => {
-
+export const get = async <T = Emoji>(
+  channelId: string,
+  messageId: string,
+  emojiId: string
+): Promise<T> => {
   const role = await Emoji.findOne({
     where: {
       channelId,
@@ -9,12 +12,15 @@ export const get = async (channelId: string, messageId: string, emojiId: string)
       emojiId,
     },
   });
-  return role;
-
+  return role as any;
 };
 
-
-export const set = async (channelId: string, messageId: string, emojiId: string, roleId: string) => {
+export const set = async (
+  channelId: string,
+  messageId: string,
+  emojiId: string,
+  roleId: string
+) => {
   const role = await get(channelId, messageId, emojiId);
 
   if (role != null) {

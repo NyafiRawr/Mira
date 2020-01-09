@@ -33,7 +33,11 @@ export const get = async (serverId: string, userId: string | null = null) => {
  * @param {String} userId id пользователя
  * @param {Number} currency сколько печенек установить
  */
-export const set = async (serverId: string, userId: string, currency: number) => {
+export const set = async (
+  serverId: string,
+  userId: string,
+  currency: number
+) => {
   const user = await users.get(serverId, userId);
 
   if (user !== null) {
@@ -55,13 +59,18 @@ export const set = async (serverId: string, userId: string, currency: number) =>
  * @param {String} userId id пользователя у которого будут списаны печеньки
  * @param {Number} currency сколько печенек списать
  */
-export const pay = async (serverId: string, userId: string, currency: number = 0) => {
+export const pay = async (
+  serverId: string,
+  userId: string,
+  currency: number = 0
+) => {
   const balance = await get(serverId, userId);
-  if (balance < currency) { throw new CustomError('У вас нет сколько печенек!'); }
+  if (balance < currency) {
+    throw new CustomError('У вас нет сколько печенек!');
+  }
 
   await set(serverId, userId, -currency);
 };
-
 
 /**
  * Переводит печеньки между пользователями
@@ -70,30 +79,48 @@ export const pay = async (serverId: string, userId: string, currency: number = 0
  * @param {String} userInId id пользователя которому будут добавлены печеньки
  * @param {Number} currency сколько печенек перевести
  */
-export const transaction = async (serverId: string, userOutId: string, userInId: string, currency: number) => {
+export const transaction = async (
+  serverId: string,
+  userOutId: string,
+  userInId: string,
+  currency: number
+) => {
   const userOut = await users.get(serverId, userOutId);
   const userIn = await users.get(serverId, userInId);
 
-  await sequelize.transaction(async (t) => {
-    userOut.update({
-      balance: userOut.balance - currency,
-    }, { transaction: t });
+  await sequelize.transaction(async t => {
+    userOut.update(
+      {
+        balance: userOut.balance - currency,
+      },
+      { transaction: t }
+    );
 
     if (userIn !== null) {
-      userIn.update({
-        balance: userIn.balance + currency,
-      }, { transaction: t });
+      userIn.update(
+        {
+          balance: userIn.balance + currency,
+        },
+        { transaction: t }
+      );
     }
 
-    User.create({
-      id: userInId,
-      serverId,
-      balance: currency,
-    }, { transaction: t });
+    User.create(
+      {
+        id: userInId,
+        serverId,
+        balance: currency,
+      },
+      { transaction: t }
+    );
   });
 };
 
-export const setWeight = async (serverId: string, userId: string, weight: number) => {
+export const setWeight = async (
+  serverId: string,
+  userId: string,
+  weight: number
+) => {
   const user = await users.get(serverId, userId);
 
   if (user !== null) {

@@ -27,7 +27,11 @@ module.exports = {
 
     if (args[0] === 'invite') {
       // валидация параметров комманды
-      if (args.length <= 1) { throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin'); }
+      if (args.length <= 1) {
+        throw new CustomError(
+          'Не хватает параметров, пример команды: !tempchannel invite @admin'
+        );
+      }
 
       const tempChannel = message.guild.channels.find('name', tempChannelName);
       for await (const target of message.mentions.members.array()) {
@@ -38,50 +42,77 @@ module.exports = {
           USE_VAD: true,
         });
 
-        await message.reply(`Пользователь ${target.displayName} был добавлен в ${tempChannelName}`);
+        await message.reply(
+          `Пользователь ${target.displayName} был добавлен в ${tempChannelName}`
+        );
       }
     } else if (args[0] === 'remove') {
       // валидация параметров комманды
-      if (args.length <= 1) { throw new CustomError('Не хватает параметров, пример команды: !tempchannel invite @admin'); }
+      if (args.length <= 1) {
+        throw new CustomError(
+          'Не хватает параметров, пример команды: !tempchannel invite @admin'
+        );
+      }
 
       const tempChannel = message.guild.channels.find('name', tempChannelName);
       for await (const target of message.mentions.members.array()) {
         tempChannel.replacePermissionOverwrites({
-          overwrites: tempChannel.permissionOverwrites.filter((perm) => perm.id !== target.id),
+          overwrites: tempChannel.permissionOverwrites.filter(
+            perm => perm.id !== target.id
+          ),
         });
 
-        await message.reply(`Пользователь ${target.displayName} был удален из ${tempChannelName}`);
+        await message.reply(
+          `Пользователь ${target.displayName} был удален из ${tempChannelName}`
+        );
       }
     } else if (args[0] === 'create') {
       await economy.pay(message.guild.id, message.author.id, this.price);
 
-      const tempChannel = await message.guild.createChannel(
-        tempChannelName,
-        {
-          type: 'voice',
-          permissionOverwrites: [
-            {
-              id: message.member.id,
-              allow: ['VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'USE_VAD', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS'],
-            },
-            {
-              id: message.guild.defaultRole,
-              deny: ['VIEW_CHANNEL'],
-            },
-          ],
-          parent: this.categoryId,
-          topic: 'Канал будет удален сразу после того как все участники выйдут из него!',
-        },
-      ) as Discord.VoiceChannel;
+      const tempChannel = (await message.guild.createChannel(tempChannelName, {
+        type: 'voice',
+        permissionOverwrites: [
+          {
+            id: message.member.id,
+            allow: [
+              'VIEW_CHANNEL',
+              'CONNECT',
+              'SPEAK',
+              'USE_VAD',
+              'MUTE_MEMBERS',
+              'DEAFEN_MEMBERS',
+            ],
+          },
+          {
+            id: message.guild.defaultRole,
+            deny: ['VIEW_CHANNEL'],
+          },
+        ],
+        parent: this.categoryId,
+        topic:
+          'Канал будет удален сразу после того как все участники выйдут из него!',
+      })) as Discord.VoiceChannel;
 
       await message.reply(`Канал ${tempChannel.toString()} создан!`);
 
-      const deleteChannel = () => tempChannel.delete()
-        .then(() => message.reply(`Так как в канале ${tempChannel.toString()} ни кого не было то он был удален из за ненадобности!`))
-        .catch(console.error);
+      const deleteChannel = () =>
+        tempChannel
+          .delete()
+          .then(() =>
+            message.reply(
+              `Так как в канале ${tempChannel.toString()} ни кого не было то он был удален из за ненадобности!`
+            )
+          )
+          .catch(console.error);
 
       setTimeout(() => {
-        const watcher = setInterval(() => tempChannel.members.size === 0 && deleteChannel() && clearInterval(watcher), 2e4);
+        const watcher = setInterval(
+          () =>
+            tempChannel.members.size === 0 &&
+            deleteChannel() &&
+            clearInterval(watcher),
+          2e4
+        );
       }, 1e4);
     }
   },

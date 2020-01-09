@@ -15,12 +15,14 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message /* , args, CooldownReset */) {
-    const victim = message.mentions.members.first() || message.guild.members.get(message.author.id);
+    const victim =
+      message.mentions.members.first() ||
+      message.guild.members.get(message.author.id);
     const embed = new Discord.RichEmbed()
       .setAuthor('Аккаунты в мире osu!')
       .setTitle(victim.nickname || victim.user.username);
 
-    const accounts = await players.get(victim.id);
+    const accounts = await players.get<any[]>(victim.id);
 
     if (accounts.length === 0) {
       return message.reply(`у ${victim} нет привязанных аккаунтов.`);
@@ -28,21 +30,51 @@ module.exports = {
 
     for (const account of accounts) {
       for (const mode of account.modes.split(',')) {
-        const user = await osu.getUser(account.gameServer, account.nickname, mode);
+        const user = await osu.getUser(
+          account.gameServer,
+          account.nickname,
+          mode
+        );
         if (user != null) {
-          const topScores = parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)
-          + parseInt(user.count_rank_ssh, 10) || 0 + parseInt(user.count_rank_sh, 10) || 0
-          + parseInt(user.count_rank_a, 10);
+          const topScores =
+            parseInt(user.count_rank_ss, 10) +
+              parseInt(user.count_rank_s, 10) +
+              parseInt(user.count_rank_ssh, 10) ||
+            0 + parseInt(user.count_rank_sh, 10) ||
+            0 + parseInt(user.count_rank_a, 10);
           embed
-            .addField(`**${account.gameServer.toUpperCase()}**`, `PP: ${tools.separateThousandth(user.pp_raw)}\nМесто: #${tools.separateThousandth(user.pp_rank)}`, true)
-            .addField(`**${(tools.getDataValueOnKey('osu!/mode', mode))[0].toUpperCase()}**`, `Уровень: ${Math.floor(user.level)}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`, true)
-            .addField(`Ник: **${user.username}**`, `Игр: ${tools.separateThousandth(user.playcount)}\nТоп-скоры: ${tools.separateThousandth(`${topScores}`)}`, true);
+            .addField(
+              `**${account.gameServer.toUpperCase()}**`,
+              `PP: ${tools.separateThousandth(
+                user.pp_raw
+              )}\nМесто: #${tools.separateThousandth(user.pp_rank)}`,
+              true
+            )
+            .addField(
+              `**${tools
+                .getDataValueOnKey('osu!/mode', mode)[0]
+                .toUpperCase()}**`,
+              `Уровень: ${Math.floor(
+                user.level
+              )}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`,
+              true
+            )
+            .addField(
+              `Ник: **${user.username}**`,
+              `Игр: ${tools.separateThousandth(
+                user.playcount
+              )}\nТоп-скоры: ${tools.separateThousandth(`${topScores}`)}`,
+              true
+            );
         }
       }
     }
 
     embed.setColor(tools.randomHexColor());
-    embed.setFooter(tools.embedFooter(message, this.name), message.author.displayAvatarURL);
+    embed.setFooter(
+      tools.embedFooter(message, this.name),
+      message.author.displayAvatarURL
+    );
 
     message.channel.send({ embed });
   },

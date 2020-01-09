@@ -19,7 +19,7 @@ export const toDate = (value: string) => {
     day = `0${day}`;
   }
 
-  let month: any  = date.getMonth() + 1;
+  let month: any = date.getMonth() + 1;
   if (month < 10) {
     month = `0${month}`;
   }
@@ -36,11 +36,15 @@ export const toDate = (value: string) => {
   return `${day}.${month}.${date.getFullYear()} ${date.getHours()}:${minutes}:${seconds}`;
 };
 
-export const toTitle = (str: string) => str.replace(/\b\w/g, (l) => l.toUpperCase());
+export const toTitle = (str: string) =>
+  str.replace(/\b\w/g, l => l.toUpperCase());
 
 export const roundDecimalPlaces = (num: number, decimals = 2) => {
   const sign = num >= 0 ? 1 : -1;
-  return (Math.round((num * 10 ** decimals) + (sign * 0.001)) / 10 ** decimals).toFixed(decimals);
+  return (
+    Math.round(num * 10 ** decimals + sign * 0.001) /
+    10 ** decimals
+  ).toFixed(decimals);
 };
 
 export const convertSecondsToTime = (num: any) => {
@@ -48,12 +52,13 @@ export const convertSecondsToTime = (num: any) => {
 
   if (value > 3600) {
     const hours = Math.trunc(value / 3600);
-    const minutes = Math.trunc((value - (hours * 3600)) / 60);
+    const minutes = Math.trunc((value - hours * 3600) / 60);
     if (minutes) {
       return `${hours} ч ${minutes} мин`;
     }
     return `${hours} ч`;
-  } if (value > 60) {
+  }
+  if (value > 60) {
     return `${Math.trunc(value / 60)} мин`;
   }
   return `${value} сек`;
@@ -66,11 +71,18 @@ export const randomInteger = (minimum: number, maximum: number) => {
 
 export const randomBoolean = () => Math.random() >= 0.5;
 
-export const randomHexColor = () => `#${Math.random().toString(16).slice(2, 8)}`;
+export const randomHexColor = () =>
+  `#${Math.random()
+    .toString(16)
+    .slice(2, 8)}`;
 
 export const embedFooter = (message: Message, nameCommand: string) => {
   const memberRequest = message.guild.members.get(message.author.id);
-  return `Запрос от ${(!memberRequest || !memberRequest.nickname) ? message.author.username : memberRequest.nickname} | ${config.bot.prefix}${nameCommand}`;
+  return `Запрос от ${
+    !memberRequest || !memberRequest.nickname
+      ? message.author.username
+      : memberRequest.nickname
+  } | ${config.bot.prefix}${nameCommand}`;
 };
 
 export const logError = async (content: any, comment = null) => {
@@ -80,14 +92,22 @@ export const logError = async (content: any, comment = null) => {
     console.log(comment);
   }
   const today = new Date();
-  const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  const date = `${today.getFullYear()}-${today.getMonth() +
+    1}-${today.getDate()}`;
   const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-  fs.appendFile(logErrorFile, `${date} ${time}\n${comment}\n${content}\n\n`, (err: any) => {
-    console.log(`Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${err}`);
-  });
+  fs.appendFile(
+    logErrorFile,
+    `${date} ${time}\n${comment}\n${content}\n\n`,
+    (err: any) => {
+      console.log(
+        `Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${err}`
+      );
+    }
+  );
 };
 
-export const getData = (pathData: string) => require(`../../data/${pathData}.json`);
+export const getData = (pathData: string) =>
+  require(`../../data/${pathData}.json`);
 
 export const getDataKeyOnValue = (pathData: string, value: string) => {
   const data = getData(pathData);

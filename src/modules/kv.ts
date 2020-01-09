@@ -9,11 +9,17 @@ const cooldowns = new Keyv({ namespace: 'cooldown' });
  * @param {String} userId идентификатор пользователя
  * @param {String} commandName название команды
  */
-export const get = async (serverId: string, userId: string, commandName: string) => {
-  const datetimeCooldown: string = await cooldowns.get(`${serverId}_${userId}_${commandName}`);
+export const get = async (
+  serverId: string,
+  userId: string,
+  commandName: string
+) => {
+  const datetimeCooldown: string = await cooldowns.get(
+    `${serverId}_${userId}_${commandName}`
+  );
 
   if (datetimeCooldown) {
-    const firstDate = (new Date(datetimeCooldown)).getTime();
+    const firstDate = new Date(datetimeCooldown).getTime();
     const now = Date.now();
 
     const datetimeLeft = new Date(firstDate - now);
@@ -28,7 +34,11 @@ export const get = async (serverId: string, userId: string, commandName: string)
  * @param {String} userId идентификатор пользователя
  * @param {String} commandName название команды
  */
-export const reset = async (serverId: string, userId: string, commandName: string) => {
+export const reset = async (
+  serverId: string,
+  userId: string,
+  commandName: string
+) => {
   await cooldowns.delete(`${serverId}_${userId}_${commandName}`);
 };
 
@@ -39,7 +49,12 @@ export const reset = async (serverId: string, userId: string, commandName: strin
  * @param {String} commandName название команды
  * @param {String} seconds время в секундах
  */
-export const set = async (serverId: string, userId: string, commandName: string, seconds: number) => {
+export const set = async (
+  serverId: string,
+  userId: string,
+  commandName: string,
+  seconds: number
+) => {
   const timeCooldown = new Date(seconds * 1000 + Date.now());
   await cooldowns.set(`${serverId}_${userId}_${commandName}`, timeCooldown);
   setTimeout(() => reset(serverId, userId, commandName), seconds * 1000);

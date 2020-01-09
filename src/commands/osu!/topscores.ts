@@ -3,7 +3,6 @@ import * as osu from '../../modules/osu';
 import * as tools from '../../modules/tools';
 import config from '../../config';
 
-
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Лучшие результаты в профиле',
@@ -14,7 +13,10 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  async execute(
+    message: Discord.Message,
+    args: string[] /* , CooldownReset */
+  ) {
     /*
     let specificMode;
 

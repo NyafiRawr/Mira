@@ -12,6 +12,8 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message: Discord.Message /* , args, CooldownReset */) {
-    message.reply(randomBoolean() ? 'выпала **решка** :sparkles:' : 'выпал **орёл** :eagle:');
+    message.reply(
+      randomBoolean() ? 'выпала **решка** :sparkles:' : 'выпал **орёл** :eagle:'
+    );
   },
 };

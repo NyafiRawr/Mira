@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as players from './players';
 import * as tools from './tools';
+import Player from '../models/player';
 
 function selectApi(server: string) {
   const servers = tools.getData('osu!/servers');
@@ -10,14 +11,27 @@ function selectApi(server: string) {
 export const getUser = (server: string, idOrName: string, mode = 0) =>
   selectApi(server).getUser(server, idOrName, mode);
 
-export const getUserRecents = (server: string, idOrName: string, limit = 1, mode = 0) =>
-  selectApi(server).getUserRecents(server, idOrName, limit, mode);
+export const getUserRecents = (
+  server: string,
+  idOrName: string,
+  limit = 1,
+  mode = 0
+) => selectApi(server).getUserRecents(server, idOrName, limit, mode);
 
-export const getUserTops = (server: string, idOrName: string, limit = 3, mode = 0) =>
-  selectApi(server).getUserTops(server, idOrName, limit, mode);
+export const getUserTops = (
+  server: string,
+  idOrName: string,
+  limit = 3,
+  mode = 0
+) => selectApi(server).getUserTops(server, idOrName, limit, mode);
 
-export const getScores = (server: string, idOrName: string, idBeatmap: string, limit = 1, mode = 0) =>
-  selectApi(server).getScores(server, idOrName, idBeatmap, limit, mode);
+export const getScores = (
+  server: string,
+  idOrName: string,
+  idBeatmap: string,
+  limit = 1,
+  mode = 0
+) => selectApi(server).getScores(server, idOrName, idBeatmap, limit, mode);
 
 export const getBeatmap = (server: string, idBeatmap: string, mode = 0) =>
   selectApi(server).getBeatmap(server, idBeatmap, mode);
@@ -40,9 +54,14 @@ export const styleDatetimeInDMYHMS = (datetime: string): string => {
 };
 
 export const calculateAccuracy = (
-  mode: string, count300: string, count100: string,
-  count50: string, countmiss: string, countkatu: string, countgeki: string
-): number | null  => {
+  mode: string,
+  count300: string,
+  count100: string,
+  count50: string,
+  countmiss: string,
+  countkatu: string,
+  countgeki: string
+): number | null => {
   let userScore;
   let totalScore;
   if (parseInt(mode, 10) === 0) {
@@ -55,14 +74,16 @@ export const calculateAccuracy = (
     totalScore += parseInt(countmiss, 10);
     totalScore *= 300;
     return (userScore / totalScore) * 100;
-  } if (parseInt(mode, 10) === 1) {
+  }
+  if (parseInt(mode, 10) === 1) {
     userScore = parseInt(count100, 10) * 0.5;
     userScore += parseInt(count300, 10);
     totalScore = parseInt(countmiss, 10) + parseInt(count50, 10);
     totalScore += parseInt(count300, 10);
     totalScore += parseInt(count100, 10);
     return (userScore / totalScore) * 100;
-  } if (parseInt(mode, 10) === 2) {
+  }
+  if (parseInt(mode, 10) === 2) {
     userScore = parseInt(count50, 10); // droplet!
     userScore += parseInt(count100, 10); // drop?
     userScore += parseInt(count300, 10); // fruit?
@@ -73,7 +94,8 @@ export const calculateAccuracy = (
     totalScore += parseInt(count100, 10); // drop?
     totalScore += parseInt(count300, 10); // fruit?
     return (userScore / totalScore) * 100;
-  } if (parseInt(mode, 10) === 3) {
+  }
+  if (parseInt(mode, 10) === 3) {
     userScore = parseInt(count50, 10) * 50;
     userScore += parseInt(count100, 10) * 100;
     userScore += parseInt(countkatu, 10) * 200;
@@ -92,8 +114,13 @@ export const calculateAccuracy = (
 };
 
 export const showStats = (
-  mode: string, count300: string, count100: string,
-  count50: string, countmiss: string, countkatu: string, countgeki: string
+  mode: string,
+  count300: string,
+  count100: string,
+  count50: string,
+  countmiss: string,
+  countkatu: string,
+  countgeki: string
 ) => {
   const reMode = parseInt(mode, 10);
 
@@ -131,8 +158,13 @@ export const decodeMods = (code: string) => {
   return result.join(', ');
 };
 
-export const getPlayerFromMessage = async (message: Discord.Message, args: string[]) => {
-  const parsingArgs = args.filter((arg) => arg.startsWith('/')).map((arg) => arg.substr(1));
+export const getPlayerFromMessage = async (
+  message: Discord.Message,
+  args: string[]
+) => {
+  const parsingArgs = args
+    .filter(arg => arg.startsWith('/'))
+    .map(arg => arg.substr(1));
   let specificServer;
   let specificMode;
 
@@ -154,7 +186,7 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
           specificServer = element;
         } else {
           // eslint-disable-next-line no-loop-func
-          Object.keys(servers).forEach((server) => {
+          Object.keys(servers).forEach(server => {
             if (servers[server].aliases.includes(element)) {
               specificServer = server;
             }
@@ -167,7 +199,7 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
           specificMode = element;
         } else {
           // eslint-disable-next-line no-loop-func
-          Object.keys(modes).forEach((mode) => {
+          Object.keys(modes).forEach(mode => {
             if (modes[mode].aliases.includes(element)) {
               specificMode = mode;
             }
@@ -176,7 +208,10 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
       }
     }
 
-    if ((!specificServer && !specificMode) || (!specificServer && !specificMode)) {
+    if (
+      (!specificServer && !specificMode) ||
+      (!specificServer && !specificMode)
+    ) {
       message.reply(`дополнительные параметры указаны с ошибкой: ${args}
         \nСервер: ${specificServer}\nРежим: ${specificMode}`);
       return null;
@@ -186,7 +221,10 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
   let player;
 
   if (message.mentions.members.size) {
-    player = await players.get(message.mentions.members.first().id, message.guild.id);
+    player = await players.get(
+      message.mentions.members.first().id,
+      message.guild.id
+    );
     console.log(message.mentions.members);
     if (player === null) {
       player = {
@@ -197,13 +235,14 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
       };
     }
   } else {
-    player = await players.get(message.author.id, message.guild.id);
+    player = await players.get<any>(message.author.id, message.guild.id);
 
     if (player === null) {
       player = {
         userId: message.author.id,
         gameServer: null,
-        nickname: message.author.lastMessage.member.nickname || message.author.username,
+        nickname:
+          message.author.lastMessage.member.nickname || message.author.username,
         modes: null,
       };
     }

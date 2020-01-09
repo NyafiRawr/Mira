@@ -13,7 +13,15 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[], cooldownReset: (serverId: string, userId: string, commandName: string) => void) {
+  async execute(
+    message: Discord.Message,
+    args: string[],
+    cooldownReset: (
+      serverId: string,
+      userId: string,
+      commandName: string
+    ) => void
+  ) {
     /*
     let idMap = args[0];
 
