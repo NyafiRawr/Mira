@@ -1,9 +1,10 @@
 import { Message, TextChannel } from 'discord.js';
+
+import { log } from '../logger';
 import { client, commands } from '../client';
 import config from '../config';
-
 import CustomError from '../modules/customError';
-import { randomInteger, logError } from '../modules/tools';
+import { randomInteger } from '../modules/tools';
 import * as cooldowns from '../modules/kv';
 
 export default async (message: Message) => {
@@ -81,10 +82,11 @@ export default async (message: Message) => {
     return message.reply(reply);
   }
 
+  log.debug('Выполнение команды', message.content);
   try {
     await command.execute(message, args, cooldowns.reset);
   } catch (err) {
-    logError(err);
+    log.error(err, message.author, message.content);
 
     if (err instanceof CustomError) {
       err.send(message);

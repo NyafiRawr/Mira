@@ -1,8 +1,7 @@
 import User from '../models/user';
 import CustomError from './customError';
 import { sequelize } from './db';
-
-const users = require('./users');
+import * as users from './users';
 
 /**
  * Получение пользователя
@@ -11,7 +10,7 @@ const users = require('./users');
  */
 export const get = async (serverId: string, userId: string | null = null) => {
   if (userId !== null) {
-    const user = await users.get(serverId, userId);
+    const user = await users.get<any>(serverId, userId);
 
     if (user !== null) {
       return user.balance;
@@ -38,7 +37,7 @@ export const set = async (
   userId: string,
   currency: number
 ) => {
-  const user = await users.get(serverId, userId);
+  const user = await users.get<any>(serverId, userId);
 
   if (user !== null) {
     return user.update({
@@ -85,8 +84,8 @@ export const transaction = async (
   userInId: string,
   currency: number
 ) => {
-  const userOut = await users.get(serverId, userOutId);
-  const userIn = await users.get(serverId, userInId);
+  const userOut = await users.get<any>(serverId, userOutId);
+  const userIn = await users.get<any>(serverId, userInId);
 
   await sequelize.transaction(async t => {
     userOut.update(
@@ -121,7 +120,7 @@ export const setWeight = async (
   userId: string,
   weight: number
 ) => {
-  const user = await users.get(serverId, userId);
+  const user = await users.get<any>(serverId, userId);
 
   if (user !== null) {
     return user.update({
@@ -137,7 +136,7 @@ export const setWeight = async (
 };
 
 export const getWeight = async (serverId: string, userId: string) => {
-  const user = await users.get(serverId, userId);
+  const user = await users.get<any>(serverId, userId);
 
   if (user !== null) {
     return user.weight;

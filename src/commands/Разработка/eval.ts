@@ -28,7 +28,7 @@ module.exports = {
 
     try {
       const code = args.join(' ');
-      // eslint-disable-next-line no-eval
+      // tslint:disable-next-line
       eval(code);
     } catch (err) {
       message.channel.send(`\`\`\`xl\n${err}\n\`\`\``);
