@@ -1,11 +1,12 @@
+import { log } from './logger';
 import { client } from './client';
 
 import config from './config';
 import handler from './events';
 
 client
-  .on('error', console.error)
-  .on('warn', console.warn)
+  .on('error', log.error)
+  .on('warn', log.warn)
 
   .on('disconnect', handler.onDisconnect)
   .on('reconnecting', handler.onReconnect)

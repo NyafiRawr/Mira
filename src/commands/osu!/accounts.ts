@@ -44,15 +44,15 @@ module.exports = {
             0 + parseInt(user.count_rank_a, 10);
           embed
             .addField(
-              `**${account.gameServer[0].toUpperCase() + account.gameServer.slice(1)}**`,
+              `**${account.gameServer[0].toUpperCase() +
+                account.gameServer.slice(1)}**`,
               `PP: ${tools.separateThousandth(
                 user.pp_raw
               )}\nМесто: #${tools.separateThousandth(user.pp_rank)}`,
               true
             )
             .addField(
-              `**${tools
-                .getDataValueOnKey('osu!/modes', mode).name}**`,
+              `**${tools.getDataValueOnKey('osu!/modes', mode).name}**`,
               `Уровень: ${Math.floor(
                 user.level
               )}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`,

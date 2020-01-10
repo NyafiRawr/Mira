@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as path from 'path';
 import fs from './modules/fs';
 
+import { log } from './logger';
 import config from './config';
 
 // иницилизирует базу до того как запустится бот
@@ -41,19 +42,24 @@ const loadCommands = async (defaultDir: string) => {
   };
 
   // параллельно выполняем все промисы и дожидаемся их
-  console.log('------ Загрузка команд ------');
+  log.info('Загрузка команд');
   await Promise.all(
     (await getFilePaths(defaultDir)).map(async (filePath: string) => {
-      const cmd = await import(filePath);
+      let cmd: any;
+      try {
+        cmd = await import(filePath);
+      } catch (e) {
+        return;
+      }
 
       commands.set(cmd.name, cmd);
       if (cmd.aliases) {
         cmd.aliases.forEach((al: any) => commands.set(al, cmd));
       }
-      console.log(`   ${config.bot.prefix}${cmd.name} - ${cmd.description}`);
+      log.debug(`Загружена команда ${cmd.group}/${cmd.name}`);
     })
   );
-  console.log('----------------------------');
+  log.info('Команды загружены');
 };
 
 // не ждем загрузки всех команд для

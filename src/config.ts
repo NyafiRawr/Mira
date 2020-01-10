@@ -15,6 +15,10 @@ const requireProcessEnv = (name: string) => {
 };
 
 export default {
+  logger: {
+    name: 'Mira',
+    level: process.env.LEVEL || 'info',
+  },
   bot: {
     prefix: process.env.BOT_PREFIX || '!',
     token: requireProcessEnv('BOT_TOKEN'),
