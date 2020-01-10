@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../modules/customError';
 import * as economy from '../../modules/economy';
+import { log } from '../../logger';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -103,7 +104,7 @@ module.exports = {
               `Так как в канале ${tempChannel.toString()} ни кого не было то он был удален из за ненадобности!`
             )
           )
-          .catch(console.error);
+          .catch(log.error);
 
       setTimeout(() => {
         const watcher = setInterval(

@@ -1,1 +1,3 @@
-export default () => console.error('Отключились от сервера.');
+import { log } from '../logger';
+
+export default () => log.error('Отключились от сервера.');

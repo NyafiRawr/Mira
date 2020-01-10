@@ -1,4 +1,6 @@
+import { log } from '../logger';
+
 /**
  * Обработчик для события переподключения к серверу
  */
-export default () => console.warn('Переподключение.');
+export default () => log.warn('Переподключение.');

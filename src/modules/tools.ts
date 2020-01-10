@@ -2,12 +2,15 @@ import { Message } from 'discord.js';
 import * as fs from 'fs';
 import config from '../config';
 
+import { log } from '../logger';
+
 const logErrorFile = './errors.log';
 
-export const separateThousandth = (number: string) => {
-  if (number) {
-    return number.toString().replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,');
+export const separateThousandth = (str: string) => {
+  if (str) {
+    return str.toString().replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,');
   }
+
   return '-';
 };
 
@@ -83,27 +86,6 @@ export const embedFooter = (message: Message, nameCommand: string) => {
       ? message.author.username
       : memberRequest.nickname
   } | ${config.bot.prefix}${nameCommand}`;
-};
-
-export const logError = async (content: any, comment = null) => {
-  console.error(content);
-
-  if (comment != null) {
-    console.log(comment);
-  }
-  const today = new Date();
-  const date = `${today.getFullYear()}-${today.getMonth() +
-    1}-${today.getDate()}`;
-  const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-  fs.appendFile(
-    logErrorFile,
-    `${date} ${time}\n${comment}\n${content}\n\n`,
-    (err: any) => {
-      console.log(
-        `Не удалось записать ошибку:\n${content}\n\nпотому что:\n\n${err}`
-      );
-    }
-  );
 };
 
 export const getData = (pathData: string) =>

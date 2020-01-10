@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as players from './players';
 import * as tools from './tools';
 import Player from '../models/player';
+import { log } from '../logger';
 
 function selectApi(server: string) {
   const servers = tools.getData('osu!/servers');
@@ -225,7 +226,7 @@ export const getPlayerFromMessage = async (
       message.mentions.members.first().id,
       message.guild.id
     );
-    console.log(message.mentions.members);
+    log.debug('Найдены ники в команде', message.mentions.members);
     if (player === null) {
       player = {
         userId: message.mentions.members.first().id,
