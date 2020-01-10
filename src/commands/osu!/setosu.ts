@@ -17,7 +17,6 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message /* , args , CooldownReset */) {
-    // eslint-disable-next-line prefer-const
     const embed = new Discord.RichEmbed()
       .setAuthor('Настройка аккаунта osu!')
       .setTitle('Меню')

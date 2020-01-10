@@ -56,12 +56,12 @@ module.exports = {
         false
       )
 
-      .setColor(tools.randomHexColor());
+      .setColor(tools.randomHexColor())
 
-    embed.setFooter(
-      tools.embedFooter(message, this.name),
-      message.author.displayAvatarURL
-    );
+      .setFooter(
+        tools.embedFooter(message, this.name),
+        message.author.displayAvatarURL
+      );
 
     message.channel.send({ embed });
   },

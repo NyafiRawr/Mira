@@ -52,8 +52,8 @@ module.exports = {
         );
       }
 
-      const qq = await Axios.get(gif);
-      embed.setImage(qq.data.url);
+      const response = await Axios.get(gif);
+      embed.setImage(response.data.url);
 
       embed.setColor('#ffffff');
     } else {
