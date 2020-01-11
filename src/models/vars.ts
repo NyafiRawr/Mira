@@ -1,8 +1,7 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../utils/db';
+import { sequelize } from '../db';
 
 class Vars extends Model {
-  public id!: number;
   public serverId!: string;
 
   public name!: string;
@@ -14,10 +13,6 @@ class Vars extends Model {
 
 Vars.init(
   {
-    id: {
-      type: STRING,
-      primaryKey: true,
-    },
     serverId: {
       type: STRING,
       primaryKey: true,

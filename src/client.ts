@@ -7,7 +7,7 @@ import config from './config';
 
 // иницилизирует базу до того как запустится бот
 // иначе она иницилизируется только при первом обращении из команд
-import './utils/db';
+import './db';
 
 export const client = new Discord.Client();
 // todo: интерфейс команд

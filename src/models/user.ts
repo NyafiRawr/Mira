@@ -1,5 +1,5 @@
 import { Model, STRING, DATE, DATEONLY, INTEGER, DOUBLE, NOW } from 'sequelize';
-import { sequelize } from '../utils/db';
+import { sequelize } from '../db';
 
 class User extends Model {
   public id!: number;

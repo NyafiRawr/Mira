@@ -1,5 +1,5 @@
 import { Sequelize, Dialect } from 'sequelize';
-import config from '../config';
+import config from './config';
 
 // eslint-disable-next-line import/prefer-default-export
 export const sequelize = (() => {

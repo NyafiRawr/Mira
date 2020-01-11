@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
+import * as vars from '../../modules/vars';
+
 import { log } from '../../logger';
 
 module.exports = {
@@ -16,7 +18,16 @@ module.exports = {
 
   // todo: вынести в конфиг
   price: 400,
-  categoryId: '655718840650563585',
+
+  async getCategoryId(serverId: string) {
+    const value = vars.get<string|null>(serverId, 'TEMP_CHANNELS_CATEGORY_ID', null);
+    if (value === null) { throw new CustomError('Временные каналы не настроены, попросите админов сделать это!'); }
+
+    return value;
+  },
+  async getPrice(serverId: string) {
+    return vars.get(serverId, 'TEMP_CHANNELS_PRICE', 400);
+  },
 
   /**
    * Выполняет комманду и результат возвращяет пользователю
@@ -43,8 +54,11 @@ module.exports = {
           USE_VAD: true,
         });
 
+        const inv = await tempChannel.createInvite({
+          maxAge: 10 * 60 * 1000
+        }, `Приглашение в ${tempChannel.toString()}`);
         await message.reply(
-          `Пользователь ${target.displayName} был добавлен в ${tempChannelName}`
+          `Пользователь ${target.displayName} был добавлен в ${tempChannelName}. ${inv.url}`
         );
       }
     } else if (args[0] === 'remove') {
@@ -68,7 +82,7 @@ module.exports = {
         );
       }
     } else if (args[0] === 'create') {
-      await economy.pay(message.guild.id, message.author.id, this.price);
+      await economy.pay(message.guild.id, message.author.id, await this.getPrice(message.guild.id));
 
       const tempChannel = (await message.guild.createChannel(tempChannelName, {
         type: 'voice',
@@ -89,12 +103,16 @@ module.exports = {
             deny: ['VIEW_CHANNEL'],
           },
         ],
-        parent: this.categoryId,
+        parent: await this.getCategoryId(message.guild.id),
         topic:
           'Канал будет удален сразу после того как все участники выйдут из него!',
       })) as Discord.VoiceChannel;
 
-      await message.reply(`Канал ${tempChannel.toString()} создан!`);
+      const inv = await tempChannel.createInvite({
+        maxAge: 10 * 60,
+        temporary: true,
+      }, `Приглашение в ${tempChannel.toString()}`);
+      await message.reply(`Канал ${tempChannel.toString()} создан! ${inv.url}`);
 
       const deleteChannel = () =>
         tempChannel

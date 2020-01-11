@@ -1,8 +1,7 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../utils/db';
+import { sequelize } from '../db';
 
 class Emoji extends Model {
-  public id!: number;
   public channelId!: string;
   public messageId!: string;
   public emojiId!: string;
@@ -14,11 +13,6 @@ class Emoji extends Model {
 
 Emoji.init(
   {
-    id: {
-      type: INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
     channelId: {
       type: STRING,
       allowNull: false,
