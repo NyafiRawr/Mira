@@ -1,17 +1,18 @@
 import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize } from '../utils/db';
 
-class DonateRoles extends Model {
+class Vars extends Model {
   public id!: number;
   public serverId!: string;
-  public roleId!: string;
-  public cost!: number;
+
+  public name!: string;
+  public value!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-DonateRoles.init(
+Vars.init(
   {
     id: {
       type: STRING,
@@ -21,20 +22,20 @@ DonateRoles.init(
       type: STRING,
       primaryKey: true,
     },
-    roleId: {
+    name: {
       type: STRING,
+      primaryKey: true,
     },
-    cost: {
-      type: INTEGER,
-      defaultValue: 0,
+    value: {
+      type: STRING,
     },
   },
   {
-    modelName: 'donate_roles',
+    modelName: 'vars',
     sequelize,
   }
 );
 
-export default DonateRoles;
+export default Vars;
 
-DonateRoles.sync();
+Vars.sync();

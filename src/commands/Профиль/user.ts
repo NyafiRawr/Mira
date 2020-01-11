@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
 import moment = require('moment');
 
@@ -66,7 +66,11 @@ module.exports = {
     }
 
     if (firstEntry) {
-      embed.addField('Первый вход', tools.toDate(firstEntry.toISOString()), true);
+      embed.addField(
+        'Первый вход',
+        tools.toDate(firstEntry.toISOString()),
+        true
+      );
     }
 
     if (lastEntry) {
@@ -78,7 +82,11 @@ module.exports = {
     }
 
     if (birthday) {
-      embed.addField('День рождения', moment(birthday).format('DD-MM-YY'), true);
+      embed.addField(
+        'День рождения',
+        moment(birthday).format('DD-MM-YY'),
+        true
+      );
     }
 
     embed.setColor(tools.randomHexColor());

@@ -1,13 +1,13 @@
 import * as Discord from 'discord.js';
 import * as path from 'path';
-import fs from './modules/fs';
+import fs from './utils/fs';
 
 import { log } from './logger';
 import config from './config';
 
 // иницилизирует базу до того как запустится бот
 // иначе она иницилизируется только при первом обращении из команд
-import './modules/db';
+import './utils/db';
 
 export const client = new Discord.Client();
 // todo: интерфейс команд

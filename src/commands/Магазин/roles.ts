@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
 
-import CustomError from '../../modules/customError';
+import CustomError from '../../utils/customError';
 import * as donateRoles from '../../modules/donateRoles';
 import * as economy from '../../modules/economy';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -45,7 +45,10 @@ module.exports = {
     } else if (args[0] === 'buy' && message.mentions.roles.size > 0) {
       const roleMention = message.mentions.roles.first();
 
-      const roleShop = await donateRoles.get<any>(message.guild.id, roleMention.id);
+      const roleShop = await donateRoles.get<any>(
+        message.guild.id,
+        roleMention.id
+      );
       if (roleShop === null) {
         throw new CustomError('такой роли в продаже нет.');
       }

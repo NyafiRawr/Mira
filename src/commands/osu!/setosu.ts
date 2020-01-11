@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as tools from '../../modules/tools';
-import * as menu from '../../modules/menu';
+import * as tools from '../../utils/tools';
+import * as menu from '../../utils/menu';
 import * as players from '../../modules/players';
 
 const servers = tools.getData('osu!/servers');
@@ -123,16 +123,11 @@ module.exports = {
         const idx = parseInt(osuServerIndex || '0', 10);
         await embedMessage.clearReactions();
         await players
-          .remove(
-            message.author.id,
-            listServersPlayer[idx].gameServer
-          )
+          .remove(message.author.id, listServersPlayer[idx].gameServer)
           .then(() => {
             embed.setTitle('Удалено');
             embed.setDescription(
-              `Аккаунт **${
-                listServersPlayer[idx].nickname
-              }** при сервере **${
+              `Аккаунт **${listServersPlayer[idx].nickname}** при сервере **${
                 servers[listServersPlayer[idx].gameServer].name
               }** отвязан`
             );

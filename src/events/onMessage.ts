@@ -3,9 +3,9 @@ import { Message, TextChannel } from 'discord.js';
 import { log } from '../logger';
 import { client, commands } from '../client';
 import config from '../config';
-import CustomError from '../modules/customError';
-import { randomInteger } from '../modules/tools';
-import * as cooldowns from '../modules/kv';
+import CustomError from '../utils/customError';
+import { randomInteger } from '../utils/tools';
+import * as cooldowns from '../utils/kv';
 
 export default async (message: Message) => {
   if (message.author.bot) {

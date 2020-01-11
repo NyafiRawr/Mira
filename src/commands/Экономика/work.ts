@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 
 import * as users from '../../modules/users';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import * as economy from '../../modules/economy';
 
 module.exports = {

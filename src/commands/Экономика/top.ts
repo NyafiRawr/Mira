@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
 
 const topSize = 10;

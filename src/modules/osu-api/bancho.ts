@@ -1,6 +1,6 @@
 import axios from 'axios';
 import config from '../../config';
-import * as tools from '../tools';
+import * as tools from '../../utils/tools';
 import { calculateAccuracy } from '../osu';
 
 export const getUser = async (

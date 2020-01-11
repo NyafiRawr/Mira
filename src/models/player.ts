@@ -1,6 +1,5 @@
 import { Model, STRING, ENUM } from 'sequelize';
-import { sequelize } from '../modules/db';
-
+import { sequelize } from '../utils/db';
 
 class Player extends Model {
   public id!: number;

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as players from './players';
-import * as tools from './tools';
+import * as tools from '../utils/tools';
 import Player from '../models/player';
 import { log } from '../logger';
 
@@ -221,13 +221,15 @@ export const getPlayerFromMessage = async (
 
   let player: Player = new Player();
   player.userId = message.author.id;
-  player.nickname = message.author.lastMessage.member.nickname || message.author.username;
+  player.nickname =
+    message.author.lastMessage.member.nickname || message.author.username;
 
   if (message.mentions.members.size) {
-    player = (await players.get(
-      message.mentions.members.first().id,
-      message.guild.id
-    )) || player;
+    player =
+      (await players.get(
+        message.mentions.members.first().id,
+        message.guild.id
+      )) || player;
     log.debug('Найдены ники в команде', message.mentions.members);
   } else {
     player = (await players.get(message.author.id, message.guild.id)) || player;

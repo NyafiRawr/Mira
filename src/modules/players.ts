@@ -3,7 +3,7 @@ import Player from '../models/player';
 export const get = async (
   userId: string,
   gameServer: string = ''
-): Promise<Player|null> =>
+): Promise<Player | null> =>
   Player.findOne({
     where: {
       userId,
@@ -11,9 +11,7 @@ export const get = async (
     },
   });
 
-export const getAll = async (
-  userId: string
-): Promise<Player[]|null> =>
+export const getAll = async (userId: string): Promise<Player[] | null> =>
   Player.findAll({
     where: {
       userId,

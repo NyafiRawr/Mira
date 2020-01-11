@@ -1,8 +1,7 @@
 import User from '../models/user';
-import CustomError from './customError';
-import { sequelize } from './db';
+import CustomError from '../utils/customError';
+import { sequelize } from '../utils/db';
 import * as users from './users';
-
 
 /**
  * Установка пользователю печенек, при необходимости добавляет в базу пользователя

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { randomInteger } from '../../modules/tools';
+import { randomInteger } from '../../utils/tools';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
 
@@ -24,7 +24,8 @@ module.exports = {
     args: string[],
     cooldownReset: () => void
   ) {
-    const currency = (await users.get(message.guild.id, message.author.id))?.balance;
+    const currency = (await users.get(message.guild.id, message.author.id))
+      ?.balance;
 
     if (!currency) {
       return message.reply('у вас нет печенья, чтобы его съедать!');

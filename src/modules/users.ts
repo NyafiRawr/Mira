@@ -11,14 +11,12 @@ export const get = async (
     },
   });
 
-  export const getAll = async (
-    serverId: string,
-  ): Promise<User[] | null> =>
-    User.findAll({
-      where: {
-        serverId,
-      },
-    });
+export const getAll = async (serverId: string): Promise<User[] | null> =>
+  User.findAll({
+    where: {
+      serverId,
+    },
+  });
 
 export const set = async (
   serverId: string,

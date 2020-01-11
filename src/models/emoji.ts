@@ -1,5 +1,5 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../modules/db';
+import { sequelize } from '../utils/db';
 
 class Emoji extends Model {
   public id!: number;

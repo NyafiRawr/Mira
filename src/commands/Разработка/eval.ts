@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 
 // tslint:disable-next-line: no-var-requires
 const packageJson = require('../../../package.json');

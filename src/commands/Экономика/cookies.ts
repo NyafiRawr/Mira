@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-import { separateThousandth } from '../../modules/tools';
+import { separateThousandth } from '../../utils/tools';
 import * as users from '../../modules/users';
 
 module.exports = {

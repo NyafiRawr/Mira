@@ -1,5 +1,5 @@
 import { GuildMember, MessageReaction } from 'discord.js';
-import * as emotes from '../modules/emotes';
+import * as emotes from '../utils/emotes';
 
 export default async (reaction: MessageReaction, user: GuildMember) => {
   const emoteName =

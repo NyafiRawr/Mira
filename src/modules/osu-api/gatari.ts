@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as tools from '../tools';
+import * as tools from '../../utils/tools';
 
 export const getUser = async (
   server: string,
