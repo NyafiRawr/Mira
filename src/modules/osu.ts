@@ -219,34 +219,18 @@ export const getPlayerFromMessage = async (
     }
   }
 
-  let player;
+  let player: Player = new Player();
+  player.userId = message.author.id;
+  player.nickname = message.author.lastMessage.member.nickname || message.author.username;
 
   if (message.mentions.members.size) {
-    player = await players.get(
+    player = (await players.get(
       message.mentions.members.first().id,
       message.guild.id
-    );
+    )) || player;
     log.debug('Найдены ники в команде', message.mentions.members);
-    if (player === null) {
-      player = {
-        userId: message.mentions.members.first().id,
-        gameServer: null,
-        nickname: message.mentions.members.first().nickname,
-        modes: null,
-      };
-    }
   } else {
-    player = await players.get<any>(message.author.id, message.guild.id);
-
-    if (player === null) {
-      player = {
-        userId: message.author.id,
-        gameServer: null,
-        nickname:
-          message.author.lastMessage.member.nickname || message.author.username,
-        modes: null,
-      };
-    }
+    player = (await players.get(message.author.id, message.guild.id)) || player;
 
     let shouldBeNickname = args;
     const startParams = args.indexOf('/');
@@ -259,7 +243,7 @@ export const getPlayerFromMessage = async (
     }
   }
 
-  player.gameServer = specificServer || player.server || 'bancho';
+  player.gameServer = specificServer || player.gameServer || 'bancho';
   player.modes = specificMode || player.modes || '0';
 
   return player;

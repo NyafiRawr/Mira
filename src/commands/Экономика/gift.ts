@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as tools from '../../modules/tools';
+import * as users from '../../modules/users';
 import * as economy from '../../modules/economy';
 
 module.exports = {
@@ -34,7 +35,7 @@ module.exports = {
       );
     }
 
-    const currency = await economy.get(message.guild.id, message.author.id);
+    const currency = (await users.get(message.guild.id, message.author.id))?.balance;
     if (!currency) {
       return message.reply('вам нечего передавать!');
     }

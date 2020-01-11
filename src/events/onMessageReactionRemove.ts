@@ -4,7 +4,8 @@ import * as emotes from '../modules/emotes';
 export default async (reaction: MessageReaction, user: GuildMember) => {
   const emoteName =
     reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
-  const emoteDB = await emotes.get<any>(
+
+  const emoteDB = await emotes.get(
     reaction.message.channel.id,
     reaction.message.id,
     emoteName

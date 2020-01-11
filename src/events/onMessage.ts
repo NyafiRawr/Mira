@@ -86,11 +86,12 @@ export default async (message: Message) => {
   try {
     await command.execute(message, args, cooldowns.reset);
   } catch (err) {
-    log.error(err, message.author, message.content);
+    log.debug(err, message.content);
 
     if (err instanceof CustomError) {
       err.send(message);
     } else {
+      log.error(err, message.author.id, message.content);
       message.reply('при вызове команды произошла ошибка ;(');
     }
   }

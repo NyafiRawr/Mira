@@ -49,6 +49,7 @@ const loadCommands = async (defaultDir: string) => {
       try {
         cmd = await import(filePath);
       } catch (e) {
+        log.debug(e);
         return;
       }
 

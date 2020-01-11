@@ -3,28 +3,6 @@ import CustomError from './customError';
 import { sequelize } from './db';
 import * as users from './users';
 
-/**
- * Получение пользователя
- * @param {String} serverId id сервера
- * @param {String} userId id пользователя
- */
-export const get = async (serverId: string, userId: string | null = null) => {
-  if (userId !== null) {
-    const user = await users.get<any>(serverId, userId);
-
-    if (user !== null) {
-      return user.balance;
-    }
-
-    return 0;
-  }
-
-  return User.findAll({
-    where: {
-      serverId,
-    },
-  });
-};
 
 /**
  * Установка пользователю печенек, при необходимости добавляет в базу пользователя
@@ -37,7 +15,7 @@ export const set = async (
   userId: string,
   currency: number
 ) => {
-  const user = await users.get<any>(serverId, userId);
+  const user = await users.get(serverId, userId);
 
   if (user !== null) {
     return user.update({
@@ -63,8 +41,8 @@ export const pay = async (
   userId: string,
   currency: number = 0
 ) => {
-  const balance = await get(serverId, userId);
-  if (balance < currency) {
+  const user = await users.get(serverId, userId);
+  if (user === null || user.balance < currency) {
     throw new CustomError('У вас нет сколько печенек!');
   }
 
@@ -84,8 +62,11 @@ export const transaction = async (
   userInId: string,
   currency: number
 ) => {
-  const userOut = await users.get<any>(serverId, userOutId);
-  const userIn = await users.get<any>(serverId, userInId);
+  const userOut = await users.get(serverId, userOutId);
+  const userIn = await users.get(serverId, userInId);
+  if (userOut === null || userIn === null) {
+    throw new CustomError('Пользователь не найден');
+  }
 
   await sequelize.transaction(async t => {
     userOut.update(
@@ -120,7 +101,7 @@ export const setWeight = async (
   userId: string,
   weight: number
 ) => {
-  const user = await users.get<any>(serverId, userId);
+  const user = await users.get(serverId, userId);
 
   if (user !== null) {
     return user.update({
@@ -136,7 +117,7 @@ export const setWeight = async (
 };
 
 export const getWeight = async (serverId: string, userId: string) => {
-  const user = await users.get<any>(serverId, userId);
+  const user = await users.get(serverId, userId);
 
   if (user !== null) {
     return user.weight;

@@ -97,8 +97,8 @@ module.exports = {
       }
       case '1': {
         embed.setTitle('Удалить');
-        const listServersPlayer = await players.get<any>(message.author.id);
-        if (listServersPlayer.length === 0) {
+        const listServersPlayer = await players.getAll(message.author.id);
+        if (listServersPlayer == null || listServersPlayer.length === 0) {
           embed.setDescription('Нет привязанных аккаунтов для удаления');
           return embedMessage.edit(message.author, { embed });
         }
@@ -119,19 +119,21 @@ module.exports = {
         if (osuServerIndex === null) {
           return embed.setDescription('Нет привязанных серверов для удаления');
         }
+
+        const idx = parseInt(osuServerIndex || '0', 10);
         await embedMessage.clearReactions();
         await players
           .remove(
             message.author.id,
-            listServersPlayer[osuServerIndex].gameServer
+            listServersPlayer[idx].gameServer
           )
           .then(() => {
             embed.setTitle('Удалено');
             embed.setDescription(
               `Аккаунт **${
-                listServersPlayer[osuServerIndex].nickname
+                listServersPlayer[idx].nickname
               }** при сервере **${
-                servers[listServersPlayer[osuServerIndex].gameServer].name
+                servers[listServersPlayer[idx].gameServer].name
               }** отвязан`
             );
             embedMessage.edit(message.author, { embed });

@@ -1,7 +1,18 @@
 import { Model, STRING, DATE, DATEONLY, INTEGER, DOUBLE, NOW } from 'sequelize';
 import { sequelize } from '../modules/db';
 
-class User extends Model {}
+class User extends Model {
+  public id!: number;
+  public serverId!: string;
+  public firstEntry!: Date;
+  public birthday!: Date | null;
+  public balance!: number;
+  public weight!: number;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 User.init(
   {
     id: {

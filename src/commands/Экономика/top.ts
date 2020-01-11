@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as tools from '../../modules/tools';
-import * as economy from '../../modules/economy';
+import * as users from '../../modules/users';
 
 const topSize = 10;
 const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
@@ -17,7 +17,7 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message /* , args, CooldownReset */) {
-    const base = await economy.get(message.guild.id);
+    const base = await users.getAll(message.guild.id);
     if (!base) {
       return message.reply(
         'в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!'
@@ -39,12 +39,20 @@ module.exports = {
     );
 
     const msg: any[] = [];
-    [...top.keys()].slice(0, topSize > top.size ? top.size : topSize).forEach((userId) => {
-      const member = message.guild.members.get(userId);
-      if (member) {
-        msg.push(`  **${rangs[msg.length]}. ${(!member || !member.nickname) ? member.user.username : member.nickname}** ${tools.separateThousandth(top.get(userId))}:cookie:`);
-      }
-    });
+    [...top.keys()]
+      .slice(0, topSize > top.size ? top.size : topSize)
+      .forEach(userId => {
+        const member = message.guild.members.get(userId);
+        if (member) {
+          msg.push(
+            `  **${rangs[msg.length]}. ${
+              !member || !member.nickname
+                ? member.user.username
+                : member.nickname
+            }** ${tools.separateThousandth(top.get(userId))}:cookie:`
+          );
+        }
+      });
 
     message.reply(`**печеньковые богачи:**\n${msg.join('\n')}`);
   },
