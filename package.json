@@ -1,6 +1,6 @@
 {
   "name": "mira",
-  "version": "27.12.2019",
+  "version": "10.01.2020",
   "description": "Discord-бот, специально для osu! #russian https://discord.gg/hCe883B",
   "license": "GPL-2.0",
   "author": {
@@ -47,21 +47,21 @@
     "keyv": "^4.0.0",
     "moment": "^2.24.0",
     "mysql2": "^2.0.2",
-    "pino": "^5.15.0",
+    "pino": "^5.16.0",
     "pino-pretty": "^3.5.0",
     "pino-tee": "^0.3.0",
     "sequelize": "^5.21.1",
     "sqlite3": "^4.1.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.5"
   },
   "devDependencies": {
     "@types/keyv": "^3.1.1",
-    "@types/node": "^13.1.2",
+    "@types/node": "^13.1.8",
     "@types/pino": "^5.15.1",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
-    "ts-node": "^8.5.4",
+    "ts-node": "^8.6.2",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0"
   }
