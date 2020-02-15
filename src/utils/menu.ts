@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 
+export const emojiComplete = '✅';
 export const emojiNumbers = [
   '0️⃣',
   '1️⃣',
@@ -14,9 +15,9 @@ export const emojiNumbers = [
   '🔟',
 ];
 
-export const emojiComplete = '✅';
-// todo: ошибка по концу таймера
-// todo: добавить кнопку отмены?
+// TODO: ошибка по концу таймера
+// TODO: добавить кнопку отмены
+// TODO: добавить описание функций
 export const waitReaction = async (
   embed: Discord.Message,
   reactions: string[],

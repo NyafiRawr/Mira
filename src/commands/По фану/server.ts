@@ -13,9 +13,9 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message /* , args, CooldownReset */) {
+  execute(message: Discord.Message) {
     const botCount = message.guild.members.filter(b => b.user.bot).size;
-    const verificationLevel = require('../../../data/verificationLevel.json')[
+    const verificationLevel = tools.getData('verificationLevel')[
       message.guild.verificationLevel
     ];
 

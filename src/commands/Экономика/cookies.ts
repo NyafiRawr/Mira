@@ -6,7 +6,7 @@ import * as users from '../../modules/users';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Баланс печенек',
-  aliases: ['co', 'points', 'money', 'credits'],
+  aliases: ['co', 'balance', 'points', 'money', 'credits'],
   usage: '[@упоминания]',
   guild: true,
   hide: false,
@@ -14,7 +14,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Message /* , args, CooldownReset */) {
+  async execute(message: Message) {
     let victims = new Set(
       message.mentions.members.map((member: any) => member)
     );

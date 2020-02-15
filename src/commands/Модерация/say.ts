@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import CustomError from '../../utils/customError';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -11,10 +12,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: ['MANAGE_MESSAGES', 'SEND_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[] /* , CooldownReset */
-  ) {
+  async execute(message: Discord.Message, args: string[]) {
     let edit = false;
     let targetChannel: Discord.GuildChannel;
     let targetMessageId = '';
@@ -24,7 +22,7 @@ module.exports = {
 
     targetText = newArgs.join(' ');
     if (targetText === '') {
-      return message.reply('вы не указали, что нужно сказать.');
+      throw new CustomError('я скажу... а что сказать нужно было?');
     }
 
     if (newArgs[0] === 'edit') {
@@ -42,7 +40,9 @@ module.exports = {
         .then((targetMessage: any) => targetMessage.edit(targetText))
         .catch((error: any) => {
           message.reply(
-            `сообщение для редактирования не найдено!\nКанал: ${targetChannel}\nID: ${targetMessageId}\nОтправляемый текст: \`\`\`fix\n${targetText.substr(
+            `сообщение для редакта не найдено!` +
+            `\nКанал: ${targetChannel}\nID: ${targetMessageId}` +
+            `\nНовый текст: \`\`\`fix\n${targetText.substr(
               0,
               1424
             )}\`\`\` ${error}`
@@ -56,8 +56,8 @@ module.exports = {
       if (
         !targetChannel.permissionsFor(message.member)!.has(this.permissions)
       ) {
-        return message.reply(
-          'у тебя недостаточно привилегий в указанном канале!'
+        throw new CustomError(
+          'у тебя нет прав управлять/отправлять сообщения!'
         );
       }
 

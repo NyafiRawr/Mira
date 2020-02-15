@@ -50,7 +50,7 @@ module.exports = {
       }
       embed.addField(
         'Подробная информация о команде',
-        `${config.bot.prefix}**help** [имя команды]`,
+        `${config.bot.prefix}**${this.name}** [имя команды]`,
         false
       );
     } else {

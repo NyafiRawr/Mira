@@ -8,9 +8,6 @@ class User extends Model {
   public birthday!: Date | null;
   public balance!: number;
   public weight!: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 User.init(

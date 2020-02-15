@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as vars from '../../modules/vars';
 import * as tools from '../../utils/tools';
+import config from '../../config';
 import CustomError from '../../utils/customError';
 
 module.exports = {
@@ -12,24 +13,34 @@ module.exports = {
   hide: false,
   cooldown: 1.5,
   cooldownMessage: undefined,
-  permissions: [],
+  permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+    const channel = message.guild.channels.find('id', message.channel.id);
+
+    if (!channel.permissionsFor(message.member)!.has(this.permissions[0])) {
+      throw new CustomError('ты не администратор!');
+    }
+
+    const errorNotEnoughtArgs = `не хватает параметров, пример: \`${config.bot.prefix}${this.name} set TEMP_CHANNELS_CATEGORY_ID 234976234818237\``;
+
     if (args[0] === 'set') {
-      if (args.length < 3) { throw new CustomError('Не хватает параметров, пример команды: !vars set TEMP_CHANNELS_CATEGORY_ID 234976234818237'); }
+      if (args.length < 3) {
+        throw new CustomError(errorNotEnoughtArgs);
+      }
 
       const newVar = await vars.set(message.guild.id, args[1], args.slice(2).join(' '));
 
-      await message.reply(`Переменная ${newVar.name} успешно установлена.`);
+      await message.reply(`переменная __${newVar.name}__ установлена.`);
     } else if (args[0] === 'remove') {
-      if (args.length < 2) { throw new CustomError('Не хватает параметров, пример команды: !vars set TEMP_CHANNELS_CATEGORY_ID 234976234818237'); }
+      if (args.length < 2) { throw new CustomError(errorNotEnoughtArgs); }
 
       await vars.remove(message.guild.id, args[1]);
-      await message.reply(`Переменная ${args[1]} удалена.`);
+      await message.reply(`переменная __${args[1]}__ удалена.`);
     } else if (args[0] === 'all') {
       const embed = new Discord.RichEmbed();
       embed.setAuthor(
-        `Переменные бота для сервера ${message.guild.name}`,
+        `Переменные бота для ${message.guild.name}`,
         message.guild.iconURL,
       );
 
@@ -45,6 +56,7 @@ module.exports = {
         tools.embedFooter(message, this.name),
         message.author.displayAvatarURL
       );
+
       message.channel.send({ embed });
     }
   },

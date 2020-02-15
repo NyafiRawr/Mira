@@ -42,16 +42,17 @@ export default async (message: Message) => {
     return;
   }
 
-  // if (message.guild && !message.channel.permissionsFor(message.client.user).has('SEND_MESSAGES')) {
-  //   return message.author
-  //     .send(`${message.author}, нет разрешения отправлять сообщения в ${message.channel} на сервере **${message.guild}**!`)
-  //     .catch(console.error);
-  // }
+  const channel = message.guild.channels.find('id', message.channel.id);
+  if (message.guild && !channel.permissionsFor(message.member)!.has('SEND_MESSAGES')) {
+    return message.author
+      .send(`${message.author}, нет права отправлять сообщения в ${message.channel} на сервере **${message.guild}**!`)
+      .catch(); // ЛС закрыто, вот и пусть гадает в чём проблема ;)
+  }
 
   if (message.channel.type === 'text') {
     await message.delete();
   } else if (command.guild) {
-    return message.reply('эта команда недоступна в ЛС!');
+    return message.reply(`команда \`${command.name}\` недоступна в ЛС!`);
   }
 
   const timeLeft = await cooldowns.get(
@@ -72,7 +73,7 @@ export default async (message: Message) => {
     let reply;
 
     if (!command.cooldownMessage) {
-      reply = `пожалуйста, подождите ${timeLeft} прежде, чем снова вызвать команду: ${command.name}!`;
+      reply = `пожалуйста, подождите ${timeLeft} прежде, чем вызвать команду: ${command.name}!`;
     } else {
       reply = command.cooldownMessage[
         randomInteger(0, command.cooldownMessage.length - 1)
@@ -92,7 +93,7 @@ export default async (message: Message) => {
       err.send(message);
     } else {
       log.error(err, message.author.id, message.content);
-      message.reply('при вызове команды произошла ошибка ;(');
+      throw new CustomError();
     }
   }
 };
