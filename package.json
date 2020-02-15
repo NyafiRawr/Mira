@@ -50,7 +50,7 @@
     "pino": "^5.16.0",
     "pino-pretty": "^3.5.0",
     "pino-tee": "^0.3.0",
-    "sequelize": "^5.21.1",
+    "sequelize": "^5.21.4",
     "sqlite3": "^4.1.1",
     "typescript": "^3.7.5"
   },
