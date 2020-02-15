@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { randomInteger } from '../../modules/tools';
+import { randomInteger } from '../../utils/tools';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],

@@ -24,9 +24,7 @@ export const waitReaction = async (
 ) => {
   await embed.clearReactions();
 
-  // eslint-disable-next-line no-restricted-syntax
   for await (const emoji of reactions) {
-    // eslint-disable-next-line no-await-in-loop
     await embed.react(emoji);
   }
 
@@ -49,9 +47,7 @@ export const waitReactionComplete = async (
 ) => {
   await embed.clearReactions();
 
-  // eslint-disable-next-line no-restricted-syntax
   for await (const emoji of reactions) {
-    // eslint-disable-next-line no-await-in-loop
     await embed.react(emoji);
   }
   await embed.react(reactionComplete);

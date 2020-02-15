@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import config from '../../config';
 
 module.exports = {

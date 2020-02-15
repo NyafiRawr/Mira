@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 
 import config from '../../config';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import { commands } from '../../client';
 
 module.exports = {

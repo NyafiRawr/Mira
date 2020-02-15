@@ -1,31 +1,22 @@
 import Player from '../models/player';
 
-export const get = async <T = Player>(
+export const get = async (
   userId: string,
   gameServer: string = ''
-): Promise<T> => {
-  let player: any;
+): Promise<Player | null> =>
+  Player.findOne({
+    where: {
+      userId,
+      gameServer,
+    },
+  });
 
-  if (gameServer) {
-    player = await Player.findOne({
-      where: {
-        userId,
-        gameServer,
-      },
-    });
-  } else {
-    player = await Player.findAll({
-      where: {
-        userId,
-      },
-    });
-    for (let i = 0; i < player.length; i += 1) {
-      player[i] = player[i].dataValues;
-    }
-  }
-
-  return player;
-};
+export const getAll = async (userId: string): Promise<Player[] | null> =>
+  Player.findAll({
+    where: {
+      userId,
+    },
+  });
 
 export const set = async (
   userId: string,
@@ -45,11 +36,10 @@ export const set = async (
   });
 };
 
-export const remove = async (userId: string, gameServer: string) => {
-  return Player.destroy({
+export const remove = async (userId: string, gameServer: string) =>
+  Player.destroy({
     where: {
       userId,
       gameServer,
     },
   });
-};

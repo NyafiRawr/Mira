@@ -6,7 +6,7 @@ import { log } from '../logger';
 
 const logErrorFile = './errors.log';
 
-export const separateThousandth = (str: string) => {
+export const separateThousandth = (str?: string | number) => {
   if (str) {
     return str.toString().replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,');
   }

@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
-import * as tools from '../../modules/tools';
+
+import * as users from '../../modules/users';
+import * as tools from '../../utils/tools';
 import * as economy from '../../modules/economy';
 
 module.exports = {
@@ -30,13 +32,14 @@ module.exports = {
 
     await economy.set(message.guild.id, message.author.id, earned);
 
+    const user = await users.get(message.guild.id, message.author.id);
+
     const replyMessage = `${message.author} +**${tools.separateThousandth(
       earned.toString()
     )}**:cookie:`;
+
     const embed = new Discord.RichEmbed().setDescription(
-      `Теперь у вас ${tools.separateThousandth(
-        await economy.get(message.guild.id, message.author.id)
-      )}:cookie:`
+      `Теперь у вас ${tools.separateThousandth(user?.balance)}:cookie:`
     );
     message.channel.send(replyMessage, { embed });
   },

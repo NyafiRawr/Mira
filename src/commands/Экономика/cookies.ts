@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 
-import { separateThousandth } from '../../modules/tools';
-import * as economy from '../../modules/economy';
+import { separateThousandth } from '../../utils/tools';
+import * as users from '../../modules/users';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -25,7 +25,7 @@ module.exports = {
     let msg = '';
     // eslint-disable-next-line no-restricted-syntax
     for await (const member of victims) {
-      const currency = await economy.get(message.guild.id, member.id);
+      const currency = (await users.get(message.guild.id, member.id))?.balance;
       msg += `у ${message.author.id === member.id ? 'вас' : member} `;
       if (!currency) {
         msg += 'совсем-совсем нет печенья!\n';

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import Axios from 'axios';
 
 import config from '../../config';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 
 // tslint:disable-next-line: no-var-requires
 const gifs = require('../../../data/gifs.json');
