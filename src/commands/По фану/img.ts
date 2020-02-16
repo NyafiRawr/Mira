@@ -13,7 +13,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[]) {
     const findMember = (nickname: string) => {
       const result = message.guild.members.find(
         (m: Discord.GuildMember) => m.nickname === nickname
@@ -39,7 +39,9 @@ module.exports = {
         }`
       )
       .setImage(user.displayAvatarURL)
+
       .setColor('#ffffff')
+
       .setFooter(
         tools.embedFooter(message, this.name),
         message.author.displayAvatarURL

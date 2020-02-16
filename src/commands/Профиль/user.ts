@@ -17,7 +17,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(
     message: Discord.Message,
-    args: string[] /* , CooldownReset */
+    args: string[]
   ) {
     const user: any =
       message.mentions.users.first() ||
@@ -61,7 +61,7 @@ module.exports = {
     const dbUser = await users.get(message.guild.id, user.id);
 
     if (dbUser) {
-      firstEntry = dbUser.createdAt || firstEntry;
+      firstEntry = dbUser.firstEntry;
       birthday = dbUser.birthday;
     }
 

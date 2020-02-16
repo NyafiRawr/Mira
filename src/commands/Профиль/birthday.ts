@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as moment from 'moment';
-
+import CustomError from '../../utils/customError';
 import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
 
@@ -15,12 +15,11 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[]) {
     if (!args.join(' ')) {
-      return message.reply(`укажите дату рождения! (${this.usage})`);
+      throw new CustomError(`укажите дату рождения! (${this.usage})`);
     }
 
-    // парсим дату и валидируем ее
     const date = moment(args[0], [
       'DD-MM-YYYY',
       'DD.MM.YYYY',
@@ -30,7 +29,7 @@ module.exports = {
       'MMMM DD YYYY',
     ]);
     if (!date.isValid()) {
-      return message.reply('неправильно указана дата!');
+      throw new CustomError('неправильно указана дата!');
     }
 
     users.set(message.guild.id, message.author.id, {

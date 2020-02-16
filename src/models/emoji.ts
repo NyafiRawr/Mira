@@ -1,4 +1,4 @@
-import { Model, STRING, INTEGER } from 'sequelize';
+import { Model, STRING } from 'sequelize';
 import { sequelize } from '../db';
 
 class Emoji extends Model {
@@ -6,9 +6,6 @@ class Emoji extends Model {
   public messageId!: string;
   public emojiId!: string;
   public roleId!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 Emoji.init(

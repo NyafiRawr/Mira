@@ -7,7 +7,7 @@ const packageFile = require('../../../package.json');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: `Информация о ${packageFile.name}`,
+  description: `Информация о ${tools.toTitle(packageFile.name)}`,
   aliases: ['info', 'version', 'developer'],
   usage: undefined,
   guild: false,
@@ -16,7 +16,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message /* , args, CooldownReset */) {
+  execute(message: Discord.Message) {
     let totalSeconds = message.client.uptime / 1000;
     const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor(totalSeconds / 3600);
@@ -28,20 +28,19 @@ module.exports = {
     const embed = new Discord.RichEmbed()
       .setAuthor('Информация обо мне', 'https://i.imgur.com/wSTFkRM.png')
       .setTitle(
-        `Работаю на Discord.JS (NodeJS ${process.version} TS ${packageFile.dependencies.typescript})`
+        `Разработано на Discord.JS (NodeJS ${process.version} TS v${packageFile.dependencies.typescript})`
       )
       .setURL('https://discord.js.org')
 
-      .addField('Обновление', packageFile.version, true)
-      .addField('Время работы', uptime, true)
-      .addField('Создатель', packageFile.author.tag, true)
-      .addField(
-        'Разработчики',
+      .setDescription(`Разработчики:\n - ${packageFile.author.tag}\n` +
         packageFile.contributors
           .map((contr: string) => ` - ${contr}`)
-          .join('\n'),
-        false
+          .join('\n')
       )
+
+      .addField('Версия (Г.М.Д)', packageFile.version, true)
+      .addField('Время работы', uptime, true)
+      .addField('Хостинг', 'FirstByte.ru', true)
       .addField('Префикс', config.bot.prefix, true)
       .addField('Сервера', message.client.guilds.size, true)
       .addField('Пользователи', message.client.users.size, true)

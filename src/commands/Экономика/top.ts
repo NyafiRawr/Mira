@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import CustomError from '../../utils/customError';
 import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
 
@@ -16,10 +17,10 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message /* , args, CooldownReset */) {
+  async execute(message: Discord.Message) {
     const base = await users.getAll(message.guild.id);
     if (!base) {
-      return message.reply(
+      throw new CustomError(
         'в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!'
       );
     }

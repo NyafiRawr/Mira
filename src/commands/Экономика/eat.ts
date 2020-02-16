@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import CustomError from '../../utils/customError';
 import { randomInteger } from '../../utils/tools';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
@@ -28,20 +29,20 @@ module.exports = {
       ?.balance;
 
     if (!currency) {
-      return message.reply('у вас нет печенья, чтобы его съедать!');
+      throw new CustomError('у вас нет печенья, чтобы его съедать!');
     }
     if (currency < 1) {
-      return message.reply('есть нечего.');
+      throw new CustomError('есть нечего.');
     }
 
     const amount = parseInt(args[0], 1) || 1;
     if (amount < 1) {
       cooldownReset();
-      return message.reply(`:boom: \`-help ${this.name}\`?`);
+      throw new CustomError(`:boom: \`-help ${this.name}\`?`);
     }
     if (amount > currency) {
       cooldownReset();
-      return message.reply(
+      throw new CustomError(
         'вы трёте глаза и осознаёте, что у вас гораздо меньше печенья, чем вы думали...'
       );
     }

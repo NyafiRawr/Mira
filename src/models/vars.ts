@@ -1,4 +1,4 @@
-import { Model, STRING, INTEGER } from 'sequelize';
+import { Model, STRING } from 'sequelize';
 import { sequelize } from '../db';
 
 class Vars extends Model {
@@ -6,9 +6,6 @@ class Vars extends Model {
 
   public name!: string;
   public value!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 Vars.init(

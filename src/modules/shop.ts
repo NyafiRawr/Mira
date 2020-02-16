@@ -1,4 +1,4 @@
-import DonateRoles from '../models/donateRoles';
+import DonateRoles from '../models/shop';
 
 export const get = async <T = DonateRoles>(
   serverId: string,

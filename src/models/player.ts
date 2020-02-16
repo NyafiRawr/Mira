@@ -6,9 +6,6 @@ class Player extends Model {
   public gameServer!: string;
   public nickname!: string;
   public modes!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 Player.init(

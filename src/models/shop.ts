@@ -1,16 +1,13 @@
 import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize } from '../db';
 
-class DonateRoles extends Model {
+class Shop extends Model {
   public serverId!: string;
   public roleId!: string;
   public cost!: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
-DonateRoles.init(
+Shop.init(
   {
     serverId: {
       type: STRING,
@@ -25,11 +22,11 @@ DonateRoles.init(
     },
   },
   {
-    modelName: 'donate_roles',
+    modelName: 'shop',
     sequelize,
   }
 );
 
-export default DonateRoles;
+export default Shop;
 
-DonateRoles.sync();
+Shop.sync();

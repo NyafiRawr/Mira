@@ -11,10 +11,10 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Message /* , args, CooldownReset */) {
+  execute(message: Message) {
     let target = message.channel;
 
-    if (message.guild === undefined) {
+    if (!message.guild) {
       target = message.author.dmChannel;
     }
 
