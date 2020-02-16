@@ -1,7 +1,16 @@
 import { Model, STRING, ENUM } from 'sequelize';
-import { sequelize } from '../modules/db';
+import { sequelize } from '../db';
 
-class Player extends Model {}
+class Player extends Model {
+  public userId!: string;
+  public gameServer!: string;
+  public nickname!: string;
+  public modes!: string;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 Player.init(
   {
     userId: {

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -21,21 +21,21 @@ module.exports = {
       return;
     }
     // eslint-disable-next-line prefer-destructuring
-    player.mode = player.modes[0];
+    const modePref = parseInt(player.modes?.split(',')[0] || '0', 10);
 
     const osuUser = await osu.getUser(
-      player.gameServer,
+      player.gameServer || '',
       player.nickname,
-      player.modes
+      modePref
     );
     const server = tools.getDataValueOnKey('osu!/servers', player.gameServer)
       .name;
-    const dataMode = tools.getDataValueOnKey('osu!/modes', player.mode);
+    const dataMode = tools.getDataValueOnKey('osu!/modes', modePref.toString());
     const mode = dataMode.name;
 
     if (osuUser === null) {
       return message.reply(
-        `игрок __**${player.nickname}**__ не найден на сервере __**${server}**__ (режим: __**${player.mode}**__).`
+        `игрок __**${player.nickname}**__ не найден на сервере __**${server}**__ (режим: __**${modePref}**__).`
       );
     }
 

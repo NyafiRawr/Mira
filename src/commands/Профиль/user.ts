@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
+import moment = require('moment');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -57,15 +58,19 @@ module.exports = {
       firstEntry = lastEntry;
     }
 
-    const dbUser = await users.get<any>(message.guild.id, user.id);
+    const dbUser = await users.get(message.guild.id, user.id);
 
     if (dbUser) {
-      firstEntry = dbUser.entryDate || firstEntry;
+      firstEntry = dbUser.createdAt || firstEntry;
       birthday = dbUser.birthday;
     }
 
     if (firstEntry) {
-      embed.addField('Первый вход', tools.toDate(firstEntry), true);
+      embed.addField(
+        'Первый вход',
+        tools.toDate(firstEntry.toISOString()),
+        true
+      );
     }
 
     if (lastEntry) {
@@ -77,11 +82,11 @@ module.exports = {
     }
 
     if (birthday) {
-      birthday = dbUser.birthday
-        .split('-')
-        .reverse()
-        .join('.');
-      embed.addField('День рождения', birthday, true);
+      embed.addField(
+        'День рождения',
+        moment(birthday).format('DD-MM-YY'),
+        true
+      );
     }
 
     embed.setColor(tools.randomHexColor());

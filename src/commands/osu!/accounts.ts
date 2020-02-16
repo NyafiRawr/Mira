@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import * as players from '../../modules/players';
 
 module.exports = {
@@ -22,9 +22,9 @@ module.exports = {
       .setAuthor('Аккаунты в мире osu!')
       .setTitle(victim.nickname || victim.user.username);
 
-    const accounts = await players.get<any[]>(victim.id);
+    const accounts = await players.getAll(victim.id);
 
-    if (accounts.length === 0) {
+    if (accounts === null || accounts.length === 0) {
       return message.reply(`у ${victim} нет привязанных аккаунтов.`);
     }
 
@@ -33,7 +33,7 @@ module.exports = {
         const user = await osu.getUser(
           account.gameServer,
           account.nickname,
-          mode
+          parseInt(mode, 10)
         );
         if (user != null) {
           const topScores =
