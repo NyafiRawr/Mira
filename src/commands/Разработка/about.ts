@@ -38,7 +38,7 @@ module.exports = {
           .join('\n')
       )
 
-      .addField('Версия (год.месяц)', packageFile.version, true)
+      .addField('Версия (Г.М.Д)', packageFile.version, true)
       .addField('Время работы', uptime, true)
       .addField('Хостинг', 'FirstByte.ru', true)
       .addField('Префикс', config.bot.prefix, true)
