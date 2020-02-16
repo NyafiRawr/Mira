@@ -15,7 +15,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  async execute(message: Discord.Message, args: string[]) {
     const channel = message.guild.channels.find('id', message.channel.id);
 
     if (!channel.permissionsFor(message.member)!.has(this.permissions[0])) {
