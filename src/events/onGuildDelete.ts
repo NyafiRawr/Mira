@@ -6,6 +6,6 @@ import { log } from '../logger';
  */
 export default async (guild: Guild) => {
   log.info(
-    `Отключен сервер: ${guild.name} (id: ${guild.id}). Участников: ${guild.memberCount}`
+    `Меня удалили из: ${guild.name} (id: ${guild.id}). Участников: ${guild.memberCount}`
   );
 };

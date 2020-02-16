@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as tools from '../../utils/tools';
+import CustomError from '../../utils/customError';
 
 // tslint:disable-next-line: no-var-requires
 const packageJson = require('../../../package.json');
@@ -15,15 +16,15 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[]) {
     if (message.author.id !== packageJson.author.id) {
-      return message.reply(
+      throw new CustomError(
         `команда ${this.name} доступна только разработчику!`
       );
     }
 
     if (args[0] === undefined) {
-      return message.reply('не указан код для выполнения.');
+      throw new CustomError('не указан код для выполнения.');
     }
 
     try {

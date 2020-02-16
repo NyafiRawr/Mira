@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 
 import CustomError from '../../utils/customError';
-import * as donateRoles from '../../modules/donateRoles';
+import * as shop from '../../modules/shop';
 import * as economy from '../../modules/economy';
 import * as tools from '../../utils/tools';
 
@@ -9,15 +9,15 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Каталог ролей',
   aliases: [],
-  usage: '[all/add/rm/buy] <@роль> <стоимость в :cookie:>',
+  usage: '[all/add/rem/buy] <@роль> <стоимость в :cookie:>',
   guild: true,
   hide: false,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   cooldown: 1,
   cooldownMessage:
-    'Вы наверное самая быстрая рука на диком западе, я немного не успеваю.',
+    'Вы наверное самая быстрая рука на диком западе, я немного не успеваю',
 
-  // необходимые роли для управление магазином
+  // Необходимые роли для управление магазином
   managePermisions: ['MANAGE_ROLES'],
 
   /**
@@ -29,7 +29,7 @@ module.exports = {
     const embed = new Discord.RichEmbed();
 
     if (args[0] === 'all' || args.length === 0) {
-      const roles = await donateRoles.getAll(message.guild.id);
+      const roles = await shop.getAll(message.guild.id);
       if (!roles.length) {
         throw new CustomError('магазин пуст...');
       }
@@ -38,14 +38,14 @@ module.exports = {
       roles.forEach((role: any, idx: number) =>
         embed.setDescription(
           `${idx + 1}. ${message.guild.roles.get(role.roleId)} ${
-            role.cost
+          role.cost
           }:cookie:`
         )
       );
     } else if (args[0] === 'buy' && message.mentions.roles.size > 0) {
       const roleMention = message.mentions.roles.first();
 
-      const roleShop = await donateRoles.get<any>(
+      const roleShop = await shop.get<any>(
         message.guild.id,
         roleMention.id
       );
@@ -71,19 +71,19 @@ module.exports = {
       const role = message.mentions.roles.first();
       const cost = args.length > 1 ? parseInt(args[1], 10) : 0;
 
-      await donateRoles.set(message.guild.id, role.id, cost);
+      await shop.set(message.guild.id, role.id, cost);
 
       embed.setDescription(
         `Роль **${role}** выставлена за **${cost}**:cookie:`
       );
-    } else if (args[0] === 'rm' && message.mentions.roles.size > 0) {
+    } else if (args[0] === 'rem' && message.mentions.roles.size > 0) {
       if (!message.member.hasPermissions(this.managePermisions)) {
         return;
       }
 
       const role = message.mentions.roles.first();
 
-      await donateRoles.remove(message.guild.id, role.id);
+      await shop.remove(message.guild.id, role.id);
       embed.setDescription(`Роль **${role}** удалена из магазина`);
     } else {
       throw new CustomError(

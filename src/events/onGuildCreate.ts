@@ -6,6 +6,6 @@ import { log } from '../logger';
  */
 export default async (guild: Guild) => {
   log.info(
-    `Новое подключение: ${guild.name} (id: ${guild.id}). Участники: ${guild.memberCount}`
+    `Меня добавили в: ${guild.name} (id: ${guild.id}). Участники: ${guild.memberCount}`
   );
 };

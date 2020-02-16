@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import * as Discord from 'discord.js';
 
 /**
@@ -7,11 +6,11 @@ import * as Discord from 'discord.js';
 export default class CustomError extends Error {
   private reply: string | null;
 
-  constructor(msg?: string) {
-    super(msg);
+  constructor(reason?: string) {
+    super(reason);
 
-    // на случай когда не указали ответ
-    this.reply = msg || null;
+    // Случай когда не указан ответ
+    this.reply = reason || null;
   }
 
   /**

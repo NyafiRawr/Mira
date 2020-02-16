@@ -5,8 +5,7 @@ import Axios from 'axios';
 import config from '../../config';
 import * as tools from '../../utils/tools';
 
-// tslint:disable-next-line: no-var-requires
-const gifs = require('../../../data/gifs.json');
+const gifs = tools.getData('gifs');
 
 const cats: string[] = [];
 const emotions: string[] = [];
@@ -29,7 +28,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message /* , args, CooldownReset */) {
+  async execute(message: Discord.Message) {
     const emotion = message.content
       .substr(config.bot.prefix.length)
       .split(/ +/)[0];

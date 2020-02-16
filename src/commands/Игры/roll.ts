@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import { randomInteger } from '../../utils/tools';
+import CustomError from '../../utils/customError';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -11,14 +12,12 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[]) {
     let limit = 100;
 
     if (args[0]) {
       limit = parseInt(args[0], 10);
-      return message.reply(
-        Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?'
-      );
+      throw new CustomError(Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?');
     }
 
     message.reply(

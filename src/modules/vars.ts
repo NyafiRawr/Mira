@@ -24,12 +24,12 @@ export const set = async (
   name: string,
   value: any,
 ): Promise<Vars> => {
-  const varible = await Vars.findOne({
+  const variable = await Vars.findOne({
     where: { name, serverId },
   });
 
-  if (varible != null) {
-    return varible.update({
+  if (variable != null) {
+    return variable.update({
       name,
       value: JSON.stringify(value),
     });

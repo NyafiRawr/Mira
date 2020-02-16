@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import config from '../../config';
 import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
 import * as vars from '../../modules/vars';
@@ -8,7 +9,7 @@ import { log } from '../../logger';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Каталог ролей',
-  aliases: ['tc'],
+  aliases: ['v'],
   usage: '[create/invite] <@упоминание>',
   guild: true,
   hide: false,
@@ -16,12 +17,9 @@ module.exports = {
   cooldownMessage: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
 
-  // todo: вынести в конфиг
-  price: 400,
-
   async getCategoryId(serverId: string) {
-    const value = vars.get<string|null>(serverId, 'TEMP_CHANNELS_CATEGORY_ID', null);
-    if (value === null) { throw new CustomError('Временные каналы не настроены, попросите админов сделать это!'); }
+    const value = vars.get<string | null>(serverId, 'TEMP_CHANNELS_CATEGORY_ID', null);
+    if (value === null) throw new CustomError('Категория создания каналов не указана, попросите админов сделать это!');
 
     return value;
   },
@@ -35,56 +33,52 @@ module.exports = {
    * @param {string[]} args параметры запроса
    */
   async execute(message: Discord.Message, args: string[]) {
-    const tempChannelName = `Private room ${message.member.displayName}`;
+    const tempVoiceName = `${message.member.displayName}`;
+
+    const errorNotEnoughtArgs = `не хватает параметров, пример команды: \`${config.bot.prefix}${this.name} invite ${message.client.user}\``;
 
     if (args[0] === 'invite') {
-      // валидация параметров комманды
       if (args.length <= 1) {
-        throw new CustomError(
-          'Не хватает параметров, пример команды: !tempchannel invite @admin'
-        );
+        throw new CustomError(errorNotEnoughtArgs);
       }
 
-      const tempChannel = message.guild.channels.find('name', tempChannelName);
+      const tempVoice = message.guild.channels.find('name', tempVoiceName);
       for await (const target of message.mentions.members.array()) {
-        tempChannel.overwritePermissions(target.id, {
+        tempVoice.overwritePermissions(target.id, {
           VIEW_CHANNEL: true,
           CONNECT: true,
           SPEAK: true,
           USE_VAD: true,
         });
 
-        const inv = await tempChannel.createInvite({
+        const invite = await tempVoice.createInvite({
           maxAge: 10 * 60 * 1000
-        }, `Приглашение в ${tempChannel.toString()}`);
+        }, `Приглашение в ${tempVoice.toString()}`);
         await message.reply(
-          `Пользователь ${target.displayName} был добавлен в ${tempChannelName}. ${inv.url}`
+          `Пользователь ${target.displayName} добавлен в ${tempVoiceName}. ${invite.url}`
         );
       }
     } else if (args[0] === 'remove') {
-      // валидация параметров комманды
       if (args.length <= 1) {
-        throw new CustomError(
-          'Не хватает параметров, пример команды: !tempchannel invite @admin'
-        );
+        throw new CustomError(errorNotEnoughtArgs);
       }
 
-      const tempChannel = message.guild.channels.find('name', tempChannelName);
+      const tempVoice = message.guild.channels.find('name', tempVoiceName);
       for await (const target of message.mentions.members.array()) {
-        tempChannel.replacePermissionOverwrites({
-          overwrites: tempChannel.permissionOverwrites.filter(
+        tempVoice.replacePermissionOverwrites({
+          overwrites: tempVoice.permissionOverwrites.filter(
             perm => perm.id !== target.id
           ),
         });
 
         await message.reply(
-          `Пользователь ${target.displayName} был удален из ${tempChannelName}`
+          `Пользователь ${target.displayName} удален из ${tempVoiceName}`
         );
       }
     } else if (args[0] === 'create') {
       await economy.pay(message.guild.id, message.author.id, await this.getPrice(message.guild.id));
 
-      const tempChannel = (await message.guild.createChannel(tempChannelName, {
+      const tempVoice = (await message.guild.createChannel(tempVoiceName, {
         type: 'voice',
         permissionOverwrites: [
           {
@@ -105,21 +99,21 @@ module.exports = {
         ],
         parent: await this.getCategoryId(message.guild.id),
         topic:
-          'Канал будет удален сразу после того как все участники выйдут из него!',
+          'Канал будет удален после того, как все выйдут из него!',
       })) as Discord.VoiceChannel;
 
-      const inv = await tempChannel.createInvite({
+      const invite = await tempVoice.createInvite({
         maxAge: 10 * 60,
         temporary: true,
-      }, `Приглашение в ${tempChannel.toString()}`);
-      await message.reply(`Канал ${tempChannel.toString()} создан! ${inv.url}`);
+      }, `Приглашение в ${tempVoice.toString()}`);
+      await message.reply(`Канал __${tempVoice.toString()}__ создан! ${invite.url}`);
 
       const deleteChannel = () =>
-        tempChannel
+        tempVoice
           .delete()
           .then(() =>
             message.reply(
-              `Так как в канале ${tempChannel.toString()} ни кого не было то он был удален из за ненадобности!`
+              `Пустующий канал __${tempVoice.toString()}__ удалён!`
             )
           )
           .catch(log.error);
@@ -127,7 +121,7 @@ module.exports = {
       setTimeout(() => {
         const watcher = setInterval(
           () =>
-            tempChannel.members.size === 0 &&
+            tempVoice.members.size === 0 &&
             deleteChannel() &&
             clearInterval(watcher),
           2e4

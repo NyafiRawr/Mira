@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 
-// загружаем .env файл в переменные окружения
+// Загружаем .env файл в переменные окружения
 dotenv.config({ debug: Boolean(process.env.DEBUG) });
 
 /**
@@ -24,7 +24,6 @@ export default {
     token: requireProcessEnv('BOT_TOKEN'),
   },
   db: {
-    // Параметры по умолчанию
     dialect: process.env.DB_DIALECT || 'mysql',
     storage: process.env.DB_STORAGE || 'database.sqlite',
 
