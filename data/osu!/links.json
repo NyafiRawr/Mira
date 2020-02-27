@@ -4,8 +4,8 @@
 		"user": "https://osu.ppy.sh/u/ID/MODE",
 		"beatmap": "https://osu.ppy.sh/b/ID",
 		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png",
+		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=RU&page=P#scores",
 		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
 	},
 	"regular": {
@@ -13,8 +13,8 @@
 		"user": "https://osu.akatsuki.pw/u/ID",
 		"beatmap": "https://osu.akatsuki.pw/b/ID",
 		"beatmapset": "https://assets.osu.akatsuki.pw/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png",
+		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=RU&page=P#scores",
 		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
 	},
 	"relax": {
@@ -22,8 +22,8 @@
 		"user": "https://relax.akatsuki.pw/u/ID",
 		"beatmap": "https://relax.akatsuki.pw/b/ID",
 		"beatmapset": "https://assets.relax.akatsuki.pw//beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png",
+		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=RU&page=P#scores",
 		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
 	},
 	"ripple": {
@@ -31,8 +31,8 @@
 		"user": "https://ripple.moe/u/ID",
 		"beatmap": "https://ripple.moe/b/ID",
 		"beatmapset": "https://assets.ripple.moe/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png",
+		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=RU&page=P#scores",
 		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
 	},
 	"enjuu": {
@@ -40,8 +40,8 @@
 		"user": "https://enjuu.click/u/ID",
 		"beatmap": "https://enjuu.click/b/ID",
 		"beatmapset": "https://assets.enjuu.click/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png",
+		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=RU&page=P#scores",
 		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
 	},
 	"gatari": {
@@ -49,8 +49,8 @@
 		"user": "https://gatari.pw/u/ID",
 		"beatmap": "https://gatari.pw/b/ID",
 		"beatmapset": "https://assets.gatari.pw/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png",
+		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=RU&page=P#scores",
 		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
 	}
 }

@@ -5,6 +5,7 @@ class Player extends Model {
   public userId!: string;
   public gameServer!: string;
   public nickname!: string;
+  public modeFavorite!: string;
   public modes!: string;
 }
 
@@ -21,24 +22,32 @@ Player.init(
     },
     // 15 - максимальная длина ника (на официальном сервере)
     nickname: STRING(15),
-    // играемые режимы
-    modes: ENUM(
-      '0',
-      '0,1',
-      '0,2',
-      '0,3',
-      '0,1,2',
-      '0,1,3',
-      '0,2,3',
-      '0,1,2,3',
-      '1',
-      '1,2',
-      '1,3',
-      '1,2,3',
-      '2',
-      '2,3',
-      '3'
-    ),
+    // избранный режим (вызываемый по умолчанию), только один
+    modeFavorite: {
+      type: ENUM('0', '1', '2', '3'),
+      defaultValue: '0',
+    },
+    // играемые режимы (включая избранный)
+    modes: {
+      type: ENUM(
+        '0',
+        '0,1',
+        '0,2',
+        '0,3',
+        '0,1,2',
+        '0,1,3',
+        '0,2,3',
+        '0,1,2,3',
+        '1',
+        '1,2',
+        '1,3',
+        '1,2,3',
+        '2',
+        '2,3',
+        '3'
+      ),
+      defaultValue: '0',
+    }
   },
   {
     modelName: 'player',

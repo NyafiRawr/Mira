@@ -26,6 +26,11 @@ export const getUser = async (
     throw new CustomError(status404);
   }
   const data = response.data[0];
+  if (data === undefined) {
+    throw new CustomError(
+      `игрок __**${idOrName}**__ не найден на сервере __**${server}**__ (режим: __**${mode}**__).`
+    );
+  }
 
   const gameUser = {
     user_id: data.user_id,

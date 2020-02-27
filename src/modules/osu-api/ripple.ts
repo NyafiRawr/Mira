@@ -25,6 +25,11 @@ export const getUser = async (
   }
 
   const { data } = response;
+  if (data === undefined) {
+    throw new CustomError(
+      `игрок __**${idOrName}**__ не найден на сервере __**${server}**__ (режим: __**${mode}**__).`
+    );
+  }
 
   const modeName = tools.getDataValueOnKey('osu!/modes', mode).aliases[0];
   const gameUser = {

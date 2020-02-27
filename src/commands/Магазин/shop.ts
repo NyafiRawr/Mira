@@ -18,15 +18,7 @@ module.exports = {
   cooldown: 1,
   cooldownMessage:
     'Вы наверное самая быстрая рука на диком западе, я немного не успеваю',
-
-  // Необходимые роли для управление магазином
   managePermisions: ['MANAGE_ROLES'],
-
-  /**
-   * Выполняет комманду и результат возвращяет пользователю
-   * @param {Discord.Message} message сообщение
-   * @param {string[]} args параметры запроса
-   */
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed();
 

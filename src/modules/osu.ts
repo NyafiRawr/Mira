@@ -158,7 +158,7 @@ export const decodeMods = (code: string) => {
 
   return result.join(', ');
 };
-// Вытаскивание из аргументов: ника (строка или @) иИли параметров /mode /server
+// Вытаскивание из аргументов: ника (строка или @) и параметров /mode /server
 export const getPlayerFromMessage = async (
   message: Discord.Message,
   args: string[]
@@ -213,9 +213,9 @@ export const getPlayerFromMessage = async (
   }
 
   let player = {
-    nickname: message.author.username,
+    nickname: message.guild.members.get(message.author.id)?.nickname || message.author.username,
     gameServer: specificServer,
-    modes: specificMode,
+    modeFavorite: specificMode
   };
 
   if (message.mentions.members.size) {
@@ -239,7 +239,7 @@ export const getPlayerFromMessage = async (
   }
 
   player.gameServer = player.gameServer || 'bancho';
-  player.modes = player.modes || '0';
+  player.modeFavorite = player.modeFavorite || '0';
 
   return player;
 };
