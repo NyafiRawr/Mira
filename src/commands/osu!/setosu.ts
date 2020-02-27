@@ -42,7 +42,7 @@ module.exports = {
         for (let i = 0; i < Object.keys(servers).length; i += 1) {
           changeServer += `${menu.emojiNumbers[i + 1]} ${
             Object.values<any>(servers)[i].name
-          }\n`;
+            }\n`;
         }
         embed.setDescription(changeServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
@@ -59,7 +59,7 @@ module.exports = {
         for (let i = 0; i < Object.keys(modes).length; i += 1) {
           changeMode += `${menu.emojiNumbers[i + 1]} ${
             Object.values<any>(modes)[i].name
-          }\n`;
+            }\n`;
         }
         embed.setDescription(changeMode);
         embedMessage = await embedMessage.edit(message.author, { embed });
@@ -80,10 +80,10 @@ module.exports = {
         embed.setTitle('Успех!');
         embed.setDescription(`Игрок **${osuName}** на сервере **${
           Object.values<any>(servers)[osuServerIndex as any].name
-        }**
+          }**
          играет **${osuModesIndexes
-           .map(mode => modes[mode].name)
-           .join(', ')}**!`);
+            .map(mode => modes[mode].name)
+            .join(', ')}**!`);
         await embedMessage.edit(message.author, { embed });
         await players.set(
           message.author.id,
@@ -107,7 +107,7 @@ module.exports = {
         for (let i = 0; i < listServersPlayer.length; i += 1) {
           changeServer += `${menu.emojiNumbers[i + 1]} ${
             servers[listServersPlayer[i].gameServer].name
-          }\n`;
+            }\n`;
         }
         embed.setDescription(changeServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
@@ -128,7 +128,7 @@ module.exports = {
             embed.setTitle('Удалено');
             embed.setDescription(
               `Аккаунт **${listServersPlayer[idx].nickname}** при сервере **${
-                servers[listServersPlayer[idx].gameServer].name
+              servers[listServersPlayer[idx].gameServer].name
               }** отвязан`
             );
             embedMessage.edit(message.author, { embed });

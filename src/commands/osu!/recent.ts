@@ -5,7 +5,7 @@ import * as tools from '../../utils/tools';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Последняя игра',
-  aliases: ['r', 'lastgame'],
+  aliases: ['r', 'rs', 'lastgame'],
   usage: '[@ или ник] [/режим]',
   guild: true,
   cooldown: undefined,
@@ -16,7 +16,6 @@ module.exports = {
     message: Discord.Message,
     args: string[] /* , CooldownReset */
   ) {
-    /*
     let specificMode;
 
     if (args.lastIndexOf('/') !== -1) {
@@ -94,6 +93,5 @@ module.exports = {
     embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
 
     message.channel.send({ embed });
-    */
   },
 };

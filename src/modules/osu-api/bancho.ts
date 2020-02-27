@@ -2,6 +2,9 @@ import axios from 'axios';
 import config from '../../config';
 import * as tools from '../../utils/tools';
 import { calculateAccuracy } from '../osu';
+import CustomError from '../../utils/customError';
+import { log } from '../../logger';
+const status404 = 'нет ответа от сервера';
 
 export const getUser = async (
   server: string,
@@ -9,7 +12,7 @@ export const getUser = async (
   mode: string
 ): Promise<{ [key: string]: any } | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
-
+  log.debug(server, idOrName, mode);
   const response = await axios.get('/api/get_user', {
     baseURL: `http://${configServer.api.url}`,
     params: {
@@ -18,10 +21,10 @@ export const getUser = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
+
   if (response.status !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
-  // eslint-disable-next-line prefer-destructuring
   const data = response.data[0];
 
   const gameUser = {
@@ -30,8 +33,8 @@ export const getUser = async (
     join_date: data.join_date,
     total_hits: String(
       parseInt(data.count300, 10) +
-        parseInt(data.count100, 10) +
-        parseInt(data.count50, 10)
+      parseInt(data.count100, 10) +
+      parseInt(data.count50, 10)
     ),
     playcount: data.playcount,
     ranked_score: data.ranked_score,
@@ -68,13 +71,13 @@ export const getBeatmap = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
+
   if (response.status !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
-
   const { data } = response;
-  const difficulties: Array<{ [key: string]: any }> = [];
 
+  const difficulties: { [key: string]: any }[] = [];
   data.forEach((diff: any) =>
     difficulties.push({
       approved: diff.approved,
@@ -88,8 +91,8 @@ export const getBeatmap = async (
       creator: diff.creator,
       creator_id: diff.creator_id,
       difficultyrating: diff.difficultyrating,
-      diff_aim: diff.difficultyrating,
-      diff_speed: diff.difficultyrating,
+      diff_aim: diff.diff_aim,
+      diff_speed: diff.diff_speed,
       diff_size: diff.diff_size,
       diff_overall: diff.diff_overall,
       diff_approach: diff.diff_approach,
@@ -125,7 +128,7 @@ export const getUserRecents = async (
   idOrName: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/api/get_user_recent', {
@@ -137,13 +140,13 @@ export const getUserRecents = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
+
   if (response.status !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
-
   const { data } = response;
-  const recents: Array<{ [key: string]: any }> = [];
 
+  const recents: { [key: string]: any }[] = [];
   data.forEach(async (recent: any) =>
     recents.push({
       beatmap_id: recent.beatmap_id,
@@ -161,7 +164,7 @@ export const getUserRecents = async (
       date: recent.date,
       rank: recent.rank,
       // Added
-      pp: null, // todo: добавить калькулятор
+      pp: null, // TODO:
       beatmap: await getBeatmap(server, recent.beatmap_id, mode),
       accuracy: String(
         calculateAccuracy(
@@ -185,7 +188,7 @@ export const getUserTops = async (
   idOrName: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/api/get_user_best', {
@@ -198,11 +201,11 @@ export const getUserTops = async (
     },
   });
   if (response.status !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
 
   const { data } = response;
-  const bests: Array<{ [key: string]: any }> = [];
+  const bests: { [key: string]: any }[] = [];
 
   data.forEach(async (best: any) =>
     bests.push({
@@ -248,7 +251,7 @@ export const getScores = async (
   idBeatmap: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/api/get_scores', {
@@ -261,12 +264,13 @@ export const getScores = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
+
   if (response.status !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
 
   const { data } = response;
-  const scoresOnBeatmap: Array<{ [key: string]: any }> = [];
+  const scoresOnBeatmap: { [key: string]: any }[] = [];
 
   data.forEach((score: any) =>
     scoresOnBeatmap.push({

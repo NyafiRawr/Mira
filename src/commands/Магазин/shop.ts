@@ -1,15 +1,17 @@
 import * as Discord from 'discord.js';
-
+import config from '../../config';
 import CustomError from '../../utils/customError';
 import * as shop from '../../modules/shop';
 import * as economy from '../../modules/economy';
 import * as tools from '../../utils/tools';
-
+// TODO: покупка по реакции
+// TODO: страницы?
+// TODO: если не указать куки - NaN - непредсказуемое поведение
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Каталог ролей',
   aliases: [],
-  usage: '[all/add/rem/buy] <@роль> <стоимость в :cookie:>',
+  usage: '[all/add/rem/buy] <@роль> [<цена для витрины>]',
   guild: true,
   hide: false,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
@@ -87,7 +89,7 @@ module.exports = {
       embed.setDescription(`Роль **${role}** удалена из магазина`);
     } else {
       throw new CustomError(
-        'Не хватает параметров, пример команды: !roles all или !roles buy @sometrash'
+        `не хватает параметров, пример команды: \`${config.bot.prefix}${this.name}\` или \`${config.bot.prefix}${this.name} buy @Какая-торольизмагазина\``
       );
     }
 

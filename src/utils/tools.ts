@@ -80,7 +80,7 @@ export const embedFooter = (message: Message, nameCommand: string) => {
     !memberRequest || !memberRequest.nickname
       ? message.author.username
       : memberRequest.nickname
-  } | ${config.bot.prefix}${nameCommand}`;
+    } | ${config.bot.prefix}${nameCommand}`;
 };
 // Получить файл name.json
 export const getData = (name: string) =>
@@ -107,4 +107,16 @@ export const getDataValueOnKey = (name: string, key: string) => {
   }
 
   return null;
+};
+// Конвертер unix timestamp в дату
+const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+export const unixToDate = (unix_timestamp: number) => {
+  const timestamp = new Date(unix_timestamp * 1000);
+  const year = timestamp.getFullYear();
+  const month = months[timestamp.getMonth()];
+  const date = timestamp.getDate();
+  const hour = timestamp.getHours();
+  const min = timestamp.getMinutes();
+  const sec = timestamp.getSeconds();
+  return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
 };

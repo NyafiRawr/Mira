@@ -1,9 +1,9 @@
+import CustomError from '../utils/customError';
 import * as Discord from 'discord.js';
 import * as players from './players';
 import * as tools from '../utils/tools';
-import Player from '../models/player';
-import { log } from '../logger';
 
+// Выбираем набор функций в зависимости от используемого игровым сервером api
 function selectApi(server: string) {
   const servers = tools.getData('osu!/servers');
   return require(`./osu-api/${servers[server].api.base}`);
@@ -36,7 +36,7 @@ export const getScores = (
 
 export const getBeatmap = (server: string, idBeatmap: string, mode = 0) =>
   selectApi(server).getBeatmap(server, idBeatmap, mode);
-
+// Приведение секунд к виду MM:SS
 export const styleLengthInMS = (length: number): string => {
   const dt = new Date();
   dt.setTime(length * 1000);
@@ -46,14 +46,14 @@ export const styleLengthInMS = (length: number): string => {
   }
   return `${dt.getUTCMinutes()}:${seconds}`;
 };
-
+// Приведение Data к понятному виду
 export const styleDatetimeInDMYHMS = (datetime: string): string => {
   const [date, time] = datetime.split(' ');
   const [year, month, day] = date.split('-');
   const [hours, minutes, seconds] = time.split(':');
   return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 };
-
+// Вычисление аккуратности (банчо), возможно устарело
 export const calculateAccuracy = (
   mode: string,
   count300: string,
@@ -113,7 +113,7 @@ export const calculateAccuracy = (
   }
   return null;
 };
-
+// Вывод статистики по карте (банчо)
 export const showStats = (
   mode: string,
   count300: string,
@@ -158,7 +158,7 @@ export const decodeMods = (code: string) => {
 
   return result.join(', ');
 };
-
+// Вытаскивание из аргументов: ника (строка или @) иИли параметров /mode /server
 export const getPlayerFromMessage = async (
   message: Discord.Message,
   args: string[]
@@ -170,8 +170,7 @@ export const getPlayerFromMessage = async (
   let specificMode;
 
   if (parsingArgs.length > 2) {
-    message.reply(`много дополнительных параметров: \`${parsingArgs}\``);
-    return null;
+    throw new CustomError(`много дополнительных параметров: \`${parsingArgs}\``);
   }
 
   if (parsingArgs.length !== 0) {
@@ -186,7 +185,6 @@ export const getPlayerFromMessage = async (
         if (Object.keys(servers).includes(element)) {
           specificServer = element;
         } else {
-          // eslint-disable-next-line no-loop-func
           Object.keys(servers).forEach(server => {
             if (servers[server].aliases.includes(element)) {
               specificServer = server;
@@ -199,7 +197,6 @@ export const getPlayerFromMessage = async (
         if (Object.keys(modes).includes(element)) {
           specificMode = element;
         } else {
-          // eslint-disable-next-line no-loop-func
           Object.keys(modes).forEach(mode => {
             if (modes[mode].aliases.includes(element)) {
               specificMode = mode;
@@ -209,44 +206,40 @@ export const getPlayerFromMessage = async (
       }
     }
 
-    if (
-      (!specificServer && !specificMode) ||
-      (!specificServer && !specificMode)
-    ) {
-      message.reply(`дополнительные параметры указаны с ошибкой: ${args}
+    if (!specificServer && !specificMode) {
+      throw new CustomError(`дополнительные параметры указаны с ошибкой: ${args}
         \nСервер: ${specificServer}\nРежим: ${specificMode}`);
-      return null;
     }
   }
 
-  let player: Player = new Player();
-  player.userId = message.author.id;
-  player.nickname =
-    message.author.lastMessage.member.nickname || message.author.username;
+  let player = {
+    nickname: message.author.username,
+    gameServer: specificServer,
+    modes: specificMode,
+  };
 
   if (message.mentions.members.size) {
     player =
       (await players.get(
         message.mentions.members.first().id,
-        message.guild.id
+        specificServer
       )) || player;
-    log.debug('Найдены ники в команде', message.mentions.members);
+    player.nickname = message.mentions.members.first().displayName;
   } else {
-    player = (await players.get(message.author.id, message.guild.id)) || player;
+    player = (await players.get(message.author.id, specificServer)) || player;
 
-    let shouldBeNickname = args;
-    const startParams = args.indexOf('/');
+    let shouldBeNickname = args.join(' ');
+    const startParams = shouldBeNickname.indexOf('/');
     if (startParams !== -1) {
-      shouldBeNickname = args.slice(0, startParams);
+      shouldBeNickname = shouldBeNickname.slice(0, startParams - 1);
     }
-
-    if (shouldBeNickname.length) {
-      player.nickname = shouldBeNickname.join(' ');
+    if (shouldBeNickname.trim().length) {
+      player.nickname = shouldBeNickname;
     }
   }
 
-  player.gameServer = specificServer || player.gameServer || 'bancho';
-  player.modes = specificMode || player.modes || '0';
+  player.gameServer = player.gameServer || 'bancho';
+  player.modes = player.modes || '0';
 
   return player;
 };

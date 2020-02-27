@@ -84,7 +84,7 @@ module.exports = {
     if (birthday) {
       embed.addField(
         'День рождения',
-        moment(birthday).format('DD-MM-YY'),
+        moment(birthday).format('DD.MM.YY'),
         true
       );
     }

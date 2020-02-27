@@ -35,6 +35,8 @@ module.exports = {
   async execute(message: Discord.Message, args: string[]) {
     const tempVoiceName = `${message.member.displayName}`;
 
+    // TODO: добавить ответ юзеру по вызову без аргументов
+
     const errorNotEnoughtArgs = `не хватает параметров, пример команды: \`${config.bot.prefix}${this.name} invite ${message.client.user}\``;
 
     if (args[0] === 'invite') {

@@ -14,13 +14,13 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(
     message: Discord.Message,
-    args: string[] /* , CooldownReset */
+    args: string[]
   ) {
     const player = await osu.getPlayerFromMessage(message, args);
     if (player === null) {
       return;
     }
-    // eslint-disable-next-line prefer-destructuring
+
     const modePref = parseInt(player.modes?.split(',')[0] || '0', 10);
 
     const osuUser = await osu.getUser(

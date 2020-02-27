@@ -1,5 +1,9 @@
 import axios from 'axios';
 import * as tools from '../../utils/tools';
+import CustomError from '../../utils/customError';
+import { defaultFormat } from 'moment';
+
+const status404 = 'нет ответа от сервера';
 
 export const getUser = async (
   server: string,
@@ -22,10 +26,10 @@ export const getUser = async (
       ...addParams,
     },
   });
+
   if (responseInfo.status !== 200 || responseStats.status !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
-  // eslint-disable-next-line prefer-destructuring
   const dataInfo = responseInfo.data.users[0];
   const dataStats = responseStats.data.stats;
 
@@ -59,7 +63,7 @@ export const getUserRecents = async (
   idOrName: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   const addParams = Number.isNaN(parseInt(idOrName, 10))
     ? { u: idOrName }
@@ -75,13 +79,22 @@ export const getUserRecents = async (
       ...addParams,
     },
   });
-  if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+  const responseStats = await axios.get('/user/stats', {
+    baseURL: `http://${configServer.api.url}`,
+    params: {
+      mode,
+      ...addParams,
+    },
+  });
+
+  if (response.status !== 200 || response.data.code !== 200 || responseStats.status !== 200) {
+    throw new CustomError(status404);
   }
 
   const { scores } = response.data;
-  const recents: Array<{ [key: string]: any }> = [];
+  const dataStats = responseStats.data.stats;
 
+  const recents: { [key: string]: any }[] = [];
   scores.forEach((recent: any) =>
     recents.push({
       beatmap_id: recent.beatmap.beatmap_id,
@@ -95,13 +108,13 @@ export const getUserRecents = async (
       countgeki: recent.count_gekis,
       perfect: recent.full_combo,
       enabled_mods: recent.mods,
-      user_id: null,
+      user_id: dataStats.id,
       date: recent.time,
       rank: recent.ranking,
-      // Only on gatari & ripple
+      // Only gatari & ripple
       beatmap: recent.beatmap,
       pp: recent.pp,
-      // Only on gatari
+      // Only gatari
       accuracy: recent.accuracy,
     })
   );
@@ -113,33 +126,32 @@ export const getBeatmap = async (
   server: string,
   idBeatmap: string,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
 
   const response = await axios.get('/beatmaps/get', {
     baseURL: `http://${configServer.api.url}`,
     params: {
-      mode, // not work & отсутствует в https://osu.gatari.pw/docs/api
       bb: idBeatmap,
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
 
   const { data } = response;
-  const difficulties: Array<{ [key: string]: any }> = [];
+  const difficulties: { [key: string]: any }[] = [];
 
   data.forEach((diff: any) =>
     difficulties.push({
-      approved: null, // diff.ranked_status_freezed, // это оно?
+      approved: diff.ranked,
       submit_date: null,
-      approved_date: null, // diff.ranking_data, // это оно? тип данных не дата, а большое число
+      approved_date: tools.unixToDate(diff.ranking_data),
       last_update: null,
       artist: diff.artist,
       beatmap_id: diff.beatmap_id,
       beatmapset_id: diff.beatmapset_id,
-      bpm: null,
+      bpm: diff.bpm,
       creator: null,
       creator_id: null,
       difficultyrating: [
@@ -159,15 +171,15 @@ export const getBeatmap = async (
       genre_id: null,
       language_id: null,
       title: diff.title,
-      total_length: null,
+      total_length: diff.total_length,
       version: diff.version,
       file_md5: null,
       mode: diff.mode,
       tags: null,
       favourite_count: null,
       rating: diff.rating,
-      playcount: null,
-      passcount: null,
+      playcount: diff.playcount,
+      passcount: diff.passcount,
       count_normal: null,
       count_slider: null,
       count_spinner: null,
@@ -185,7 +197,7 @@ export const getUserTops = async (
   idOrName: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
   let osuUser = {
     user_id: idOrName,
@@ -194,7 +206,7 @@ export const getUserTops = async (
   if (Number.isNaN(parseInt(osuUser.user_id, 10))) {
     const res = await getUser(server, idOrName, mode);
     if (osuUser === null) {
-      return null;
+      throw new CustomError(status404);
     }
 
     osuUser = res as any;
@@ -208,12 +220,13 @@ export const getUserTops = async (
       u: osuUser.user_id,
     },
   });
+
   if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+    throw new CustomError(status404);
   }
 
   const { scores } = response.data;
-  const bests: Array<{ [key: string]: any }> = [];
+  const bests: { [key: string]: any }[] = [];
 
   scores.forEach((best: any) =>
     bests.push({
@@ -254,7 +267,7 @@ export const getScores = async (
   // Важно: API принимает только USER_ID
   const osuUser = await getUser(server, idOrName, mode);
   if (osuUser === null) {
-    return null;
+    throw new CustomError(status404);
   }
 
   const response = await axios.get('/beatmap/user/score', {
@@ -262,10 +275,10 @@ export const getScores = async (
     params: {
       mode,
       b: idBeatmap,
-      l: limit, // work? нужен скор с нескольими траями для теста
       u: osuUser.user_id,
     },
   });
+
   if (response.status !== 200 || response.data.code !== 200) {
     return null;
   }

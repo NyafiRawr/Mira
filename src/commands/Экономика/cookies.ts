@@ -6,7 +6,7 @@ import * as users from '../../modules/users';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Баланс печенек',
-  aliases: ['co', 'balance', 'points', 'money', 'credits'],
+  aliases: ['co', 'coo', 'balance', 'points', 'money', 'credits'],
   usage: '[@упоминания]',
   guild: true,
   hide: false,
