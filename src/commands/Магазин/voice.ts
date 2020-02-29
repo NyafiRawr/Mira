@@ -35,8 +35,6 @@ module.exports = {
   async execute(message: Discord.Message, args: string[]) {
     const tempVoiceName = `${message.member.displayName}`;
 
-    // TODO: добавить ответ юзеру по вызову без аргументов
-
     const errorNotEnoughtArgs = `не хватает параметров, пример команды: \`${config.bot.prefix}${this.name} invite ${message.client.user}\``;
 
     if (args[0] === 'invite') {
@@ -129,6 +127,11 @@ module.exports = {
           2e4
         );
       }, 1e4);
+    } else {
+      return message.reply(`__доступные команды:__
+      **${config.bot.prefix}${this.aliases[0]} create** [название голосового чата]
+      **${config.bot.prefix}${this.aliases[0]} invite** <@>
+      *Цена: 400:cookie:*`);
     }
   },
 };

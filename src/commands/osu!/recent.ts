@@ -16,7 +16,7 @@ module.exports = {
     message: Discord.Message,
     args: string[] /* , CooldownReset */
   ) {
-    let specificMode;
+    /*let specificMode;
 
     if (args.lastIndexOf('/') !== -1) {
       const specifyMode = osu.getKeyFromSearchOnValueFromJson('mode', args.substr(args.lastIndexOf('/') + 1));
@@ -92,6 +92,6 @@ module.exports = {
     const requestMember = message.guild.members.get(message.author.id);
     embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
 
-    message.channel.send({ embed });
+    message.channel.send({ embed });*/
   },
 };

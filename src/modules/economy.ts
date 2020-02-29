@@ -42,7 +42,7 @@ export const pay = async (
 ) => {
   const user = await users.get(serverId, userId);
   if (user === null || user.balance < currency) {
-    throw new CustomError('У вас нет сколько печенек!');
+    throw new CustomError('у тебя нет столько печенья!');
   }
 
   await set(serverId, userId, -currency);
@@ -64,7 +64,7 @@ export const transaction = async (
   const userOut = await users.get(serverId, userOutId);
   const userIn = await users.get(serverId, userInId);
   if (userOut === null || userIn === null) {
-    throw new CustomError('Пользователь не найден');
+    throw new CustomError('пользователь не найден');
   }
 
   await sequelize.transaction(async t => {

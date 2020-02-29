@@ -1,20 +1,5 @@
 import * as Discord from 'discord.js';
 
-export const emojiComplete = '✅';
-export const emojiNumbers = [
-  '0️⃣',
-  '1️⃣',
-  '2️⃣',
-  '3️⃣',
-  '4️⃣',
-  '5️⃣',
-  '6️⃣',
-  '7️⃣',
-  '8️⃣',
-  '9️⃣',
-  '🔟',
-];
-
 // TODO: ошибка по концу таймера
 // TODO: добавить кнопку отмены
 // TODO: добавить описание функций
@@ -74,6 +59,9 @@ export const waitMessage = async (channel: any, selectorId: string) => {
 
   return channel
     .awaitMessages(filter, { maxMatches: 1, time: 30000, errors: ['time'] })
-    .then((collected: any) => collected.first().content)
+    .then((collected: any) => {
+      channel.fetchMessage(collected.first()).then((answer: { delete: () => any; }) => answer.delete());
+      return collected.first().content;
+    })
     .catch(() => null);
 };

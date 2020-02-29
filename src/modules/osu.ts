@@ -158,11 +158,12 @@ export const decodeMods = (code: string) => {
 
   return result.join(', ');
 };
+
+const servers = tools.getData('osu!/servers');
+const modes = tools.getData('osu!/modes');
+
 // Вытаскивание из аргументов: ника (строка или @) и параметров /mode /server
-export const getPlayerFromMessage = async (
-  message: Discord.Message,
-  args: string[]
-) => {
+export const getPlayerFromMessage = async (message: Discord.Message, args: string[]) => {
   const parsingArgs = args
     .filter(arg => arg.startsWith('/'))
     .map(arg => arg.substr(1));
@@ -174,8 +175,6 @@ export const getPlayerFromMessage = async (
   }
 
   if (parsingArgs.length !== 0) {
-    const servers = tools.getData('osu!/servers');
-    const modes = tools.getData('osu!/modes');
     let element: any;
 
     while (parsingArgs.length !== 0) {
@@ -219,27 +218,25 @@ export const getPlayerFromMessage = async (
   };
 
   if (message.mentions.members.size) {
+    player.nickname = message.mentions.members.first().displayName;
     player =
       (await players.get(
         message.mentions.members.first().id,
         specificServer
       )) || player;
-    player.nickname = message.mentions.members.first().displayName;
   } else {
-    player = (await players.get(message.author.id, specificServer)) || player;
-
-    let shouldBeNickname = args.join(' ');
-    const startParams = shouldBeNickname.indexOf('/');
-    if (startParams !== -1) {
-      shouldBeNickname = shouldBeNickname.slice(0, startParams - 1);
-    }
-    if (shouldBeNickname.trim().length) {
+    const amountParams = args.filter(arg => arg.startsWith('/'))?.length || 0;
+    args.splice(args.length - amountParams, amountParams);
+    const shouldBeNickname = args.join(' ');
+    if (shouldBeNickname.length) {
       player.nickname = shouldBeNickname;
+    } else {
+      player = (await players.get(message.author.id, specificServer)) || player;
     }
   }
 
-  player.gameServer = player.gameServer || 'bancho';
-  player.modeFavorite = player.modeFavorite || '0';
+  player.gameServer = specificServer || player.gameServer || 'bancho';
+  player.modeFavorite = specificMode || player.modeFavorite || '0';
 
   return player;
 };

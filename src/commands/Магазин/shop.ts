@@ -63,7 +63,14 @@ module.exports = {
       }
 
       const role = message.mentions.roles.first();
-      const cost = args.length > 1 ? parseInt(args[1], 10) : 0;
+      let cost = 0;
+      if (args.length > 2) {
+        const userCost = parseInt(args[1], 10);
+        if (isNaN(userCost)) {
+          throw new CustomError('неправильно указана цена!');
+        }
+        cost = userCost;
+      }
 
       await shop.set(message.guild.id, role.id, cost);
 

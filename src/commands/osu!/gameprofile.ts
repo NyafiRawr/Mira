@@ -7,27 +7,24 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Профиль игрока',
   aliases: ['p'],
-  usage: '[@ или ник] [/режим]',
+  usage: '[@ или ник] [/режим] [/сервер]',
   guild: true,
   cooldown: undefined,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[]
-  ) {
+  async execute(message: Discord.Message, args: string[]) {
     const player = await osu.getPlayerFromMessage(message, args);
-    const modeFavorite = parseInt(player.modeFavorite || '0', 10);
+    const modePick = parseInt(player.modeFavorite || '0', 10);
 
     const osuUser = await osu.getUser(
       player.gameServer,
       player.nickname,
-      modeFavorite
+      modePick
     );
 
     const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
-    const mode = tools.getDataValueOnKey('osu!/modes', modeFavorite.toString())?.name;
+    const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString())?.name;
 
     const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
 
@@ -40,20 +37,20 @@ module.exports = {
       .setURL(
         serverLinks.user
           .replace('ID', osuUser.user_id)
-          .replace('MODE', mode)
+          .replace('MODE', mode.toString().toLowerCase())
       )
       .setDescription(
         '**Место в мире:** ' +
         `[#${tools.separateThousandth(
           osuUser.pp_rank
         )}](${serverLinks.pp_world
-          .replace('MODE', mode)
+          .replace('MODE', mode.toString().toLowerCase())
           .replace('RU', osuUser.country)
           .replace('P', Math.ceil(osuUser.pp_rank / 50))}) ` +
         `(**${osuUser.country}**[#${tools.separateThousandth(
           osuUser.pp_country_rank
         )}](${serverLinks.pp_country
-          .replace('MODE', mode)
+          .replace('MODE', mode.toString().toLowerCase())
           .replace('RU', osuUser.country)
           .replace('P', Math.ceil(osuUser.pp_country_rank / 50))}))` +
         `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}` +

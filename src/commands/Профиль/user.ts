@@ -29,14 +29,14 @@ module.exports = {
       message.author;
     const member = message.guild.members.get(user.id);
 
-    let nickname = 'себе';
+    let title = 'Кажется, это вы!';
     if (message.author.id !== user.id) {
-      nickname = !member || !member.nickname ? user.username : member.nickname;
+      title = `Информация о ${!member || !member.nickname ? user.username : member.nickname}`;
     }
 
     const embed = new Discord.RichEmbed();
     embed.setAuthor(
-      `Информация о ${nickname}`,
+      title,
       user.avatarURL || user.user.avatarURL
     );
 
@@ -44,9 +44,10 @@ module.exports = {
 
     embed.addField('Имя аккаунта', `\`${user.tag}\``, true);
     embed.addField('Упоминание', user, true);
+    embed.addField('Статус', user.presence.game?.state || '-', true);
 
     if (user.createdAt) {
-      embed.addField('Дата создания', tools.toDate(user.createdAt), true);
+      embed.addField('Создан', tools.toDate(user.createdAt), true);
     }
 
     let lastEntry;
@@ -75,7 +76,7 @@ module.exports = {
 
     if (lastEntry) {
       embed.addField(
-        'Дата подключения',
+        'Последний вход',
         tools.toDate(lastEntry.toISOString()),
         true
       );
