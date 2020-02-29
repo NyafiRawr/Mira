@@ -1,4 +1,3 @@
-import CustomError from '../../utils/customError';
 import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../utils/tools';
@@ -23,10 +22,9 @@ module.exports = {
       modePick
     );
 
+    const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
     const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
     const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString())?.name;
-
-    const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
 
     const embed = new Discord.RichEmbed()
       .setAuthor(

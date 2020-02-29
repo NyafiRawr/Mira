@@ -212,7 +212,7 @@ export const getUserTops = async (
   const { data } = response;
   const bests: { [key: string]: any }[] = [];
 
-  data.forEach(async (best: any) =>
+  for (const best of data)
     bests.push({
       beatmap_id: best.beatmap_id,
       score_id: best.score_id,
@@ -244,8 +244,7 @@ export const getUserTops = async (
           best.countgeki
         )
       ),
-    })
-  );
+    });
 
   return bests;
 };
