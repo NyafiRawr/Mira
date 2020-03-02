@@ -39,7 +39,7 @@ module.exports = {
     );
     if (!change) {
       cooldowns.reset(message.guild.id, message.author.id, this.name);
-      if (change === null) throw new CustomError('ты не решил, что сделать с аккаунтом, отмена.');
+      if (change === undefined) throw new CustomError('ты не решил, что сделать с аккаунтом, отмена.');
       return;
     }
     switch (change) {
@@ -61,7 +61,7 @@ module.exports = {
         );
         if (!osuServerIndex) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuServerIndex === null) throw new CustomError('ты не выбрал сервер для создания/изменения аккаунта, отмена.');
+          if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для создания/изменения аккаунта, отмена.');
           return;
         }
         // Выбор играемых режимов
@@ -80,7 +80,7 @@ module.exports = {
         );
         if (!osuModesIndexes) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuModesIndexes === null) throw new CustomError('ты не выбрал играемые режимы для аккаунта, отмена.');
+          if (osuModesIndexes === undefined) throw new CustomError('ты не выбрал играемые режимы для аккаунта, отмена.');
           return;
         }
         // Запись ника и запись в базу
@@ -90,9 +90,9 @@ module.exports = {
           message.channel,
           message.author.id
         );
-        if (osuName === undefined) {
+        if (!osuName) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          throw new CustomError('не указан ник, отмена.');
+          throw new CustomError('не был указан ник, отмена.');
         }
         embed.setTitle('Успех!');
         embed.setDescription(`Игрок **${osuName}** на сервере **${
@@ -135,7 +135,7 @@ module.exports = {
         );
         if (!osuServerIndex) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuServerIndex === null) throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
+          if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
           return;
         }
         // Отвязка

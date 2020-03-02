@@ -31,7 +31,7 @@ export const waitReaction = async (
   await embed.clearReactions().catch(error => clearFail(error));
 
   if ((answer ? rects[parseInt(answer, 10)] : null) === emojiCharacters.words.cancel) {
-    return undefined;
+    return null;
   }
   return answer;
 };
@@ -50,13 +50,16 @@ export const waitReactionComplete = async (
   await embed.react(emojiCharacters.words.cancel);
 
   const filter = (reaction: Discord.MessageReaction, user: Discord.User) =>
-    emojiCharacters.words.complete === reaction.emoji.name && user.id === selectorId;
+    user.id === selectorId
+    && ((emojiCharacters.words.complete === reaction.emoji.name)
+      || (emojiCharacters.words.cancel === reaction.emoji.name));
 
-  await embed
+  const answer = await embed
     .awaitReactions(filter, { max: 1, time: 30000, errors: ['time'] })
+    .then(collected => collected.first().emoji.name)
     .catch(() => undefined);
 
-  return embed.reactions
+  const answers = embed.reactions
     .filter(
       reaction =>
         reactions.includes(reaction.emoji.name) &&
@@ -65,6 +68,11 @@ export const waitReactionComplete = async (
     .map(reaction => reactions.indexOf(reaction.emoji.name).toString());
 
   await embed.clearReactions().catch(error => clearFail(error));
+
+  if (answer === emojiCharacters.words.cancel) {
+    return null;
+  }
+  return answers;
 };
 // Ждать сообщения в указанном канале от указанного человека и вернуть ответ (30 сек, иначе undefined. Ответ удаляется. Отмены нет)
 export const waitMessage = async (channel: any, selectorId: string) => {
