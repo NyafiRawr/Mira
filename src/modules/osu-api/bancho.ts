@@ -1,5 +1,5 @@
 import axios from 'axios';
-import osu_token from '../../config';
+import config from '../../config';
 import * as tools from '../../utils/tools';
 import { calculateAccuracy } from '../osu';
 import CustomError from '../../utils/customError';
@@ -18,7 +18,7 @@ export const getUser = async (
     params: {
       m: mode,
       u: idOrName,
-      k: server === 'bancho' ? osu_token : undefined,
+      k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
 
@@ -26,9 +26,9 @@ export const getUser = async (
     throw new CustomError(status404);
   }
   const data = response.data[0];
-  if (!data) {
+  if (!data || !data.length) {
     throw new CustomError(
-      `игрок __**${idOrName}**__ не найден на сервере __**${server}**__ (режим: __**${mode}**__).`
+      `игрок \`${idOrName}\` не найден на сервере \`${server}\` в режиме \`${mode}\``
     );
   }
 
@@ -73,7 +73,7 @@ export const getBeatmap = async (
     params: {
       m: mode,
       b: idBeatmap,
-      k: server === 'bancho' ? osu_token : undefined,
+      k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
 
@@ -81,7 +81,7 @@ export const getBeatmap = async (
     throw new CustomError(status404);
   }
   const { data } = response;
-  if (!data) throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
+  if (!data || !data.length) throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
   const difficulties: { [key: string]: any }[] = [];
 
   data.forEach((diff: any) =>
@@ -143,7 +143,7 @@ export const getUserRecents = async (
       m: mode,
       u: idOrName,
       limit,
-      k: server === 'bancho' ? osu_token : undefined,
+      k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
 
@@ -151,7 +151,7 @@ export const getUserRecents = async (
     throw new CustomError(status404);
   }
   const { data } = response;
-  if (!data) throw new CustomError(`игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
+  if (!data || !data.length) throw new CustomError(`игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
   const recents: { [key: string]: any }[] = [];
 
   for (const recent of data)
@@ -203,7 +203,7 @@ export const getUserTops = async (
       m: mode,
       u: idOrName,
       limit,
-      k: server === 'bancho' ? osu_token : undefined,
+      k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
   if (response.status !== 200) {
@@ -211,7 +211,7 @@ export const getUserTops = async (
   }
 
   const { data } = response;
-  if (!data) throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
+  if (!data || !data.length) throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
   const bests: { [key: string]: any }[] = [];
 
   for (const best of data)
@@ -267,7 +267,7 @@ export const getScores = async (
       u: idOrName,
       b: idBeatmap,
       limit,
-      k: server === 'bancho' ? osu_token : undefined,
+      k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
 
@@ -276,7 +276,7 @@ export const getScores = async (
   }
 
   const { data } = response;
-  if (!data) throw new CustomError(`никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
+  if (!data || !data.length) throw new CustomError(`никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
   const scoresOnBeatmap: { [key: string]: any }[] = [];
 
   for (const score of data)

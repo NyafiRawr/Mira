@@ -218,12 +218,15 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
   };
 
   if (message.mentions.members.size) {
-    player.nickname = message.mentions.members.first().displayName;
     player =
       (await players.get(
         message.mentions.members.first().id,
         specificServer, specificServer ? false : true
+      )) || (await players.get(
+        message.author.id,
+        specificServer, specificServer ? false : true
       )) || player;
+      player.nickname = message.mentions.members.first().displayName;
   } else {
     player = (await players.get(message.author.id, specificServer, specificServer ? false : true)) || player;
     const amountParams = args.filter(arg => arg.startsWith('/'))?.length || 0;

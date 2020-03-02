@@ -31,9 +31,9 @@ export const getUser = async (
   }
   const dataInfo = responseInfo.data.users[0];
   const dataStats = responseStats.data.stats;
-  if (!dataInfo || !dataStats) {
+  if (!dataInfo || !dataStats || !dataInfo.length || !dataStats.length) {
     throw new CustomError(
-      `игрок __**${idOrName}**__ не найден на сервере __**${server}**__ (режим: __**${mode}**__).`
+      `игрок \`${idOrName}\` не найден на сервере \`${server}\` в режиме \`${mode}\``
     );
   }
 
@@ -91,7 +91,8 @@ export const getUserRecents = async (
     },
   });
 
-  if (response.status !== 200 || response.data.code !== 200 || responseStats.status !== 200) {
+  if (response.status !== 200 || response.data.code !== 200
+    || responseStats.status !== 200 || responseStats.data.code !== 200) {
     throw new CustomError(status404);
   }
 
@@ -145,7 +146,7 @@ export const getBeatmap = async (
   }
 
   const { data } = response;
-  if (!data) throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
+  if (!data || !data.length) throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
   const difficulties: { [key: string]: any }[] = [];
 
   data.forEach((diff: any) =>
@@ -232,7 +233,7 @@ export const getUserTops = async (
   }
 
   const { scores } = response.data;
-  if (!scores) throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
+  if (!scores|| !scores.length) throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
   const bests: { [key: string]: any }[] = [];
 
   scores.forEach((best: any) =>
@@ -291,7 +292,7 @@ export const getScores = async (
   }
 
   const { score } = response.data;
-  if (!score) throw new CustomError(`никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
+  if (!score|| !score.length) throw new CustomError(`нет результата на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
 
   const scoreOnBeatmap = {
     score_id: score.id,
