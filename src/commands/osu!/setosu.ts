@@ -36,7 +36,7 @@ module.exports = {
     })) as Discord.Message;
     const change = await menu.waitReaction(
       embedMessage,
-      [emojiCharacters.numbers[1], emojiCharacters.numbers[2]],
+      Object.values(emojiCharacters.numbers).slice(1, 4),
       message.author.id
     );
     if (!change) {
@@ -66,8 +66,27 @@ module.exports = {
           if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для создания/изменения аккаунта, отмена.');
           return;
         }
-        // Выбор играемых режимов - TODO: ГЛАВНЫЙ И ДРУГИЕ! TODO: РЕАЛИЗАЦИЯ ИСПОЛЬЗОВАНИЯ В ДРУГИЕ КОМАНДЫ (osu.ts)
-        let changeMode = '**Выбери играемые режимы:**\n';
+        // Выбор играемых режимов - ГЛАВНЫЙ!
+        let favoriteMode = '**Выбери ИЗБРАННЫЙ режим:**\n';
+        for (let i = 0; i < Object.keys(modes).length; i += 1) {
+          favoriteMode += `${emojiCharacters.numbers[i + 1]} ${
+            Object.values<any>(modes)[i].name
+            }\n`;
+        }
+        embed.setDescription(favoriteMode);
+        embedMessage = await embedMessage.edit(message.author, { embed });
+        const osuFavoriteMode = await menu.waitReaction(
+          embedMessage,
+          Object.values(emojiCharacters.numbers).slice(1, Object.keys(modes).length + 1),
+          message.author.id
+        );
+        if (!osuFavoriteMode) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          if (osuFavoriteMode === undefined) throw new CustomError('ты не выбрал избранный режимы для аккаунта, отмена.');
+          return;
+        }
+        // Выбор играемых режимов - ДРУГИЕ!
+        let changeMode = '**Выбери другие играемые режимы:**\n';
         for (let i = 0; i < Object.keys(modes).length; i += 1) {
           changeMode += `${emojiCharacters.numbers[i + 1]} ${
             Object.values<any>(modes)[i].name
@@ -80,7 +99,7 @@ module.exports = {
           Object.values(emojiCharacters.numbers).slice(1, Object.keys(modes).length + 1),
           message.author.id
         );
-        if (!osuModesIndexes) {
+        if (!osuModesIndexes && !osuModesIndexes!.length) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuModesIndexes === undefined) throw new CustomError('ты не выбрал играемые режимы для аккаунта, отмена.');
           return;
@@ -97,38 +116,45 @@ module.exports = {
           throw new CustomError('не был указан ник, отмена.');
         }
         embed.setTitle('Успех!');
+        const playModes = [...new Set(osuModesIndexes!.concat(osuFavoriteMode))];
         embed.setDescription(`Игрок **${osuName}** на сервере **${
           Object.values<any>(servers)[osuServerIndex as any].name
-          }**
-         играет **${osuModesIndexes
+          }** любит и играет **${playModes!
             .map(mode => modes[mode].name)
             .join(', ')}**!`);
         await embedMessage.edit(message.author, { embed });
+        const listServersPlayer = await players.get(message.author.id, '', true);
+        let gameServerFavorite = false;
+        if (!listServersPlayer) gameServerFavorite = true;
         await players.set(
           message.author.id,
           Object.keys(servers)[osuServerIndex as any],
           {
-            modes: osuModesIndexes.join(','),
+            modes: osuModesIndexes!.join(','),
             nickname: osuName,
+            favoriteMode: osuFavoriteMode,
+            gameServerFavorite
           }
         );
         break;
       }
       case '1': {
-        embed.setTitle('Удалить');
+        embed.setTitle('Указать основной сервер');
         const listServersPlayer = await players.getAll(message.author.id);
-        if (listServersPlayer == null || listServersPlayer.length === 0) {
-          embed.setDescription('Нет привязанных аккаунтов для удаления');
+        if (!listServersPlayer || listServersPlayer.length === 0) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          embed.setDescription('Нет привязанных аккаунтов для выбора');
           return embedMessage.edit(message.author, { embed });
         }
-        // Выбор игрового сервера
-        let changeServer = '**Выбери сервер к которому привязан аккаунт:**\n';
+        // Выбор основы
+        let favoriteServer = '**Выбери основной аккаунт:**\n';
+        let nameFavServer = '';
         for (let i = 0; i < listServersPlayer.length; i += 1) {
-          changeServer += `${emojiCharacters.numbers[i + 1]} ${
-            servers[listServersPlayer[i].gameServer].name
-            }\n`;
+          favoriteServer += `${emojiCharacters.numbers[i + 1]} ${
+            servers[listServersPlayer[i].gameServer].name}\n`;
+          if (listServersPlayer[i].gameServerFavorite) nameFavServer = listServersPlayer[i].gameServer;
         }
-        embed.setDescription(changeServer);
+        embed.setDescription(favoriteServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(
           embedMessage,
@@ -137,19 +163,26 @@ module.exports = {
         );
         if (!osuServerIndex) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
+          if (osuServerIndex === undefined) throw new CustomError('ты не указал основной сервер, отмена.');
           return;
         }
         // Отвязка
+        await players
+          .set(message.author.id, nameFavServer, {
+            gameServerFavorite: false
+          });
+        // Привязка
         const idx = parseInt(osuServerIndex || '0', 10);
         await players
-          .remove(message.author.id, listServersPlayer[idx].gameServer)
+          .set(message.author.id, listServersPlayer[idx].gameServer, {
+            gameServerFavorite: true
+          })
           .then(() => {
-            embed.setTitle('Удалено');
+            embed.setTitle('Сервер избран!');
             embed.setDescription(
               `Аккаунт **${listServersPlayer[idx].nickname}** при сервере **${
               servers[listServersPlayer[idx].gameServer].name
-              }** отвязан`
+              }** стал основой!`
             );
             embedMessage.edit(message.author, { embed });
           });
@@ -159,6 +192,7 @@ module.exports = {
         embed.setTitle('Удалить');
         const listServersPlayer = await players.getAll(message.author.id);
         if (listServersPlayer == null || listServersPlayer.length === 0) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
           embed.setDescription('Нет привязанных аккаунтов для удаления');
           return embedMessage.edit(message.author, { embed });
         }

@@ -21,7 +21,7 @@
 		]
 	},
 	"akatsuki": {
-		"name": "Akatsuki",
+		"name": "Akatsuki: Vanilla",
 		"api": {
 			"base": "ripple",
 			"url": "akatsuki.pw"
@@ -30,6 +30,8 @@
 		"aliases": [
 			"akatsuki.pw",
 			"akatsuki",
+			"vanilla",
+			"regular",
 			"osu.akatsuki.pw"
 		]
 	},
@@ -63,7 +65,7 @@
 			"base": "gatari",
 			"url": "api.gatari.pw"
 		},
-		"url": "gatari.pw",
+		"url": "osu.gatari.pw",
 		"aliases": [
 			"gatari.pw",
 			"gatari"

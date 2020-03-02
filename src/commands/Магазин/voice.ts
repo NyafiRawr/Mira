@@ -106,7 +106,7 @@ module.exports = {
         maxAge: 10 * 60,
         temporary: true,
       }, `Приглашение в ${tempVoice.toString()}`);
-      await message.reply(`Канал __${tempVoice.toString()}__ создан! ${invite.url}`);
+      await message.reply(`канал __${tempVoice.toString()}__ создан! ${invite.url}`);
 
       const deleteChannel = () =>
         tempVoice

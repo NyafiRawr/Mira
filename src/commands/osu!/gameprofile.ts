@@ -39,18 +39,12 @@ module.exports = {
       )
       .setDescription(
         '**Место в мире:** ' +
-        `[#${tools.separateThousandth(
+        `#${tools.separateThousandth(
           osuUser.pp_rank
-        )}](${serverLinks.pp_world
-          .replace('MODE', mode.mode)
-          .replace('RU', osuUser.country)
-          .replace('P', Math.ceil(osuUser.pp_rank / 50))}) ` +
-        `(**${osuUser.country}**[#${tools.separateThousandth(
+        )} ` +
+        `(**${osuUser.country}**#${tools.separateThousandth(
           osuUser.pp_country_rank
-        )}](${serverLinks.pp_country
-          .replace('MODE', mode.mode)
-          .replace('RU', osuUser.country)
-          .replace('P', Math.ceil(osuUser.pp_country_rank / 50))}))` +
+        )})` +
         `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}` +
         `\n**PP:** ${tools.separateThousandth(osuUser.pp_raw)}` +
         `\n**Точность:** ${tools.roundDecimalPlaces(osuUser.accuracy, 2)}%` +

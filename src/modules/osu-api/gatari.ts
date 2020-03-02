@@ -1,7 +1,6 @@
 import axios from 'axios';
 import * as tools from '../../utils/tools';
 import CustomError from '../../utils/customError';
-import { defaultFormat } from 'moment';
 
 const status404 = 'нет ответа от сервера';
 
@@ -32,7 +31,7 @@ export const getUser = async (
   }
   const dataInfo = responseInfo.data.users[0];
   const dataStats = responseStats.data.stats;
-  if (dataInfo === undefined || dataStats === undefined) {
+  if (!dataInfo || !dataStats) {
     throw new CustomError(
       `игрок __**${idOrName}**__ не найден на сервере __**${server}**__ (режим: __**${mode}**__).`
     );
@@ -97,6 +96,7 @@ export const getUserRecents = async (
   }
 
   const { scores } = response.data;
+  if (!scores) throw new CustomError(`игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
   const dataStats = responseStats.data.stats;
 
   const recents: { [key: string]: any }[] = [];
@@ -145,6 +145,7 @@ export const getBeatmap = async (
   }
 
   const { data } = response;
+  if (!data) throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
   const difficulties: { [key: string]: any }[] = [];
 
   data.forEach((diff: any) =>
@@ -231,6 +232,7 @@ export const getUserTops = async (
   }
 
   const { scores } = response.data;
+  if (!scores) throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
   const bests: { [key: string]: any }[] = [];
 
   scores.forEach((best: any) =>
@@ -289,6 +291,7 @@ export const getScores = async (
   }
 
   const { score } = response.data;
+  if (!score) throw new CustomError(`никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
 
   const scoreOnBeatmap = {
     score_id: score.id,

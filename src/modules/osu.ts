@@ -222,19 +222,18 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
     player =
       (await players.get(
         message.mentions.members.first().id,
-        specificServer
+        specificServer, specificServer ? false : true
       )) || player;
   } else {
+    player = (await players.get(message.author.id, specificServer, specificServer ? false : true)) || player;
     const amountParams = args.filter(arg => arg.startsWith('/'))?.length || 0;
     args.splice(args.length - amountParams, amountParams);
     const shouldBeNickname = args.join(' ');
     if (shouldBeNickname.length) {
       player.nickname = shouldBeNickname;
-    } else {
-      player = (await players.get(message.author.id, specificServer)) || player;
     }
   }
-  // TODO: player.gameServerFavorite === true (по умолчанию фолс все)
+
   player.gameServer = specificServer || player.gameServer || 'bancho';
   player.modeFavorite = specificMode || player.modeFavorite || '0';
 
