@@ -54,7 +54,7 @@ module.exports = {
           .replace('ID', osuTop[0].user_id)
           .replace('MODE', mode.mode)
       )
-      .setImage(serverLinks.beatmapset.replace('ID', osuTop[0].beatmapset_id))
+      .setImage(serverLinks.beatmapset_cover.replace('ID', osuTop[0].beatmapset_id))
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),

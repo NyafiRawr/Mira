@@ -37,7 +37,7 @@ module.exports = {
       )
       .setTitle(`${recentBeatmap.artist} - ${recentBeatmap.version} // ${recentBeatmap.creator}`)
       .setURL(serverLinks.beatmap.replace('ID', recentScore.beatmap_id))
-      .setImage(serverLinks.beatmapset.replace('ID', recentBeatmap.beatmapset_id))
+      .setImage(serverLinks.beatmapset_cover.replace('ID', recentBeatmap.beatmapset_id))
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),

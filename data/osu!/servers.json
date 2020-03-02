@@ -21,7 +21,7 @@
 		]
 	},
 	"akatsuki": {
-		"name": "Akatsuki: Regular",
+		"name": "Akatsuki",
 		"api": {
 			"base": "ripple",
 			"url": "akatsuki.pw"
@@ -29,33 +29,8 @@
 		"url": "akatsuki.pw",
 		"aliases": [
 			"akatsuki.pw",
-			"regular",
-			"regularakatsuki",
-			"regular akatsuki",
-			"akatsuki regular",
-			"akatsukiregular",
-			"akatsukire",
-			"akatsukireg",
 			"akatsuki",
 			"osu.akatsuki.pw"
-		]
-	},
-	"relax": {
-		"name": "Akatsuki: Relax",
-		"api": {
-			"base": "ripple",
-			"url": "akatsuki.pw"
-		},
-		"url": "akatsuki.pw",
-		"aliases": [
-			"akatsuki.pw/rx",
-			"relax",
-			"relaxakatsuki",
-			"relax akatsuki",
-			"akatsuki relax",
-			"akatsukirelax",
-			"akatsukirx",
-			"akatsuki-relax"
 		]
 	},
 	"ripple": {

@@ -275,7 +275,7 @@ export const getScores = async (
   const { data } = response;
   const scoresOnBeatmap: { [key: string]: any }[] = [];
 
-  data.forEach((score: any) =>
+  for (const score of data)
     scoresOnBeatmap.push({
       score_id: score.score_id,
       score: score.score,
@@ -295,6 +295,7 @@ export const getScores = async (
       pp: score.pp,
       replay_available: score.replay_available,
       // Added
+      beatmap: await getBeatmap(server, idBeatmap, mode),
       accuracy: String(
         calculateAccuracy(
           mode,
@@ -306,8 +307,7 @@ export const getScores = async (
           score.countgeki
         )
       ),
-    })
-  );
+    });
 
   return scoresOnBeatmap;
 };
