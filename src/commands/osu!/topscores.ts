@@ -66,7 +66,7 @@ module.exports = {
     for (const topResult of osuTop) {
         let score = `**${i += 1}** | **[${topResult.beatmap[0].artist} - ${topResult.beatmap[0].title}]`
         + `(${serverLinks.beatmap.replace('ID', topResult.beatmap_id)})** | `
-        + `**${tools.getDataValueOnKey('osu!/rank', topResult.rank) || topResult.rank}**`;
+        + `**${tools.getDataValueOnKey('osu!/ranks', topResult.rank) || topResult.rank}**`;
         score += `\nСложность: **${topResult.beatmap[0].version} `
         + `(★${tools.roundDecimalPlaces(topResult.beatmap[0].difficultyrating)})**`;
 

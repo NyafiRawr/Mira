@@ -6,92 +6,64 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Последняя игра',
   aliases: ['r', 'rs', 'lastgame'],
-  usage: '[@ или ник] [/режим]',
+  usage: '[@ или ник] [/режим] [/сервер]',
   guild: true,
   cooldown: undefined,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[]
-  ) {
-    /*let specificMode;
+  async execute(message: Discord.Message, args: string[]) {
+    const player = await osu.getPlayerFromMessage(message, args);
+    const modePick = parseInt(player.modeFavorite || 0, 10);
 
-    if (args.lastIndexOf('/') !== -1) {
-      const specifyMode = osu.getKeyFromSearchOnValueFromJson('mode', args.substr(args.lastIndexOf('/') + 1));
-      if (!specifyMode.searchResult) {
-        return message.reply(specifyMode.result);
-      }
-      args = args.slice(0, args.lastIndexOf('/') - 1);
-      specificMode = specifyMode.result;
-    }
+    const osuRecent = await osu.getUserRecents(
+      player.gameServer,
+      player.nickname,
+      1,
+      modePick
+    );
 
-    let { nick, mode, server } = await osu.searchPlayer(message, args);
+    const recentScore = osuRecent[0];
+    const recentBeatmap = recentScore.beatmap[0];
 
-    if (specificMode) {
-      mode = specificMode;
-    }
-
-    let osuUser = osu.getUser(nick, mode, server);
-    if (!osuUser || !osuUser.length) {
-      return message.reply(`игрок **${nick}** не найден.`);
-    }
-    osuUser = osuUser[0];
-
-    let osuRecent = osu.getUserRecent(nick, mode, server);
-    if (!osuRecent || !osuRecent.length) {
-      return message.reply(`игрок **${nick}** последнее время ничего не играл (режим: ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))})`);
-    }
-    osuRecent = osuRecent[0];
-
-    let osuMap = osu.getBeatmap(osuRecent.beatmap_id, mode, server);
-
-    if ((!osuMap || !osuMap.length) && mode !== 0) {
-      osuMap = osu.getBeatmap(osuRecent.beatmap_id, 0, server);
-    }
-
-    if (!osuMap || !osuMap.length) {
-      return message.reply(`не удалось получить информацию о карте (режим: ${osu.getValueOnKeyFromJson('mode', mode)}${mode !== 0 ? ` и ${osu.getValueOnKeyFromJson('mode', 0)}` : ''}).`);
-    }
-    osuMap = osuMap[0];
-
-    const links = osu.getValueOnKeyFromJson('links', server);
+    const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
+    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
+    const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString());
 
     const embed = new Discord.RichEmbed()
-      .setAuthor(`${nick} последний раз играл:`, links.avatar.replace('ID', osuUser.user_id), links.user.replace('ID', osuUser.user_id))
-      .setTitle(`${osuMap.artist} - ${osuMap.title} // ${osuMap.creator}`)
-      .setURL(links.beatmap.replace('ID', osuRecent.beatmap_id));
+      .setAuthor(
+        `${player.nickname} играл в osu! ${mode.name} на ${server}`,
+        serverLinks.avatar.replace('ID', recentScore.user_id)
+      )
+      .setTitle(`${recentBeatmap.artist} - ${recentBeatmap.version} // ${recentBeatmap.creator}`)
+      .setURL(serverLinks.beatmap.replace('ID', recentScore.beatmap_id))
+      .setImage(serverLinks.beatmapset.replace('ID', recentBeatmap.beatmapset_id))
+      .setColor(tools.randomHexColor())
+      .setFooter(
+        tools.embedFooter(message, this.name),
+        message.author.displayAvatarURL
+      )
 
-    text = `**Сложность:** ${osuMap.version} (★${tools.toTwoDecimalPlaces(osuMap.difficultyrating)}) ${mode === '3' ? `[${osuMap.diff_size}K]` : ''}`;
-    text += `\n**Длина:** ${osu.styleLengthInMS(osuMap.total_length)} **BPM:** ${osuMap.bpm} ${mode === '3' ? '' : `**CS:** ${osuMap.diff_size} `}**AR:** ${osuMap.diff_approach} **OD:** ${osuMap.diff_overall} **HP:** ${osuMap.diff_drain}`;
-    text += `\n**Моды:** ${osu.getModsFromJson(osuRecent.enabled_mods)}`;
-    embed.setDescription(text);
+      .setDescription(
+        `**Сложность:** ${recentBeatmap.version} (★${tools.roundDecimalPlaces(recentBeatmap.difficultyrating)})`
+        + ` ${modePick === 3 ? `[${recentBeatmap.diff_size}K]` : ''}`
+        + (recentScore.enabled_mods === '-' ? `\n**Моды:** ${osu.decodeMods(recentScore.enabled_mods)}` : '')
+      )
 
-    text = `**Оценка:** ${osu.getValueOnKeyFromJson('rank', osuRecent.rank)}`;
-    text += `\n**Счет:** ${tools.separateThousandth(osuRecent.score)}`;
-    text += `\n**${(mode === '3' && osuRecent.perfect === '1') ? 'Фулл-комбо' : 'Комбо'}:** ${tools.separateThousandth(osuRecent.maxcombo)}${osuMap.max_combo ? ` / ${tools.separateThousandth(osuMap.max_combo)}` : ''}`;
-    text += `\n**Точность:** ${tools.toTwoDecimalPlaces(osu.calculateAccuracity(mode, osuRecent.count300, osuRecent.count100, osuRecent.count50, osuRecent.countmiss, osuRecent.countkatu, osuRecent.countgeki))}%`;
-    embed.addField('Подробнее', text, true);
+      .addField('Результат',
+        `**Оценка:** ${tools.getDataValueOnKey('osu!/ranks', recentScore.rank) || recentScore.rank}`
+        + `\n**Точность:** ${tools.roundDecimalPlaces(recentScore.accuracy)}%`
+        + `\n**${(modePick === 3 && recentScore.perfect === '1') ? 'Фулл-комбо' : 'Комбо'}:**`
+        + ` ${tools.separateThousandth(recentScore.maxcombo)} / ${tools.separateThousandth(recentBeatmap.max_combo)}`
+        + `\n**Счет:** ${tools.separateThousandth(recentScore.score)}`
+        , true)
+      .addField('Характеристики',
+        `**Длина:** ${osu.styleLengthInMS(recentBeatmap.total_length)}`
+        + `\n**BPM:** ${recentBeatmap.bpm}`
+        + `${modePick === 3 ? '' : `\n**CS:** ${recentBeatmap.diff_size}`} **AR:** ${recentBeatmap.diff_approach}`
+        + `\n**OD:** ${recentBeatmap.diff_overall} **HP:** ${recentBeatmap.diff_drain}`
+        , true);
 
-    text = osu.showStatistic(mode, osuRecent.count300, osuRecent.count100, osuRecent.count50, osuRecent.countmiss, osuRecent.countkatu, osuRecent.countgeki);
-    const osuScore = osu.getScores(osuMap.beatmap_id, osuUser.user_id, mode);
-    text += `\n**PP:** ${(!osuScore[0] || !osuScore[0].pp) ? (osuMap.approved === 4 ? '-' : 0) : osuScore[0].pp}`;
-    embed.addField('Статистика', text, true);
-
-    text = `**Последнее обновление:** ${osu.styleDatetimeInDMYHMS(osuMap.last_update)}`;
-    text += `\n**Статус:** ${osu.getValueOnKeyFromJson('approved', osuMap.approved)} (${osu.styleDatetimeInDMYHMS(osuMap.approved_date)})`;
-    text += `\n**Жанр:** ${osu.getValueOnKeyFromJson('genre', osuMap.genre_id)} **Язык:** ${osu.getValueOnKeyFromJson('lang', osuMap.language_id)}`;
-    text += `\n**Источник:** ${osuMap.source ? osuMap.source : '-'}`;
-    embed.addField('О карте', text, true);
-
-    embed.setImage(links.beatmapset.replace('ID', osuMap.beatmapset_id));
-
-    embed.setColor(tools.randomHexColor());
-
-    const requestMember = message.guild.members.get(message.author.id);
-    embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
-
-    message.channel.send({ embed });*/
+    message.channel.send({ embed });
   },
 };

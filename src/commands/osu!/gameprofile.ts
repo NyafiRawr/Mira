@@ -24,31 +24,31 @@ module.exports = {
 
     const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
     const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
-    const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString())?.name;
+    const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString());
 
     const embed = new Discord.RichEmbed()
       .setAuthor(
-        `osu! ${mode} на ${server}`,
+        `osu! ${mode.name} на ${server}`,
         serverLinks.flag.replace('AZ', osuUser.country)
       )
       .setTitle(osuUser.username)
       .setURL(
         serverLinks.user
           .replace('ID', osuUser.user_id)
-          .replace('MODE', mode.toString().toLowerCase())
+          .replace('MODE', mode.mode)
       )
       .setDescription(
         '**Место в мире:** ' +
         `[#${tools.separateThousandth(
           osuUser.pp_rank
         )}](${serverLinks.pp_world
-          .replace('MODE', mode.toString().toLowerCase())
+          .replace('MODE', mode.mode)
           .replace('RU', osuUser.country)
           .replace('P', Math.ceil(osuUser.pp_rank / 50))}) ` +
         `(**${osuUser.country}**[#${tools.separateThousandth(
           osuUser.pp_country_rank
         )}](${serverLinks.pp_country
-          .replace('MODE', mode.toString().toLowerCase())
+          .replace('MODE', mode.mode)
           .replace('RU', osuUser.country)
           .replace('P', Math.ceil(osuUser.pp_country_rank / 50))}))` +
         `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}` +

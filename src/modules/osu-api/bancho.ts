@@ -150,9 +150,9 @@ export const getUserRecents = async (
     throw new CustomError(status404);
   }
   const { data } = response;
-
   const recents: { [key: string]: any }[] = [];
-  data.forEach(async (recent: any) =>
+
+  for (const recent of data)
     recents.push({
       beatmap_id: recent.beatmap_id,
       score: recent.score,
@@ -182,8 +182,7 @@ export const getUserRecents = async (
           recent.countgeki
         )
       ),
-    })
-  );
+    });
 
   return recents;
 };
