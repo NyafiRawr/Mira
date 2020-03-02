@@ -5,8 +5,8 @@ import * as tools from '../utils/tools';
 
 // Выбираем набор функций в зависимости от используемого игровым сервером api
 function selectApi(server: string) {
-  const servers = tools.getData('osu!/servers');
-  return require(`./osu-api/${servers[server].api.base}`);
+  const serversList = tools.getData('osu!/servers');
+  return require(`./osu-api/${serversList[server].api.base}`);
 }
 
 export const getUser = (server: string, idOrName: string, mode = 0) =>
@@ -234,7 +234,7 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
       player = (await players.get(message.author.id, specificServer)) || player;
     }
   }
-
+  // TODO: player.gameServerFavorite === true (по умолчанию фолс все)
   player.gameServer = specificServer || player.gameServer || 'bancho';
   player.modeFavorite = specificMode || player.modeFavorite || '0';
 

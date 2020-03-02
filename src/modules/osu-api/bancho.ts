@@ -4,6 +4,7 @@ import * as tools from '../../utils/tools';
 import { calculateAccuracy } from '../osu';
 import CustomError from '../../utils/customError';
 import { log } from '../../logger';
+
 const status404 = 'нет ответа от сервера';
 
 export const getUser = async (

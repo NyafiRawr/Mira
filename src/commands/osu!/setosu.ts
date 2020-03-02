@@ -23,7 +23,9 @@ module.exports = {
     const embed = new Discord.RichEmbed()
       .setAuthor('Настройка аккаунта osu!')
       .setTitle('Меню')
-      .setDescription(`${emojiCharacters.numbers[1]} Добавить/Изменить\n${emojiCharacters.numbers[2]} Удалить`)
+      .setDescription(`${emojiCharacters.numbers[1]} Добавить/Изменить`
+        + `\n${emojiCharacters.numbers[2]} Указать основной`
+        + `\n${emojiCharacters.numbers[3]} Удалить`)
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
@@ -64,7 +66,7 @@ module.exports = {
           if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для создания/изменения аккаунта, отмена.');
           return;
         }
-        // Выбор играемых режимов
+        // Выбор играемых режимов - TODO: ГЛАВНЫЙ И ДРУГИЕ! TODO: РЕАЛИЗАЦИЯ ИСПОЛЬЗОВАНИЯ В ДРУГИЕ КОМАНДЫ (osu.ts)
         let changeMode = '**Выбери играемые режимы:**\n';
         for (let i = 0; i < Object.keys(modes).length; i += 1) {
           changeMode += `${emojiCharacters.numbers[i + 1]} ${
@@ -113,6 +115,47 @@ module.exports = {
         break;
       }
       case '1': {
+        embed.setTitle('Удалить');
+        const listServersPlayer = await players.getAll(message.author.id);
+        if (listServersPlayer == null || listServersPlayer.length === 0) {
+          embed.setDescription('Нет привязанных аккаунтов для удаления');
+          return embedMessage.edit(message.author, { embed });
+        }
+        // Выбор игрового сервера
+        let changeServer = '**Выбери сервер к которому привязан аккаунт:**\n';
+        for (let i = 0; i < listServersPlayer.length; i += 1) {
+          changeServer += `${emojiCharacters.numbers[i + 1]} ${
+            servers[listServersPlayer[i].gameServer].name
+            }\n`;
+        }
+        embed.setDescription(changeServer);
+        embedMessage = await embedMessage.edit(message.author, { embed });
+        const osuServerIndex = await menu.waitReaction(
+          embedMessage,
+          Object.values(emojiCharacters.numbers).slice(1, listServersPlayer.length + 1),
+          message.author.id
+        );
+        if (!osuServerIndex) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
+          return;
+        }
+        // Отвязка
+        const idx = parseInt(osuServerIndex || '0', 10);
+        await players
+          .remove(message.author.id, listServersPlayer[idx].gameServer)
+          .then(() => {
+            embed.setTitle('Удалено');
+            embed.setDescription(
+              `Аккаунт **${listServersPlayer[idx].nickname}** при сервере **${
+              servers[listServersPlayer[idx].gameServer].name
+              }** отвязан`
+            );
+            embedMessage.edit(message.author, { embed });
+          });
+        break;
+      }
+      case '2': {
         embed.setTitle('Удалить');
         const listServersPlayer = await players.getAll(message.author.id);
         if (listServersPlayer == null || listServersPlayer.length === 0) {

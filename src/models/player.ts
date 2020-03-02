@@ -1,9 +1,10 @@
-import { Model, STRING, ENUM } from 'sequelize';
+import { Model, STRING, ENUM, BOOLEAN } from 'sequelize';
 import { sequelize } from '../db';
 
 class Player extends Model {
   public userId!: string;
   public gameServer!: string;
+  public gameServerFavorite!: boolean;
   public nickname!: string;
   public modeFavorite!: string;
   public modes!: string;
@@ -19,6 +20,10 @@ Player.init(
     gameServer: {
       type: STRING(20),
       primaryKey: true,
+    },
+    gameServerFavorite: {
+      type: BOOLEAN,
+      defaultValue: false,
     },
     // 15 - максимальная длина ника (на официальном сервере)
     nickname: STRING(15),
