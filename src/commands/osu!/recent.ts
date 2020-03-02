@@ -14,7 +14,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(
     message: Discord.Message,
-    args: string[] /* , CooldownReset */
+    args: string[]
   ) {
     /*let specificMode;
 

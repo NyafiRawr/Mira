@@ -4,11 +4,10 @@ import * as tools from '../../utils/tools';
 import * as menu from '../../utils/menu';
 import * as players from '../../modules/players';
 import * as emojiCharacters from '../../utils/emojiCharacters';
+import * as cooldowns from '../../utils/kv';
 
 const servers = tools.getData('osu!/servers');
 const modes = tools.getData('osu!/modes');
-
-const users: string[] = [];
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -16,16 +15,11 @@ module.exports = {
   aliases: undefined,
   usage: undefined,
   guild: true,
-  cooldown: 3,
+  cooldown: 180, // Сумма всех ожиданий
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message) {
-    if (message.author.id in users) {
-      throw new CustomError('команда уже вызвана!');
-    }
-    users.push(message.author.id);
-
+  async execute(message: Discord.Message, ) {
     const embed = new Discord.RichEmbed()
       .setAuthor('Настройка аккаунта osu!')
       .setTitle('Меню')
@@ -43,10 +37,10 @@ module.exports = {
       [emojiCharacters.numbers[1], emojiCharacters.numbers[2]],
       message.author.id
     );
-    if (change === null) {
-      await embedMessage.clearReactions();
-      users.splice(users.indexOf(message.author.id), 1);
-      throw new CustomError('вы ничего не выбрали, отмена.');
+    if (!change) {
+      cooldowns.reset(message.guild.id, message.author.id, this.name);
+      if (change === null) throw new CustomError('ты не решил, что сделать с аккаунтом, отмена.');
+      return;
     }
     switch (change) {
       case '0': {
@@ -65,10 +59,10 @@ module.exports = {
           Object.values(emojiCharacters.numbers).slice(1, Object.keys(servers).length + 1),
           message.author.id
         );
-        if (osuServerIndex === null) {
-          await embedMessage.clearReactions();
-          users.splice(users.indexOf(message.author.id), 1);
-          throw new CustomError('не выбран сервер, отмена.');
+        if (!osuServerIndex) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          if (osuServerIndex === null) throw new CustomError('ты не выбрал сервер для создания/изменения аккаунта, отмена.');
+          return;
         }
         // Выбор играемых режимов
         let changeMode = '**Выбери играемые режимы:**\n';
@@ -82,13 +76,12 @@ module.exports = {
         const osuModesIndexes = await menu.waitReactionComplete(
           embedMessage,
           Object.values(emojiCharacters.numbers).slice(1, Object.keys(modes).length + 1),
-          emojiCharacters.words.complete,
           message.author.id
         );
-        await embedMessage.clearReactions();
-        if (osuModesIndexes === null) {
-          users.splice(users.indexOf(message.author.id), 1);
-          throw new CustomError('не выбран ни один режим, отмена.');
+        if (!osuModesIndexes) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          if (osuModesIndexes === null) throw new CustomError('ты не выбрал играемые режимы для аккаунта, отмена.');
+          return;
         }
         // Запись ника и запись в базу
         embed.setDescription('Напиши никнейм...');
@@ -97,8 +90,8 @@ module.exports = {
           message.channel,
           message.author.id
         );
-        if (osuName === null) {
-          users.splice(users.indexOf(message.author.id), 1);
+        if (osuName === undefined) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
           throw new CustomError('не указан ник, отмена.');
         }
         embed.setTitle('Успех!');
@@ -124,8 +117,7 @@ module.exports = {
         const listServersPlayer = await players.getAll(message.author.id);
         if (listServersPlayer == null || listServersPlayer.length === 0) {
           embed.setDescription('Нет привязанных аккаунтов для удаления');
-          embedMessage.edit(message.author, { embed });
-          return embedMessage.clearReactions();
+          return embedMessage.edit(message.author, { embed });
         }
         // Выбор игрового сервера
         let changeServer = '**Выбери сервер к которому привязан аккаунт:**\n';
@@ -141,12 +133,12 @@ module.exports = {
           Object.values(emojiCharacters.numbers).slice(1, listServersPlayer.length + 1),
           message.author.id
         );
-        await embedMessage.clearReactions();
-        if (osuServerIndex === null) {
-          users.splice(users.indexOf(message.author.id), 1);
-          throw new CustomError('не выбран сервер для отвязки, отмена.');
+        if (!osuServerIndex) {
+          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          if (osuServerIndex === null) throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
+          return;
         }
-
+        // Отвязка
         const idx = parseInt(osuServerIndex || '0', 10);
         await players
           .remove(message.author.id, listServersPlayer[idx].gameServer)
@@ -163,5 +155,6 @@ module.exports = {
       }
       default:
     }
+    cooldowns.reset(message.guild.id, message.author.id, this.name);
   },
 };
