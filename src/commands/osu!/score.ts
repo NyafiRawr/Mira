@@ -29,7 +29,7 @@ module.exports = {
     );
 
     const score = osuScore[0];
-    const beatmap = score.beatmap[0];
+    const beatmap = score.beatmap;
 
     const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
     const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
@@ -40,8 +40,8 @@ module.exports = {
       `${player.nickname} результат из osu! ${mode.name} на ${server}`,
       serverLinks.avatar.replace('ID', score.user_id)
     )
-    .setTitle(`${beatmap.artist} - ${beatmap.version} // ${beatmap.creator}`)
-    .setURL(serverLinks.beatmap.replace('ID', score.beatmap_id))
+    .setTitle(`${beatmap.artist} - ${beatmap.version} // ${beatmap.creator || '-'}`)
+    .setURL(serverLinks.beatmap.replace('ID', beatmap.beatmap_id))
     .setImage(serverLinks.beatmapset_cover.replace('ID', beatmap.beatmapset_id))
     .setColor(tools.randomHexColor())
     .setFooter(

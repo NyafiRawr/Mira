@@ -64,11 +64,11 @@ module.exports = {
     let i = 0;
     const scores = [];
     for (const topResult of osuTop) {
-        let score = `**${i += 1}** | **[${topResult.beatmap[0].artist} - ${topResult.beatmap[0].title}]`
+        let score = `**${i += 1}** | **[${topResult.beatmap.artist} - ${topResult.beatmap.title}]`
         + `(${serverLinks.beatmap.replace('ID', topResult.beatmap_id)})** | `
         + `**${tools.getDataValueOnKey('osu!/ranks', topResult.rank) || topResult.rank}**`;
-        score += `\nСложность: **${topResult.beatmap[0].version} `
-        + `(★${tools.roundDecimalPlaces(topResult.beatmap[0].difficultyrating)})**`;
+        score += `\nСложность: **${topResult.beatmap.version} `
+        + `(★${tools.roundDecimalPlaces(topResult.beatmap.difficultyrating)})**`;
 
         if (parseInt(topResult.enabled_mods, 10) === 0) {
           score += `\nТочность: **${tools.roundDecimalPlaces(topResult.accuracy)}%** PP: **${tools.roundDecimalPlaces(topResult.pp)}**`;

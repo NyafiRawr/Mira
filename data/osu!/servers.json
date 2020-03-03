@@ -1,6 +1,6 @@
 {
 	"bancho": {
-		"name": "Bancho (OSU.PPY.SH)",
+		"name": "Bancho (ppy.sh)",
 		"api": {
 			"base": "bancho",
 			"url": "osu.ppy.sh"

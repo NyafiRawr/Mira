@@ -9,30 +9,30 @@ function selectApi(server: string) {
   return require(`./osu-api/${serversList[server].api.base}`);
 }
 
-export const getUser = (server: string, idOrName: string, mode = 0) =>
-  selectApi(server).getUser(server, idOrName, mode);
+export const getUser = (server: string, nickname: string, mode = 0) =>
+  selectApi(server).getUser(server, nickname, mode);
 
 export const getUserRecents = (
   server: string,
-  idOrName: string,
+  nickname: string,
   limit = 1,
   mode = 0
-) => selectApi(server).getUserRecents(server, idOrName, limit, mode);
+) => selectApi(server).getUserRecents(server, nickname, limit, mode);
 
 export const getUserTops = (
   server: string,
-  idOrName: string,
+  nickname: string,
   limit = 3,
   mode = 0
-) => selectApi(server).getUserTops(server, idOrName, limit, mode);
+) => selectApi(server).getUserTops(server, nickname, limit, mode);
 
 export const getScores = (
   server: string,
-  idOrName: string,
+  nickname: string,
   idBeatmap: string,
   limit = 1,
   mode = 0
-) => selectApi(server).getScores(server, idOrName, idBeatmap, limit, mode);
+) => selectApi(server).getScores(server, nickname, idBeatmap, limit, mode);
 
 export const getBeatmap = (server: string, idBeatmap: string, mode = 0) =>
   selectApi(server).getBeatmap(server, idBeatmap, mode);

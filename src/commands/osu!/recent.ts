@@ -24,7 +24,7 @@ module.exports = {
     );
 
     const recentScore = osuRecent[0];
-    const recentBeatmap = recentScore.beatmap[0];
+    const recentBeatmap = recentScore.beatmap;
 
     const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
     const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;

@@ -4,7 +4,9 @@ import * as tools from '../../utils/tools';
 import { calculateAccuracy } from '../osu';
 import CustomError from '../../utils/customError';
 
-const status404 = 'нет ответа от сервера';
+const responseFail = (error: string) => {
+  return `ошибка в обмене информацией: \`${error}\``;
+};
 
 export const getUser = async (
   server: string,
@@ -21,12 +23,11 @@ export const getUser = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
-
   if (response.status !== 200) {
-    throw new CustomError(status404);
+    throw new CustomError(responseFail(response.statusText));
   }
   const data = response.data[0];
-  if (!data || !data.length) {
+  if (!data || !Object.keys(data).length) {
     throw new CustomError(
       `игрок \`${idOrName}\` не найден на сервере \`${server}\` в режиме \`${mode}\``
     );
@@ -76,57 +77,56 @@ export const getBeatmap = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
-
   if (response.status !== 200) {
-    throw new CustomError(status404);
+    throw new CustomError(responseFail(response.statusText));
   }
   const { data } = response;
-  if (!data || !data.length) throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
-  const difficulties: { [key: string]: any }[] = [];
+  if (!data || !data.length) {
+    throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
+  }
 
-  data.forEach((diff: any) =>
-    difficulties.push({
-      approved: diff.approved,
-      submit_date: diff.submit_date,
-      approved_date: diff.approved_date,
-      last_update: diff.last_update,
-      artist: diff.artist,
-      beatmap_id: diff.beatmap_id,
-      beatmapset_id: diff.beatmapset_id,
-      bpm: diff.bpm,
-      creator: diff.creator,
-      creator_id: diff.creator_id,
-      difficultyrating: diff.difficultyrating,
-      diff_aim: diff.diff_aim,
-      diff_speed: diff.diff_speed,
-      diff_size: diff.diff_size,
-      diff_overall: diff.diff_overall,
-      diff_approach: diff.diff_approach,
-      diff_drain: diff.diff_drain,
-      hit_length: diff.hit_length,
-      source: diff.source,
-      genre_id: diff.genre_id,
-      language_id: diff.language_id,
-      title: diff.title,
-      total_length: diff.total_length,
-      version: diff.version,
-      file_md5: diff.file_md5,
-      mode: diff.mode,
-      tags: diff.tags,
-      favourite_count: diff.favourite_count,
-      rating: diff.rating,
-      playcount: diff.playcount,
-      passcount: diff.passcount,
-      count_normal: diff.count_normal,
-      count_slider: diff.count_slider,
-      count_spinner: diff.count_spinner,
-      max_combo: diff.max_combo,
-      download_unavailable: diff.download_unavailable,
-      audio_unavailable: diff.audio_unavailable,
-    })
-  );
+  const diff = data[0];
+  const difficulty = {
+    approved: diff.approved,
+    submit_date: diff.submit_date,
+    approved_date: diff.approved_date,
+    last_update: diff.last_update,
+    artist: diff.artist,
+    beatmap_id: diff.beatmap_id,
+    beatmapset_id: diff.beatmapset_id,
+    bpm: diff.bpm,
+    creator: diff.creator,
+    creator_id: diff.creator_id,
+    difficultyrating: diff.difficultyrating,
+    diff_aim: diff.diff_aim,
+    diff_speed: diff.diff_speed,
+    diff_size: diff.diff_size,
+    diff_overall: diff.diff_overall,
+    diff_approach: diff.diff_approach,
+    diff_drain: diff.diff_drain,
+    hit_length: diff.hit_length,
+    source: diff.source,
+    genre_id: diff.genre_id,
+    language_id: diff.language_id,
+    title: diff.title,
+    total_length: diff.total_length,
+    version: diff.version,
+    file_md5: diff.file_md5,
+    mode: diff.mode,
+    tags: diff.tags,
+    favourite_count: diff.favourite_count,
+    rating: diff.rating,
+    playcount: diff.playcount,
+    passcount: diff.passcount,
+    count_normal: diff.count_normal,
+    count_slider: diff.count_slider,
+    count_spinner: diff.count_spinner,
+    max_combo: diff.max_combo,
+    download_unavailable: diff.download_unavailable,
+    audio_unavailable: diff.audio_unavailable,
+  };
 
-  return difficulties;
+  return difficulty;
 };
 
 export const getUserRecents = async (
@@ -146,13 +146,14 @@ export const getUserRecents = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
-
   if (response.status !== 200) {
-    throw new CustomError(status404);
+    throw new CustomError(responseFail(response.statusText));
   }
   const { data } = response;
-  if (!data || !data.length) throw new CustomError(`игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
-  const recents: { [key: string]: any }[] = [];
+  if (!data || !data.length) {
+    throw new CustomError(`игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
+  }
+    const recents: { [key: string]: any }[] = [];
 
   for (const recent of data)
     recents.push({
@@ -170,7 +171,6 @@ export const getUserRecents = async (
       user_id: recent.user_id,
       date: recent.date,
       rank: recent.rank,
-      // Added
       pp: null, // TODO:
       beatmap: await getBeatmap(server, recent.beatmap_id, mode),
       accuracy: String(
@@ -207,11 +207,12 @@ export const getUserTops = async (
     },
   });
   if (response.status !== 200) {
-    throw new CustomError(status404);
+    throw new CustomError(responseFail(response.statusText));
   }
-
   const { data } = response;
-  if (!data || !data.length) throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
+  if (!data || !data.length) {
+    throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
+  }
   const bests: { [key: string]: any }[] = [];
 
   for (const best of data)
@@ -233,7 +234,6 @@ export const getUserTops = async (
       rank: best.rank,
       pp: best.pp,
       replay_available: best.replay_available,
-      // Added
       beatmap: await getBeatmap(server, best.beatmap_id, mode),
       accuracy: String(
         calculateAccuracy(
@@ -270,11 +270,9 @@ export const getScores = async (
       k: server === 'bancho' ? config.osu_token : undefined,
     },
   });
-
   if (response.status !== 200) {
-    throw new CustomError(status404);
+    throw new CustomError(responseFail(response.statusText));
   }
-
   const { data } = response;
   if (!data || !data.length) throw new CustomError(`никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
   const scoresOnBeatmap: { [key: string]: any }[] = [];
@@ -298,7 +296,6 @@ export const getScores = async (
       rank: score.rank,
       pp: score.pp,
       replay_available: score.replay_available,
-      // Added
       beatmap: await getBeatmap(server, idBeatmap, mode),
       accuracy: String(
         calculateAccuracy(

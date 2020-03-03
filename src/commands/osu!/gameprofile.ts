@@ -29,7 +29,7 @@ module.exports = {
     const embed = new Discord.RichEmbed()
       .setAuthor(
         `osu! ${mode.name} на ${server}`,
-        serverLinks.flag.replace('AZ', osuUser.country)
+        serverLinks.flag.replace('RU', osuUser.country)
       )
       .setTitle(osuUser.username)
       .setURL(
@@ -38,17 +38,12 @@ module.exports = {
           .replace('MODE', mode.mode)
       )
       .setDescription(
-        '**Место в мире:** ' +
-        `#${tools.separateThousandth(
-          osuUser.pp_rank
-        )} ` +
-        `(**${osuUser.country}**#${tools.separateThousandth(
-          osuUser.pp_country_rank
-        )})` +
-        `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}` +
-        `\n**PP:** ${tools.separateThousandth(osuUser.pp_raw)}` +
-        `\n**Точность:** ${tools.roundDecimalPlaces(osuUser.accuracy, 2)}%` +
-        `\n**Сыграно карт:** ${tools.separateThousandth(osuUser.playcount)}`
+        `**Место в мире:** #${tools.separateThousandth(osuUser.pp_rank)} `
+        + `(**${osuUser.country}**#${tools.separateThousandth(osuUser.pp_country_rank)})`
+        + `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}`
+        + `\n**PP:** ${tools.separateThousandth(osuUser.pp_raw)}`
+        + `\n**Точность:** ${tools.roundDecimalPlaces(osuUser.accuracy, 2)}%`
+        + `\n**Сыграно карт:** ${tools.separateThousandth(osuUser.playcount)}`
       )
       .setThumbnail(serverLinks.avatar.replace('ID', osuUser.user_id))
       .setColor(tools.randomHexColor())
