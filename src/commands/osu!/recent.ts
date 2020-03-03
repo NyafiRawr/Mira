@@ -35,7 +35,8 @@ module.exports = {
         `${player.nickname} играл в osu! ${mode.name} на ${server}`,
         serverLinks.avatar.replace('ID', recentScore.user_id)
       )
-      .setTitle(`${recentBeatmap.artist} - ${recentBeatmap.version} // ${recentBeatmap.creator}`)
+      .setTitle(`${recentBeatmap.artist} - ${recentBeatmap.version}${
+        !!recentBeatmap.creator ? ' // ' + recentBeatmap.creator : ''}`)
       .setURL(serverLinks.beatmap.replace('ID', recentScore.beatmap_id))
       .setImage(serverLinks.beatmapset_cover.replace('ID', recentBeatmap.beatmapset_id))
       .setColor(tools.randomHexColor())
@@ -46,19 +47,20 @@ module.exports = {
 
       .setDescription(
         `**Сложность:** ${recentBeatmap.version} (★${tools.roundDecimalPlaces(recentBeatmap.difficultyrating)})`
-        + ` ${modePick === 3 ? `[${recentBeatmap.diff_size}K]` : ''}`
+        + ` ${modePick === 3 && !recentBeatmap.diff_size ? `[${recentBeatmap.diff_size}K]` : ''}`
         + (recentScore.enabled_mods === '-' ? `\n**Моды:** ${osu.decodeMods(recentScore.enabled_mods)}` : '')
       )
 
       .addField('Результат',
         `**Оценка:** ${tools.getDataValueOnKey('osu!/ranks', recentScore.rank) || recentScore.rank}`
         + `\n**Точность:** ${tools.roundDecimalPlaces(recentScore.accuracy)}%`
-        + `\n**${(modePick === 3 && recentScore.perfect === '1') ? 'Фулл-комбо' : 'Комбо'}:**`
-        + ` ${tools.separateThousandth(recentScore.maxcombo)} / ${tools.separateThousandth(recentBeatmap.max_combo)}`
+        + `\n**Комбо:** ${tools.separateThousandth(recentScore.maxcombo)}${
+        !!recentBeatmap.max_combo ? ' / ' + tools.separateThousandth(recentBeatmap.max_combo) : ''}`
         + `\n**Счет:** ${tools.separateThousandth(recentScore.score)}`
         , true)
       .addField('Характеристики',
-        `**Длина:** ${osu.styleLengthInMS(recentBeatmap.total_length)}`
+        `**PP:** ${recentScore.pp || '-'}`
+        + `\n**Длина:** ${osu.styleLengthInMS(recentBeatmap.total_length)}`
         + `\n**BPM:** ${recentBeatmap.bpm}`
         + `${modePick === 3 ? '' : `\n**CS:** ${recentBeatmap.diff_size}`} **AR:** ${recentBeatmap.diff_approach}`
         + `\n**OD:** ${recentBeatmap.diff_overall} **HP:** ${recentBeatmap.diff_drain}`

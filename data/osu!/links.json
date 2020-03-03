@@ -7,11 +7,11 @@
     "beatmapset_cover_thumb": "https://b.ppy.sh/thumb/IDl.jpg",
 		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	},
-	"akatsuki": {
-		"avatar": "http://a.osu.akatsuki.pw/ID",
-		"user": "https://osu.akatsuki.pw/u/ID",
-		"beatmap": "https://osu.akatsuki.pw/b/ID",
-		"beatmapset_cover": "https://assets.osu.akatsuki.pw/beatmaps/ID/covers/cover.jpg",
+	"gatari": {
+		"avatar": "https://a.gatari.pw/ID",
+		"user": "https://gatari.pw/u/ID",
+		"beatmap": "https://gatari.pw/b/ID",
+		"beatmapset_cover": "https://assets.gatari.pw/beatmaps/ID/covers/cover.jpg",
 		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	},
 	"ripple": {
@@ -21,18 +21,18 @@
 		"beatmapset_cover": "https://assets.ripple.moe/beatmaps/ID/covers/cover.jpg",
 		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	},
+	"akatsuki": {
+		"avatar": "https://a.osu.akatsuki.pw/ID",
+		"user": "https://osu.akatsuki.pw/u/ID",
+		"beatmap": "https://osu.akatsuki.pw/b/ID",
+		"beatmapset_cover": "https://assets.osu.akatsuki.pw/beatmaps/ID/covers/cover.jpg",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png"
+	},
 	"enjuu": {
 		"avatar": "https://a.enjuu.click/ID",
 		"user": "https://enjuu.click/u/ID",
 		"beatmap": "https://enjuu.click/b/ID",
 		"beatmapset_cover": "https://assets.enjuu.click/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/RU.png"
-	},
-	"gatari": {
-		"avatar": "https://a.gatari.pw/ID",
-		"user": "https://gatari.pw/u/ID",
-		"beatmap": "https://gatari.pw/b/ID",
-		"beatmapset_cover": "https://assets.gatari.pw/beatmaps/ID/covers/cover.jpg",
 		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	}
 }

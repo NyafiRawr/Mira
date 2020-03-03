@@ -21,18 +21,7 @@
   "scripts": {
     "start": "ts-node . | pino-pretty",
     "start:dev": "nodemon --watch 'src/**/*.ts' --ext 'ts' --exec 'node' -r ts-node/register --inspect=9229 . | pino-pretty",
-    "start:prod": "npm run build && node ./lib/index.js | pino-tee error ./logs/error.log",
-    "clean": "rimraf lib && rimraf coverage",
-    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
-    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
-    "prepublishOnly": "npm run build",
-    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
-    "build": "tsc --pretty",
-    "coverage": "jest --forceExit --coverage",
-    "watch": "npm run build -- --watch",
-    "release:major": "npm version major && git push origin && git push origin --tags",
-    "release:minor": "npm version minor && git push origin && git push origin --tags",
-    "release:patch": "npm version patch && git push origin && git push origin --tags"
+    "lint": "tslint --force --format verbose \"src/**/*.ts\""
   },
   "engines": {
     "node": ">=6.0.0"

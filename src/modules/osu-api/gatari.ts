@@ -26,10 +26,10 @@ export const getUser = async (
     },
   });
   if (responseStats.status !== 200 || responseStats.data.code !== 200) {
-    throw new CustomError(responseFail(responseStats.data.error));
+    throw new CustomError(responseFail(responseStats.data?.error || responseStats.statusText));
   }
   if (responseInfo.status !== 200 || responseInfo.data.code !== 200) {
-    throw new CustomError(responseFail(responseInfo.data.error));
+    throw new CustomError(responseFail(responseInfo.data?.error || responseInfo.statusText));
   }
   const dataInfos = responseInfo.data.users;
   const dataStats = responseStats.data.stats;
@@ -78,7 +78,7 @@ export const getBeatmap = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data.error));
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
   }
   const { data } = response.data;
   if (!data || !data.length) {
@@ -152,10 +152,10 @@ export const getUserRecents = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data.error));
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
   }
   const { scores } = response.data;
-  if (!scores || !Object.keys(scores).length) {
+  if (!scores || !scores.length) {
     throw new CustomError(`игрок \`${nickname}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
   }
 
@@ -203,7 +203,7 @@ export const getUserTops = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data.error));
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
   }
   const { scores } = response.data;
   if (!scores || !scores.length) {
@@ -257,7 +257,7 @@ export const getScores = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data.error));
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
   }
   const { score } = response.data;
   if (!score || !Object.keys(score).length) {

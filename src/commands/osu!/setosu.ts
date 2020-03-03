@@ -117,9 +117,9 @@ module.exports = {
         }
         embed.setTitle('Успех!');
         const playModes = [...new Set(osuModesIndexes!.concat(osuFavoriteMode))];
-        embed.setDescription(`Игрок **${osuName}** на сервере **${
+        embed.setDescription(`Ты **${osuName}** на сервере **${
           Object.values<any>(servers)[osuServerIndex as any].name
-          }** любит и играет **${playModes!
+          }** любишь и играешь **${playModes!
             .map(mode => modes[mode].name)
             .join(', ')}**!`);
         await embedMessage.edit(message.author, { embed });
@@ -130,9 +130,9 @@ module.exports = {
           message.author.id,
           Object.keys(servers)[osuServerIndex as any],
           {
-            modes: osuModesIndexes!.join(','),
             nickname: osuName,
-            favoriteMode: osuFavoriteMode,
+            modes: osuModesIndexes!.join(','),
+            modeFavorite: osuFavoriteMode,
             gameServerFavorite
           }
         );

@@ -136,18 +136,21 @@ export const showStats = (
     .replace('count50', tools.separateThousandth(count50))
     .replace('countmiss', tools.separateThousandth(countmiss));
 };
-
+// TODO: 257 - не расшифрует, нужно переписать
 export const decodeMods = (code: string) => {
   const mods = tools.getData('osu!/mods');
   let enCode = parseInt(code, 10);
   const result = [];
 
   for (let i = 0; i < Object.keys(mods).length; i += 1) {
+    if (enCode < 0) {
+      result.push('UNKNOW');
+      break;
+    }
     if (parseInt(Object.keys(mods)[i], 10) === enCode) {
       result.push(Object.values(mods)[i]);
       break;
     }
-
     const parsed = parseInt(Object.keys(mods)[i], 10);
     if (parsed > enCode) {
       enCode -= parsed;
