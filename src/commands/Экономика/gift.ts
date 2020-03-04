@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
-import * as tools from '../../modules/tools';
+import CustomError from '../../utils/customError';
+import * as tools from '../../utils/tools';
+import * as users from '../../modules/users';
 import * as economy from '../../modules/economy';
 
 module.exports = {
@@ -13,33 +15,32 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[] /* , CooldownReset */
+  async execute(message: Discord.Message, args: string[]
   ) {
-    // todo: pay or gift or give?
+    // TODO: pay or gift or give?
     if (!(message.mentions.users.size && args[0].length)) {
-      return message.reply('вы никого не упомянули.');
+      throw new CustomError('вы никого не упомянули.');
     }
 
     const amount = parseInt(args[1], 10);
     if (!amount) {
-      return message.reply(
+      throw new CustomError(
         'вы не указали количество печенья, которое хотите передать.'
       );
     }
     if (amount <= 0) {
-      return message.reply(
+      throw new CustomError(
         'количество передаваемого печенья не может быть отрицательным или равно нулю!'
       );
     }
 
-    const currency = await economy.get(message.guild.id, message.author.id);
+    const currency = (await users.get(message.guild.id, message.author.id))
+      ?.balance;
     if (!currency) {
-      return message.reply('вам нечего передавать!');
+      throw new CustomError('вам нечего передавать!');
     }
     if (currency < amount) {
-      return message.reply('не хватает!');
+      throw new CustomError('не хватает!');
     }
 
     const victim = message.mentions.members.first();

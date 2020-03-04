@@ -1,28 +1,35 @@
 import axios from 'axios';
-import * as tools from '../tools';
+import * as tools from '../../utils/tools';
 import { calculateAccuracy } from '../osu';
+import CustomError from '../../utils/customError';
+
+const responseFail = (error: string) => {
+  return `ошибка в обмене информацией: \`${error}\``;
+};
 
 export const getUser = async (
   server: string,
-  idOrName: string,
+  nickname: string,
   mode: string
 ): Promise<{ [key: string]: any } | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
-  const addParams = Number.isNaN(parseInt(idOrName, 10))
-    ? { name: idOrName }
-    : { id: idOrName };
-
   const response = await axios.get('/api/v1/users/full', {
     baseURL: `http://${configServer.api.url}`,
-    params: addParams,
+    params: {
+      name: nickname
+    },
   });
-  if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+  if (response.status !== 200) {
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
+  }
+  const { data } = response;
+  if (!data || !Object.keys(data).length) {
+    throw new CustomError(
+      `игрок \`${nickname}\` не найден на сервере \`${server}\` в режиме \`${mode}\``
+    );
   }
 
-  const { data } = response;
-
-  const modeName = tools.getDataValueOnKey('osu!/mode', mode)[0];
+  const modeName = tools.getDataValueOnKey('osu!/modes', mode).aliases[0];
   const gameUser = {
     user_id: data.id,
     username: data.username,
@@ -48,33 +55,97 @@ export const getUser = async (
   return gameUser;
 };
 
+export const getBeatmap = async (
+  server: string,
+  idBeatmap: string,
+  mode: string
+): Promise<{ [key: string]: any } | null> => {
+  const configServer = tools.getDataValueOnKey('osu!/servers', server);
+  const response = await axios.get('/api/get_beatmaps', {
+    baseURL: `http://${configServer.api.url}`,
+    params: {
+      b: idBeatmap,
+      m: mode,
+    },
+  });
+  if (response.status !== 200) {
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
+  }
+  const { data } = response;
+  if (!data || !data.length) {
+    throw new CustomError(`карта \`${idBeatmap}\` не найдена.`);
+  }
+
+  const diff = data[0];
+  const difficulty = {
+    approved: diff.approved,
+    submit_date: null,
+    approved_date: diff.approved_date,
+    last_update: diff.last_update,
+    artist: diff.artist,
+    beatmap_id: diff.beatmap_id,
+    beatmapset_id: diff.beatmapset_id,
+    bpm: diff.bpm,
+    creator: diff.creator,
+    creator_id: null,
+    difficultyrating: diff.difficultyrating,
+    diff_aim: null,
+    diff_speed: null,
+    diff_size: diff.diff_size,
+    diff_overall: diff.diff_overall,
+    diff_approach: diff.diff_approach,
+    diff_drain: diff.diff_drain,
+    hit_length: diff.hit_length,
+    source: diff.source,
+    genre_id: diff.genre_id,
+    language_id: diff.language_id,
+    title: diff.title,
+    total_length: diff.total_length,
+    version: diff.version,
+    file_md5: diff.file_md5,
+    mode: diff.mode,
+    tags: diff.tags,
+    favourite_count: diff.favourite_count,
+    rating: null,
+    playcount: diff.playcount,
+    passcount: diff.passcount,
+    count_normal: null,
+    count_slider: null,
+    count_spinner: null,
+    max_combo: diff.max_combo,
+    download_unavailable: null,
+    audio_unavailable: null,
+  };
+
+  return difficulty;
+};
+
 export const getUserRecents = async (
   server: string,
-  idOrName: string,
+  nickname: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
-  const addParams = Number.isNaN(parseInt(idOrName, 10))
-    ? { name: idOrName }
-    : { id: idOrName };
-
+  const osuUser = await getUser(server, nickname, mode);
   const response = await axios.get('/api/v1/users/scores/recent', {
     baseURL: `http://${configServer.api.url}`,
     params: {
       m: mode,
       l: limit,
-      ...addParams,
+      name: nickname
     },
   });
-  if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+  if (response.status !== 200) {
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
+  }
+  const { scores } = response.data;
+  if (!scores || !scores.length) {
+    throw new CustomError(`игрок \`${nickname}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
   }
 
-  const { scores } = response.data;
-  const recents: Array<{ [key: string]: any }> = [];
-
-  scores.forEach((recent: any) =>
+  const recents: { [key: string]: any }[] = [];
+  for (const recent of scores)
     recents.push({
       beatmap_id: recent.beatmap.beatmap_id,
       score: recent.score,
@@ -87,122 +158,43 @@ export const getUserRecents = async (
       countgeki: recent.count_geki,
       perfect: recent.full_combo,
       enabled_mods: recent.mods,
-      user_id: null,
+      user_id: osuUser!.user_id,
       date: recent.time,
       rank: recent.rank,
-      // Only on gatari & ripple
-      beatmap: recent.beatmap,
+      beatmap: await getBeatmap(server, recent.beatmap.beatmap_id, mode),
       pp: recent.pp,
-      // Added
-      accuracy: null,
-    })
-  );
+      accuracy: recent.accuracy,
+    });
 
   return recents;
 };
 
-export const getBeatmap = async (
-  server: string,
-  idBeatmap: string,
-  mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
-  const configServer = tools.getDataValueOnKey('osu!/servers', server);
-
-  const response = await axios.get('/beatmaps', {
-    baseURL: `http://${configServer.api.url}`,
-    params: {
-      m: mode, // not work
-      bb: idBeatmap,
-    },
-  });
-  if (response.status !== 200 || response.data.code !== 200) {
-    return null;
-  }
-
-  const { data } = response;
-  const difficulties: Array<{ [key: string]: any }> = [];
-
-  data.forEach((diff: any) =>
-    difficulties.push({
-      approved: null, // diff.ranked_status_frozen ?
-      submit_date: null,
-      approved_date: null,
-      last_update: diff.latest_update,
-      artist: null,
-      beatmap_id: diff.beatmap_id,
-      beatmapset_id: diff.beatmapset_id,
-      bpm: null,
-      creator: null,
-      creator_id: null,
-      difficultyrating: diff.difficulty,
-      diff_aim: null,
-      diff_speed: null,
-      diff_size: null,
-      diff_overall: diff.od,
-      diff_approach: diff.ar,
-      diff_drain: null,
-      hit_length: diff.hit_length,
-      source: null,
-      genre_id: null,
-      language_id: null,
-      title: null,
-      total_length: null,
-      version: null,
-      file_md5: diff.beatmap_md5,
-      mode: null,
-      tags: null,
-      favourite_count: null,
-      rating: null,
-      playcount: null,
-      passcount: null,
-      count_normal: null,
-      count_slider: null,
-      count_spinner: null,
-      max_combo: diff.max_combo,
-      download_unavailable: null,
-      audio_unavailable: null,
-      // Куда это?
-      ranked: diff.ranked,
-      song_name: diff.song_name,
-      difficulty2: [
-        diff.difficulty2.std,
-        diff.difficulty2.taiko,
-        diff.difficulty2.ctb,
-        diff.difficulty2.mania,
-      ][parseInt(mode, 10)],
-    })
-  );
-
-  return difficulties;
-};
-
 export const getUserTops = async (
   server: string,
-  idOrName: string,
+  nickname: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any }[] | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
-  const addParams = Number.isNaN(parseInt(idOrName, 10))
-    ? { name: idOrName }
-    : { id: idOrName };
-
+  const osuUser = await getUser(server, nickname, mode);
   const response = await axios.get('/api/v1/users/scores/best', {
     baseURL: `http://${configServer.api.url}`,
     params: {
       mode,
       l: limit,
-      ...addParams,
+      id: parseInt(osuUser!.user_id, 10) // Без парсинга не работает!
     },
   });
-  if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+  if (response.status !== 200) {
+    throw new CustomError(responseFail(response.data?.error || response.statusText));
+  }
+  const { scores } = response.data;
+  if (!scores || !scores.length) {
+    throw new CustomError(`у игрока \`${nickname}\` на \`${server}\` нет результатов.`);
   }
 
-  const { scores } = response.data;
-  const bests: Array<{ [key: string]: any }> = [];
-
-  scores.forEach((best: any) =>
+  const bests: { [key: string]: any }[] = [];
+  for (const best of scores)
     bests.push({
       beatmap_id: best.beatmap.beatmap_id,
       score_id: best.id,
@@ -216,80 +208,63 @@ export const getUserTops = async (
       countgeki: best.count_geki,
       perfect: best.full_combo,
       enabled_mods: best.mods,
-      user_id: null,
+      user_id: osuUser!.user_id,
       date: best.time,
       rank: best.rank,
       pp: best.pp,
       replay_available: null,
-      // Only on gatari & ripple
-      beatmap: best.beatmap,
-      // Added
-      accuracy: String(
-        calculateAccuracy(
-          mode,
-          best.count300,
-          best.count100,
-          best.count50,
-          best.countmiss,
-          best.countkatu,
-          best.countgeki
-        )
-      ),
-    })
-  );
+      beatmap: await getBeatmap(server, best.beatmap.beatmap_id, mode),
+      accuracy: best.accuracy,
+    });
 
   return bests;
 };
 
 export const getScores = async (
   server: string,
-  idOrName: string,
+  nickname: string,
   idBeatmap: string,
   limit: number,
   mode: string
-): Promise<Array<{ [key: string]: any }> | null> => {
+): Promise<{ [key: string]: any } | null> => {
   const configServer = tools.getDataValueOnKey('osu!/servers', server);
-  const addParams = Number.isNaN(parseInt(idOrName, 10))
-    ? { name: idOrName }
-    : { id: idOrName };
-
-  const response = await axios.get('/api/v1/scores', {
+  const response = await axios.get('/api/get_scores', {
     baseURL: `http://${configServer.api.url}`,
     params: {
-      mode,
+      m: mode,
       b: idBeatmap,
-      l: limit, // work? нужен скор с нескольими траями для теста
-      ...addParams,
+      l: limit,
+      u: nickname, // "u:"" принимает и id и name, но если "id:" то выкидывает левых людей с нужным челом
     },
   });
-  if (response.status !== 200 || response.data.code !== 200) {
-    return null;
+  if (response.status !== 200) {
+    throw new CustomError(responseFail(response.statusText));
+  }
+  const scores = response.data;
+  if (!scores || !scores.length) {
+    throw new CustomError(`нет результата на \`${idBeatmap}\` от игрока \`${nickname}\` на \`${server}\` в режиме \`${mode}\`.`);
   }
 
-  const { scores } = response.data;
-
-  const scoresOnBeatmap: Array<{ [key: string]: any }> = [];
-  // выкидывает все скорсы на сервере !!!!!
-  scores.forEach((score: any) =>
+  const scoresOnBeatmap: { [key: string]: any }[] = [];
+  for (const score of scores)
     scoresOnBeatmap.push({
       score_id: score.id,
       score: score.score,
-      username: score.user.user_id,
+      username: score.user_id,
       count300: score.count_300,
       count100: score.count_100,
       count50: score.count_50,
       countmiss: score.count_miss,
-      maxcombo: score.max_combo,
+      maxcombo: score.maxcombo,
       countkatu: score.count_katu,
       countgeki: score.count_geki,
       perfect: score.full_combo,
       enabled_mods: score.mods,
-      user_id: score.user.user_id,
+      user_id: score.user_id,
       date: score.time,
       rank: score.rank,
       pp: score.pp,
       replay_available: null,
-      // Added
       accuracy: String(
         calculateAccuracy(
           mode,
@@ -301,8 +276,8 @@ export const getScores = async (
           score.countgeki
         )
       ),
-    })
-  );
+      beatmap: await getBeatmap(server, idBeatmap, mode),
+    });
 
   return scoresOnBeatmap;
 };

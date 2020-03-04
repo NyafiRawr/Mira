@@ -1,7 +1,7 @@
 {
   "name": "mira",
-  "version": "10.01.2020",
-  "description": "Discord-бот, специально для osu! #russian https://discord.gg/hCe883B",
+  "version": "3.0.0",
+  "description": "Discord-развлекательный бот с командами osu!",
   "license": "GPL-2.0",
   "author": {
     "name": "NyafiRawr",
@@ -9,31 +9,20 @@
     "id": "197999736035344384"
   },
   "contributors": [
-    "deissh <deissh@yandex.ru>",
-    "Fataliti // Reifshneider <fataliti22@gmail.com>",
-    "NyafiRawr <leonid.b4@yandex.ru>"
+    "deissh",
+    "Fataliti // Reifshneider"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NyafiRawr/Mira.git"
+    "url": "https://github.com/NyafiRawr/Mira"
   },
   "main": "src/index.ts",
   "typings": "lib/index.d.ts",
   "scripts": {
     "start": "ts-node . | pino-pretty",
     "start:dev": "nodemon --watch 'src/**/*.ts' --ext 'ts' --exec 'node' -r ts-node/register --inspect=9229 . | pino-pretty",
-    "start:prod": "npm run build && node ./lib/index.js | pino-tee error ./logs/error.log",
-    "clean": "rimraf lib && rimraf coverage",
-    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
     "lint": "tslint --force --format verbose \"src/**/*.ts\"",
-    "prepublishOnly": "npm run build",
-    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
-    "build": "tsc --pretty",
-    "coverage": "jest --forceExit --coverage",
-    "watch": "npm run build -- --watch",
-    "release:major": "npm version major && git push origin && git push origin --tags",
-    "release:minor": "npm version minor && git push origin && git push origin --tags",
-    "release:patch": "npm version patch && git push origin && git push origin --tags"
+    "build": "tsc --pretty"
   },
   "engines": {
     "node": ">=6.0.0"

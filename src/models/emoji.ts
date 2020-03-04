@@ -1,24 +1,30 @@
 import { Model, STRING } from 'sequelize';
-import { sequelize } from '../modules/db';
+import { sequelize } from '../db';
 
-class Emoji extends Model {}
+class Emoji extends Model {
+  public channelId!: string;
+  public messageId!: string;
+  public emojiId!: string;
+  public roleId!: string;
+}
+
 Emoji.init(
   {
     channelId: {
       type: STRING,
-      primaryKey: true,
+      allowNull: false,
     },
     messageId: {
       type: STRING,
-      primaryKey: true,
+      allowNull: false,
     },
     emojiId: {
       type: STRING,
-      primaryKey: true,
+      allowNull: false,
     },
     roleId: {
       type: STRING,
-      primaryKey: true,
+      allowNull: false,
     },
   },
   {

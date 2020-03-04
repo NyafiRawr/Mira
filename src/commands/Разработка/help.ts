@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 
 import config from '../../config';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import { commands } from '../../client';
 
 module.exports = {
@@ -50,7 +50,7 @@ module.exports = {
       }
       embed.addField(
         'Подробная информация о команде',
-        `${config.bot.prefix}**help** [имя команды]`,
+        `${config.bot.prefix}**${this.name}** [имя команды]`,
         false
       );
     } else {

@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
+import moment = require('moment');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -16,7 +17,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(
     message: Discord.Message,
-    args: string[] /* , CooldownReset */
+    args: string[]
   ) {
     const user: any =
       message.mentions.users.first() ||
@@ -28,14 +29,14 @@ module.exports = {
       message.author;
     const member = message.guild.members.get(user.id);
 
-    let nickname = 'себе';
+    let title = 'Кажется, это вы!';
     if (message.author.id !== user.id) {
-      nickname = !member || !member.nickname ? user.username : member.nickname;
+      title = `Информация о ${!member || !member.nickname ? user.username : member.nickname}`;
     }
 
     const embed = new Discord.RichEmbed();
     embed.setAuthor(
-      `Информация о ${nickname}`,
+      title,
       user.avatarURL || user.user.avatarURL
     );
 
@@ -43,9 +44,10 @@ module.exports = {
 
     embed.addField('Имя аккаунта', `\`${user.tag}\``, true);
     embed.addField('Упоминание', user, true);
+    embed.addField('Статус', user.presence.game?.state || '-', true);
 
     if (user.createdAt) {
-      embed.addField('Дата создания', tools.toDate(user.createdAt), true);
+      embed.addField('Создан', tools.toDate(user.createdAt), true);
     }
 
     let lastEntry;
@@ -57,31 +59,35 @@ module.exports = {
       firstEntry = lastEntry;
     }
 
-    const dbUser = await users.get<any>(message.guild.id, user.id);
+    const dbUser = await users.get(message.guild.id, user.id);
 
     if (dbUser) {
-      firstEntry = dbUser.entryDate || firstEntry;
+      firstEntry = dbUser.firstEntry;
       birthday = dbUser.birthday;
     }
 
     if (firstEntry) {
-      embed.addField('Первый вход', tools.toDate(firstEntry), true);
+      embed.addField(
+        'Первый вход',
+        tools.toDate(firstEntry.toISOString()),
+        true
+      );
     }
 
     if (lastEntry) {
       embed.addField(
-        'Дата подключения',
+        'Последний вход',
         tools.toDate(lastEntry.toISOString()),
         true
       );
     }
 
     if (birthday) {
-      birthday = dbUser.birthday
-        .split('-')
-        .reverse()
-        .join('.');
-      embed.addField('День рождения', birthday, true);
+      embed.addField(
+        'День рождения',
+        moment(birthday).format('DD.MM.YY'),
+        true
+      );
     }
 
     embed.setColor(tools.randomHexColor());

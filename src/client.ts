@@ -1,25 +1,23 @@
 import * as Discord from 'discord.js';
 import * as path from 'path';
-import fs from './modules/fs';
+import fs from './utils/fs';
 
 import { log } from './logger';
-import config from './config';
 
-// иницилизирует базу до того как запустится бот
-// иначе она иницилизируется только при первом обращении из команд
-import './modules/db';
+// Иницилизируем базу до первого обращения
+import './db';
 
 export const client = new Discord.Client();
-// todo: интерфейс команд
+// TODO: интерфейс команд
 export const commands = new Discord.Collection<string, any>();
 
 /**
  * Иницилизация всех команд
- * @param {String} defaultDir папка в которой будут искаться команды
+ * @param {String} defaultDir каталог поиска команд
  */
 const loadCommands = async (defaultDir: string) => {
-  // рекурсивно обходим все дочерние папки и файлы
-  // вернется список файлов которые были найдены
+  // Рекурсивно обходим все дочерние папки и файлы
+  // вернется список найденных файлов
   const getFilePaths = async (dir: string) => {
     let files = await fs.readdir(dir);
     files = await Promise.all<any>(
@@ -41,14 +39,15 @@ const loadCommands = async (defaultDir: string) => {
     );
   };
 
-  // параллельно выполняем все промисы и дожидаемся их
-  log.info('Загрузка команд');
+  // Параллельно выполняем все промисы и дожидаемся их
+  log.info('Загрузка команд...');
   await Promise.all(
     (await getFilePaths(defaultDir)).map(async (filePath: string) => {
       let cmd: any;
       try {
         cmd = await import(filePath);
       } catch (e) {
+        log.debug(e);
         return;
       }
 
@@ -59,9 +58,7 @@ const loadCommands = async (defaultDir: string) => {
       log.debug(`Загружена команда ${cmd.group}/${cmd.name}`);
     })
   );
-  log.info('Команды загружены');
+  log.info('Команды загружены!');
 };
 
-// не ждем загрузки всех команд для
-// того что бы бот появился в сети как можно быстрее
 loadCommands(path.join(path.resolve(__dirname), 'commands'));

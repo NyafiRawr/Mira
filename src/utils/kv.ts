@@ -29,7 +29,7 @@ export const get = async (
 };
 
 /**
- * Сброс кулдауна
+ * Сброс отката
  * @param {String} serverId идентификатор сервера
  * @param {String} userId идентификатор пользователя
  * @param {String} commandName название команды
@@ -43,7 +43,7 @@ export const reset = async (
 };
 
 /**
- * Установка кулдауна пользователя
+ * Установка отката пользователя
  * @param {String} serverId идентификатор сервера
  * @param {String} userId идентификатор пользователя
  * @param {String} commandName название команды

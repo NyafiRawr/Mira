@@ -1,9 +1,10 @@
 import * as Discord from 'discord.js';
+import CustomError from '../../utils/customError';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Удаление сообщений',
-  aliases: ['remove', 'clear', 'prune', 'clean', 'rem'],
+  aliases: ['remove', 'clear', 'prune', 'clean', 'delete'],
   usage: '[@писатель] <кол-во>',
   guild: true,
   hide: false,
@@ -11,16 +12,17 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: ['MANAGE_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[]) {
     const channel = message.guild.channels.find('id', message.channel.id);
 
     if (!channel.permissionsFor(message.member)!.has(this.permissions[0])) {
-      return message.reply('у тебя недостаточно прав!');
+      throw new CustomError('у тебя нет права управлять сообщениями!');
     }
+
     if (
       !channel.permissionsFor(message.client.user)!.has(this.permissions[0])
     ) {
-      return message.reply('у меня нет прав управлять сообщениями!');
+      throw new CustomError('у меня нет права управлять сообщениями!');
     }
 
     const user = message.mentions.users.first();
@@ -28,12 +30,13 @@ module.exports = {
     const amount = val || parseInt(args[1], 0);
 
     if (!amount && !user) {
-      return message.reply(
+      throw new CustomError(
         'пожалуйста, укажите участника и количество или только количество!'
       );
     }
+    // Удаление больше 100 может вызвать непредсказуемое поведение (заметка 2018 года)
     if (!amount || amount < 1 || amount > 100) {
-      return message.reply(
+      throw new CustomError(
         'пожалуйста, укажите число в диапазоне от 1 до 100.'
       );
     }
@@ -62,11 +65,9 @@ module.exports = {
                 setTimeout(() => msg.delete(), 3000);
               });
           })
-          .catch(error =>
-            message.reply(
-              `невозможно удалить сообщения, потому что: \n${error}`
-            )
-          );
+          .catch(error => {
+            throw new CustomError(`невозможно удалить сообщения, потому что: \n${error}`);
+          });
       });
   },
 };
