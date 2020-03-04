@@ -136,24 +136,20 @@ export const showStats = (
     .replace('count50', tools.separateThousandth(count50))
     .replace('countmiss', tools.separateThousandth(countmiss));
 };
-// TODO: 257 - не расшифрует, нужно переписать
+
 export const decodeMods = (code: string) => {
   const mods = tools.getData('osu!/mods');
   let enCode = parseInt(code, 10);
   const result = [];
 
   for (let i = 0; i < Object.keys(mods).length; i += 1) {
-    if (enCode < 0) {
-      result.push('UNKNOW');
-      break;
-    }
-    if (parseInt(Object.keys(mods)[i], 10) === enCode) {
+    const parsed = parseInt(Object.keys(mods)[i], 10);
+    if (parsed === enCode) {
       result.push(Object.values(mods)[i]);
       break;
     }
-    const parsed = parseInt(Object.keys(mods)[i], 10);
     if (parsed > enCode) {
-      enCode -= parsed;
+      enCode -= parseInt(Object.keys(mods)[i - 1], 10);
       result.push(Object.values(mods)[i - 1]);
       i = 0;
     }
@@ -229,7 +225,7 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
         message.author.id,
         specificServer, specificServer ? false : true
       )) || player;
-      player.nickname = message.mentions.members.first().displayName;
+    player.nickname = message.mentions.members.first().displayName;
   } else {
     player = (await players.get(message.author.id, specificServer, specificServer ? false : true)) || player;
     const amountParams = args.filter(arg => arg.startsWith('/'))?.length || 0;
