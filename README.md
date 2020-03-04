@@ -7,7 +7,7 @@
 
 ## Как запустить?
 
-1. Устанавливаем Node JS, если его нет
-2. Заполняем файл `.env.example` данными для подключений ([Discord](https://discordapp.com/developers/applications/), [MySQL](http://dev.mysql.com/downloads/installer/), [osu!](https://github.com/ppy/osu-api/wiki/)) и пересохраняем с именем `.env` без формата
+1. Устанавливаем Node JS
+2. Заполняем файл `.env.example` данными для подключений ([Discord](https://discordapp.com/developers/applications/), [MySQL](http://dev.mysql.com/downloads/installer/), [osu!](https://github.com/ppy/osu-api/wiki/)) и пересохраняем как `.env`
 3. Устанавливаем зависимости - открываем командную строку в папке с ботом и вводим: `npm i`
-4. Запускаем бота командой: `npm start` или собираем TypeScript в ES5 совместимый код с помощью команды `npm run build` 
+4. Запускаем бота командой: `npm run start` или собираем TypeScript в ES5 совместимый код с помощью команды `npm run build`

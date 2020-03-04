@@ -1,18 +1,22 @@
 import User from '../models/user';
 
-export const get = async <T = User>(
+export const get = async (
   serverId: string,
   userId: string
-): Promise<T | null> => {
-  const user = await User.findOne({
+): Promise<User | null> =>
+  User.findOne({
     where: {
       id: userId,
       serverId,
     },
   });
 
-  return user as any;
-};
+export const getAll = async (serverId: string): Promise<User[] | null> =>
+  User.findAll({
+    where: {
+      serverId,
+    },
+  });
 
 export const set = async (
   serverId: string,
@@ -20,9 +24,11 @@ export const set = async (
   fields: { [key: string]: any }
 ) => {
   const user = await get(serverId, userId);
+
   if (user != null) {
     return user.update(fields);
   }
+
   return User.create({
     id: userId,
     serverId,

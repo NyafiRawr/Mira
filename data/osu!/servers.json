@@ -1,6 +1,6 @@
 {
 	"bancho": {
-		"name": "Bancho (OSU.PPY.SH)",
+		"name": "Bancho (ppy.sh)",
 		"api": {
 			"base": "bancho",
 			"url": "osu.ppy.sh"
@@ -20,42 +20,16 @@
 			"peppy"
 		]
 	},
-	"akatsuki": {
-		"name": "Akatsuki: Regular",
+	"gatari": {
+		"name": "Gatari",
 		"api": {
-			"base": "ripple",
-			"url": "akatsuki.pw"
+			"base": "gatari",
+			"url": "api.gatari.pw"
 		},
-		"url": "akatsuki.pw",
+		"url": "osu.gatari.pw",
 		"aliases": [
-			"akatsuki.pw",
-			"regular",
-			"regularakatsuki",
-			"regular akatsuki",
-			"akatsuki regular",
-			"akatsukiregular",
-			"akatsukire",
-			"akatsukireg",
-			"akatsuki",
-			"osu.akatsuki.pw"
-		]
-	},
-	"relax": {
-		"name": "Akatsuki: Relax",
-		"api": {
-			"base": "ripple",
-			"url": "akatsuki.pw"
-		},
-		"url": "akatsuki.pw",
-		"aliases": [
-			"akatsuki.pw/rx",
-			"relax",
-			"relaxakatsuki",
-			"relax akatsuki",
-			"akatsuki relax",
-			"akatsukirelax",
-			"akatsukirx",
-			"akatsuki-relax"
+			"gatari.pw",
+			"gatari"
 		]
 	},
 	"ripple": {
@@ -70,6 +44,21 @@
 			"ripple"
 		]
 	},
+	"akatsuki": {
+		"name": "Akatsuki: Vanilla",
+		"api": {
+			"base": "ripple",
+			"url": "akatsuki.pw"
+		},
+		"url": "akatsuki.pw",
+		"aliases": [
+			"akatsuki.pw",
+			"akatsuki",
+			"vanilla",
+			"regular",
+			"osu.akatsuki.pw"
+		]
+	},
 	"enjuu": {
 		"name": "Enjuu",
 		"api": {
@@ -80,18 +69,6 @@
 		"aliases": [
 			"enjuu.click",
 			"enjuu"
-		]
-	},
-	"gatari": {
-		"name": "Gatari",
-		"api": {
-			"base": "gatari",
-			"url": "api.gatari.pw"
-		},
-		"url": "gatari.pw",
-		"aliases": [
-			"gatari.pw",
-			"gatari"
 		]
 	}
 }
