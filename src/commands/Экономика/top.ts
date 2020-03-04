@@ -13,7 +13,7 @@ module.exports = {
   usage: undefined,
   guild: true,
   hide: false,
-  cooldown: 1,
+  cooldown: 5,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
@@ -25,32 +25,41 @@ module.exports = {
       );
     }
 
-    const baseCleared = new Map();
+    const onlyLiveHumans = new Array();
     base.forEach((user: any) => {
       const member = message.guild.members.get(user.id);
       if (!!member && !member.user.bot && user.balance > 0) {
-        baseCleared.set(user.id, user.balance);
+        onlyLiveHumans.push({
+          id: user.id,
+          balance: user.balance
+        });
       }
     });
 
-    const top = new Map(
-      [...baseCleared.entries()].sort(
-        (x, y) => baseCleared.get(x) - baseCleared.get(y)
-      )
-    );
+    const maxTopSize = topSize > onlyLiveHumans.length ? onlyLiveHumans.length : topSize;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < maxTopSize; i += 1) {
+      // tslint:disable-next-line: prefer-for-of
+      for (let j = i + 1; j < onlyLiveHumans.length; j += 1) {
+        if ((onlyLiveHumans[i]).balance < (onlyLiveHumans[j]).balance) {
+          const temp = onlyLiveHumans[i];
+          onlyLiveHumans[i] = onlyLiveHumans[j];
+          onlyLiveHumans[j] = temp;
+        }
+      }
+    }
 
     const msg: any[] = [];
-    [...top.keys()]
-      .slice(0, topSize > top.size ? top.size : topSize)
-      .forEach(userId => {
-        const member = message.guild.members.get(userId);
+    onlyLiveHumans.slice(0, maxTopSize)
+      .forEach(user => {
+        const member = message.guild.members.get(user.id);
         if (member) {
           msg.push(
             `  **${rangs[msg.length]}. ${
               !member || !member.nickname
                 ? member.user.username
                 : member.nickname
-            }** ${tools.separateThousandth(top.get(userId))}:cookie:`
+            }** ${tools.separateThousandth(user.balance)}:cookie:`
           );
         }
       });
