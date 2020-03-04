@@ -106,7 +106,7 @@ module.exports = {
         maxAge: 10 * 60,
         temporary: true,
       }, `Приглашение в ${tempVoice.toString()}`);
-      await message.reply(`Канал __${tempVoice.toString()}__ создан! ${invite.url}`);
+      await message.reply(`канал __${tempVoice.toString()}__ создан! ${invite.url}`);
 
       const deleteChannel = () =>
         tempVoice
@@ -127,6 +127,11 @@ module.exports = {
           2e4
         );
       }, 1e4);
+    } else {
+      return message.reply(`__доступные команды:__
+      **${config.bot.prefix}${this.aliases[0]} create** [название голосового чата]
+      **${config.bot.prefix}${this.aliases[0]} invite** <@>
+      *Цена: 400:cookie:*`);
     }
   },
 };

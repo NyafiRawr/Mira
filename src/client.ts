@@ -3,7 +3,6 @@ import * as path from 'path';
 import fs from './utils/fs';
 
 import { log } from './logger';
-import config from './config';
 
 // Иницилизируем базу до первого обращения
 import './db';

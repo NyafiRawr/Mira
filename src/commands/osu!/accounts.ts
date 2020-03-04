@@ -7,14 +7,14 @@ import * as players from '../../modules/players';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Аккаунты участника',
-  aliases: ['aks'],
+  aliases: ['aсs', 'accs', 'acc'],
   usage: '[@]',
   guild: true,
   cooldown: undefined,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message /* , args, CooldownReset */) {
+  async execute(message: Discord.Message) {
     const victim =
       message.mentions.members.first() ||
       message.guild.members.get(message.author.id);

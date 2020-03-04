@@ -1,118 +1,76 @@
 import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../utils/tools';
-import config from '../../config';
+import CustomError from '../../utils/customError';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Лучший результат на карте',
   aliases: ['s'],
-  usage: '<карта> [@ или ник] [/режим]',
+  usage: '<ID карты> [@ или ник] [/режим] [/сервер]',
   guild: true,
   cooldown: undefined,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[],
-    cooldownReset: (
-      serverId: string,
-      userId: string,
-      commandName: string
-    ) => void
-  ) {
-    /*
-    let idMap = args[0];
+  async execute(message: Discord.Message, args: string[]) {
+    const pickMapId = args.shift() || 'NaN';
+    if (isNaN(parseInt(pickMapId, 10))) throw new CustomError('первым аргументом необходимо указать ID карты!');
 
-    if (!!idMap && idMap.indexOf('/b') !== -1 && !!idMap.match(/[0-9]+$/g)) {
-      idMap = idMap.match(/[0-9]+$/g)[0];
-    }
+    const player = await osu.getPlayerFromMessage(message, args);
+    const modePick = parseInt(player.modeFavorite || 0, 10);
 
-    if (!isFinite(idMap)) {
-      return message.reply('вы не указали карту. Например ссылку на неё или её ID:'
-                + `\n${config.bot_prefix}${this.name} <https://osu.ppy.sh/b/1531842>`
-                + `\n${config.bot_prefix}${this.name} 1531842`);
-    }
+    const osuScore = await osu.getScores(
+      player.gameServer,
+      player.nickname,
+      pickMapId,
+      1,
+      modePick
+    );
 
-    args = args.slice(1);
+    const score = osuScore[0];
+    const beatmap = score.beatmap;
 
-    let specificMode;
-
-    if (args.lastIndexOf('/') !== -1) {
-      const specifyMode = osu.getKeyFromSearchOnValueFromJson('mode', args.substr(args.lastIndexOf('/') + 1));
-      if (!specifyMode.searchResult) {
-        return message.reply(specifyMode.result);
-      }
-      args = args.slice(0, args.lastIndexOf('/') - 1);
-      specificMode = specifyMode.result;
-    }
-
-    let { nick, mode, server } = await osu.searchPlayer(message, args);
-
-    if (specificMode) {
-      mode = specificMode;
-    }
-
-    let osuUser = osu.getUser(nick, mode, server);
-    if (!osuUser || !osuUser.length) {
-      return message.reply(`игрок **${nick}** не найден.`);
-    }
-    osuUser = osuUser[0];
-
-    let osuMap = osu.getBeatmap(idMap, mode, server);
-
-    if ((!osuMap || !osuMap.length) && mode !== 0) {
-      osuMap = osu.getBeatmap(idMap, 0, server);
-    }
-
-    if (!osuMap || !osuMap.length) {
-      return message.reply(`карта (id: ${idMap}) не найдена (режим: ${osu.getValueOnKeyFromJson('mode', mode)}${mode !== 0 ? ` и ${osu.getValueOnKeyFromJson('mode', 0)}` : ''}).`);
-    }
-    osuMap = osuMap[0];
-
-    let osuScore = osu.getScores(idMap, nick, mode, server);
-    if (!osuScore || !osuScore.length) {
-      return message.reply(`игрок **${nick}** не имеет результатов на указанной карте id: ${idMap} (режим: ${osu.getValueOnKeyFromJson('mode', mode)}).`);
-    }
-    osuScore = osuScore[0];
-
-    const links = osu.getValueOnKeyFromJson('links', server);
+    const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
+    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
+    const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString());
 
     const embed = new Discord.RichEmbed()
-      .setAuthor(`${osuScore.username}, лучший результат (${osu.styleDatetimeInDMYHMS(osuScore.date)}):`, links.avatar.replace('ID', osuUser.user_id), links.user.replace('ID', osuScore.user_id))
-      .setTitle(`${osuMap.artist} - ${osuMap.title} // ${osuMap.creator}`)
-      .setURL(links.beatmap.replace('ID', idMap));
+      .setAuthor(
+        `${player.nickname} результат из osu! ${mode.name} на ${server}`,
+        serverLinks.avatar.replace('ID', score.user_id)
+      )
+      .setTitle(`${beatmap.artist} - ${beatmap.version}${
+        !!beatmap.creator ? ' // ' + beatmap.creator : '' }`)
+      .setURL(serverLinks.beatmap.replace('ID', beatmap.beatmap_id))
+      .setImage(serverLinks.beatmapset_cover.replace('ID', beatmap.beatmapset_id))
+      .setColor(tools.randomHexColor())
+      .setFooter(
+        tools.embedFooter(message, this.name),
+        message.author.displayAvatarURL
+      )
 
-    let text = `**Сложность:** ${osuMap.version} (★${tools.toTwoDecimalPlaces(osuMap.difficultyrating)}) ${mode === '3' ? `${osuMap.diff_size}K` : ''}`;
-    text += `\n**Длина:** ${osu.styleLengthInMS(osuMap.total_length)} **BPM:** ${osuMap.bpm} ${mode === '3' ? '' : `**CS:** ${osuMap.diff_size} `}**AR:** ${osuMap.diff_approach} **OD:** ${osuMap.diff_overall} **HP:** ${osuMap.diff_drain}`;
-    text += `\n**Моды:** ${osu.getModsFromJson(osuScore.enabled_mods)}`;
-    embed.setDescription(text);
+      .setDescription(
+        `**Сложность:** ${beatmap.version} (★${tools.roundDecimalPlaces(beatmap.difficultyrating)})`
+        + ` ${modePick === 3 && !beatmap.diff_size ? `[${beatmap.diff_size}K]` : ''}`
+        + (score.enabled_mods === '-' ? `\n**Моды:** ${osu.decodeMods(score.enabled_mods)}` : '')
+      )
 
-    text = `**Результат:** ${osu.getValueOnKeyFromJson('rank', osuScore.rank)}`;
-    text += `\n**Счет:** ${tools.separateThousandth(osuScore.score)}`;
-    text += `\n**${(mode === '3' && osuScore.perfect === '1') ? 'Фулл-комбо' : 'Комбо'}:** ${tools.separateThousandth(osuScore.maxcombo)}${osuMap.max_combo ? ` / ${tools.separateThousandth(osuMap.max_combo)}` : ''}`;
-    text += `\n**Точность:** ${tools.toTwoDecimalPlaces(osu.calculateAccuracity(mode, osuScore.count300, osuScore.count100, osuScore.count50, osuScore.countmiss, osuScore.countkatu, osuScore.countgeki))}%`;
-    embed.addField('Подробнее', text, true);
-
-    text = osu.showStatistic(mode, osuScore.count300, osuScore.count100, osuScore.count50, osuScore.countmiss, osuScore.countkatu, osuScore.countgeki);
-    text += `\n**PP:** ${!osuScore.pp ? '-' : osuScore.pp}`;
-    embed.addField('Статистика', text, true);
-
-    text = `**Последнее обновление:** ${osu.styleDatetimeInDMYHMS(osuMap.last_update)}`;
-    text += `\n**Статус:** ${osu.getValueOnKeyFromJson('approved', osuMap.approved)} (${osu.styleDatetimeInDMYHMS(osuMap.approved_date)})`;
-    text += `\n**Жанр:** ${osu.getValueOnKeyFromJson('genre', osuMap.genre_id)} **Язык:** ${osu.getValueOnKeyFromJson('lang', osuMap.language_id)}`;
-    text += `\n**Источник:** ${osuMap.source ? osuMap.source : '-'}`;
-    embed.addField('О карте', text, true);
-
-    embed.setImage(links.beatmapset.replace('ID', osuMap.beatmapset_id));
-
-    embed.setColor(tools.randomHexColor());
-
-    const requestMember = message.guild.members.get(message.author.id);
-    embed.setFooter(`Запрос от ${requestMember.nickname ? requestMember.nickname : message.author.username} | ${config.bot_prefix}${this.name} ${idMap}${server === 'ppy' ? '' : ` | ${osu.getValueOnKeyFromJson('server', server)}`} | ${tools.toTitle(osu.getValueOnKeyFromJson('mode', mode))}`, message.author.displayAvatarURL);
+      .addField('Результат',
+        `**Оценка:** ${tools.getDataValueOnKey('osu!/ranks', score.rank) || score.rank}`
+        + `\n**Точность:** ${tools.roundDecimalPlaces(score.accuracy)}%`
+        + `\n**Комбо:** ${tools.separateThousandth(score.maxcombo)}${
+          !!score.max_combo ? ' / ' + tools.separateThousandth(beatmap.max_combo) : ''}`
+        + `\n**Счет:** ${tools.separateThousandth(score.score)}`
+        , true)
+      .addField('Характеристики',
+        `**PP:** ${score.pp || '-'}`
+        + `\n**Длина:** ${osu.styleLengthInMS(beatmap.total_length)}`
+        + `\n**BPM:** ${beatmap.bpm}`
+        + `${modePick === 3 ? '' : `\n**CS:** ${beatmap.diff_size}`} **AR:** ${beatmap.diff_approach}`
+        + `\n**OD:** ${beatmap.diff_overall} **HP:** ${beatmap.diff_drain}`
+        , true);
 
     message.channel.send({ embed });
-    */
   },
 };

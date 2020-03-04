@@ -28,7 +28,7 @@ module.exports = {
     const embed = new Discord.RichEmbed()
       .setAuthor('Информация обо мне', 'https://i.imgur.com/wSTFkRM.png')
       .setTitle(
-        `Разработано на Discord.JS (NodeJS ${process.version} TS v${packageFile.dependencies.typescript})`
+        `Основа: Discord.JS (NodeJS ${process.version} и TS v${(packageFile.dependencies.typescript).slice(1)})`
       )
       .setURL('https://discord.js.org')
 
@@ -38,7 +38,7 @@ module.exports = {
           .join('\n')
       )
 
-      .addField('Версия (Г.М.Д)', packageFile.version, true)
+      .addField('Версия', packageFile.version, true)
       .addField('Время работы', uptime, true)
       .addField('Хостинг', 'FirstByte.ru', true)
       .addField('Префикс', config.bot.prefix, true)
