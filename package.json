@@ -21,7 +21,8 @@
   "scripts": {
     "start": "ts-node . | pino-pretty",
     "start:dev": "nodemon --watch 'src/**/*.ts' --ext 'ts' --exec 'node' -r ts-node/register --inspect=9229 . | pino-pretty",
-    "lint": "tslint --force --format verbose \"src/**/*.ts\""
+    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
+    "build": "tsc --pretty"
   },
   "engines": {
     "node": ">=6.0.0"
