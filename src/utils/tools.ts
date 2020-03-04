@@ -1,19 +1,14 @@
 import { Message } from 'discord.js';
-import * as fs from 'fs';
 import config from '../config';
-
-import { log } from '../logger';
-
-const logErrorFile = './errors.log';
-
-export const separateThousandth = (str: string) => {
+// Отделить тысячные
+export const separateThousandth = (str?: string | number) => {
   if (str) {
     return str.toString().replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1,');
   }
 
   return '-';
 };
-
+// Принимает тип Date и преобразует к понятному виду
 export const toDate = (value: string) => {
   const date = new Date(value);
   let day: any = date.getDate();
@@ -38,10 +33,10 @@ export const toDate = (value: string) => {
   }
   return `${day}.${month}.${date.getFullYear()} ${date.getHours()}:${minutes}:${seconds}`;
 };
-
+// Все первые буквы станут заглавными
 export const toTitle = (str: string) =>
   str.replace(/\b\w/g, l => l.toUpperCase());
-
+// Округлить до десятичных x знаков (по умолчанию: 2)
 export const roundDecimalPlaces = (num: number, decimals = 2) => {
   const sign = num >= 0 ? 1 : -1;
   return (
@@ -49,7 +44,7 @@ export const roundDecimalPlaces = (num: number, decimals = 2) => {
     10 ** decimals
   ).toFixed(decimals);
 };
-
+// Секунды в понятное время
 export const convertSecondsToTime = (num: any) => {
   const value = num.toFixed();
 
@@ -66,33 +61,33 @@ export const convertSecondsToTime = (num: any) => {
   }
   return `${value} сек`;
 };
-
+// Случайное целое
 export const randomInteger = (minimum: number, maximum: number) => {
   const result = minimum - 0.5 + Math.random() * (maximum - minimum + 1);
   return Math.round(result);
 };
-
+// 1 или 0
 export const randomBoolean = () => Math.random() >= 0.5;
-
+// Случайный цвет #CCCCCC
 export const randomHexColor = () =>
   `#${Math.random()
     .toString(16)
     .slice(2, 8)}`;
-
+// Подпись для embed-сообщений: от кого запрос и название команды
 export const embedFooter = (message: Message, nameCommand: string) => {
   const memberRequest = message.guild.members.get(message.author.id);
   return `Запрос от ${
     !memberRequest || !memberRequest.nickname
       ? message.author.username
       : memberRequest.nickname
-  } | ${config.bot.prefix}${nameCommand}`;
+    } | ${config.bot.prefix}${nameCommand}`;
 };
-
-export const getData = (pathData: string) =>
-  require(`../../data/${pathData}.json`);
-
-export const getDataKeyOnValue = (pathData: string, value: string) => {
-  const data = getData(pathData);
+// Получить файл name.json
+export const getData = (name: string) =>
+  require(`../../data/${name}.json`);
+// Получить ключ из name.json у которого есть значение. Ключ может иметь массив значений
+export const getDataKeyOnValue = (name: string, value: string) => {
+  const data = getData(name);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(data)) {
@@ -103,13 +98,25 @@ export const getDataKeyOnValue = (pathData: string, value: string) => {
 
   return null;
 };
-
-export const getDataValueOnKey = (pathData: string, key: string) => {
-  const data = getData(pathData);
+// Получить значение по ключу из name.json
+export const getDataValueOnKey = (name: string, key: string) => {
+  const data = getData(name);
 
   if (key in data) {
     return data[key];
   }
 
   return null;
+};
+// Конвертер unix timestamp в дату
+const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+export const unixToDate = (unix_timestamp: number) => {
+  const timestamp = new Date(unix_timestamp * 1000);
+  const year = timestamp.getFullYear();
+  const month = months[timestamp.getMonth()];
+  const date = timestamp.getDate();
+  const hour = timestamp.getHours();
+  const min = timestamp.getMinutes();
+  const sec = timestamp.getSeconds();
+  return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
 };

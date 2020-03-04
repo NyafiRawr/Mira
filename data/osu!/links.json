@@ -3,54 +3,36 @@
 		"avatar": "http://s.ppy.sh/a/ID",
 		"user": "https://osu.ppy.sh/u/ID/MODE",
 		"beatmap": "https://osu.ppy.sh/b/ID",
-		"beatmapset": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
-		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
-	},
-	"regular": {
-		"avatar": "http://a.osu.akatsuki.pw/ID",
-		"user": "https://osu.akatsuki.pw/u/ID",
-		"beatmap": "https://osu.akatsuki.pw/b/ID",
-		"beatmapset": "https://assets.osu.akatsuki.pw/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
-		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
-	},
-	"relax": {
-		"avatar": "http://a.relax.akatsuki.pw/ID",
-		"user": "https://relax.akatsuki.pw/u/ID",
-		"beatmap": "https://relax.akatsuki.pw/b/ID",
-		"beatmapset": "https://assets.relax.akatsuki.pw//beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
-		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
-	},
-	"ripple": {
-		"avatar": "https://a.ripple.moe/ID",
-		"user": "https://ripple.moe/u/ID",
-		"beatmap": "https://ripple.moe/b/ID",
-		"beatmapset": "https://assets.ripple.moe/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
-		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
-	},
-	"enjuu": {
-		"avatar": "https://a.enjuu.click/ID",
-		"user": "https://enjuu.click/u/ID",
-		"beatmap": "https://enjuu.click/b/ID",
-		"beatmapset": "https://assets.enjuu.click/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
-		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
+    "beatmapset_cover": "https://assets.ppy.sh/beatmaps/ID/covers/cover.jpg",
+    "beatmapset_cover_thumb": "https://b.ppy.sh/thumb/IDl.jpg",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	},
 	"gatari": {
 		"avatar": "https://a.gatari.pw/ID",
 		"user": "https://gatari.pw/u/ID",
 		"beatmap": "https://gatari.pw/b/ID",
-		"beatmapset": "https://assets.gatari.pw/beatmaps/ID/covers/cover.jpg",
-		"flag": "https://osu.ppy.sh/images/flags/AZ.png",
-		"pp_country": "https://osu.ppy.sh/rankings/MODE/performance?country=AZ&page=P#scores",
-		"pp_world": "https://osu.ppy.sh/rankings/MODE/performance?page=P#scores"
+		"beatmapset_cover": "https://assets.gatari.pw/beatmaps/ID/covers/cover.jpg",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png"
+	},
+	"ripple": {
+		"avatar": "https://a.ripple.moe/ID",
+		"user": "https://ripple.moe/u/ID",
+		"beatmap": "https://ripple.moe/b/ID",
+		"beatmapset_cover": "https://assets.ripple.moe/beatmaps/ID/covers/cover.jpg",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png"
+	},
+	"akatsuki": {
+		"avatar": "https://a.osu.akatsuki.pw/ID",
+		"user": "https://osu.akatsuki.pw/u/ID",
+		"beatmap": "https://osu.akatsuki.pw/b/ID",
+		"beatmapset_cover": "https://assets.osu.akatsuki.pw/beatmaps/ID/covers/cover.jpg",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png"
+	},
+	"enjuu": {
+		"avatar": "https://a.enjuu.click/ID",
+		"user": "https://enjuu.click/u/ID",
+		"beatmap": "https://enjuu.click/b/ID",
+		"beatmapset_cover": "https://assets.enjuu.click/beatmaps/ID/covers/cover.jpg",
+		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	}
 }

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as tools from '../../modules/tools';
+import * as tools from '../../utils/tools';
 
 // tslint:disable-next-line: no-var-requires
 const packageJson = require('../../../package.json');
@@ -15,7 +15,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message /* , args, CooldownReset */) {
+  execute(message: Discord.Message) {
     const embed = new Discord.RichEmbed()
       .setAuthor('Я уже иду!')
       .setTitle('Пригласить к себе')

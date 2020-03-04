@@ -1,16 +1,20 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../modules/db';
+import { sequelize } from '../db';
 
-class Shop extends Model {}
+class Shop extends Model {
+  public serverId!: string;
+  public roleId!: string;
+  public cost!: number;
+}
+
 Shop.init(
   {
-    roleId: {
-      type: STRING,
-      primaryKey: true,
-    },
     serverId: {
       type: STRING,
       primaryKey: true,
+    },
+    roleId: {
+      type: STRING,
     },
     cost: {
       type: INTEGER,
