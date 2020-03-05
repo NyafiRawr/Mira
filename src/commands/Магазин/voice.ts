@@ -5,7 +5,7 @@ import * as economy from '../../modules/economy';
 import * as vars from '../../modules/vars';
 
 import { log } from '../../logger';
-
+// TODO: навести порядок
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Каталог ролей',
@@ -16,7 +16,6 @@ module.exports = {
   cooldown: 1,
   cooldownMessage: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-
   async getCategoryId(serverId: string) {
     const value = vars.get<string | null>(
       serverId,
@@ -27,7 +26,6 @@ module.exports = {
       throw new CustomError(
         'Категория создания каналов не указана, попросите админов сделать это!'
       );
-
     return value;
   },
   async getPrice(serverId: string) {

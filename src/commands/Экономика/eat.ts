@@ -14,7 +14,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Съесть печенье',
   aliases: undefined,
-  usage: undefined,
+  usage: '[количество]',
   guild: true,
   hide: false,
   cooldown: 30,

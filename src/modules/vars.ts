@@ -1,5 +1,5 @@
 import Vars from '../models/vars';
-
+// TODO: навести порядок
 export const get = async <T = any>(
   serverId: string,
   name: string,

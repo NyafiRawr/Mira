@@ -1,5 +1,5 @@
 import { GuildMember, MessageReaction } from 'discord.js';
-import * as emotes from '../utils/emojis';
+import * as emotes from '../modules/emojis';
 // Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
   const emoteName =
