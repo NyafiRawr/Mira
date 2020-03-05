@@ -20,7 +20,7 @@
   "scripts": {
     "start": "ts-node . | pino-pretty",
     "start:dev": "ts-node-dev . | pino-pretty",
-	"start:prod": "npm run build && node ./lib/index.js | pino-tee error ./logs/error.log",
+    "start:prod": "npm run build && node ./lib/index.js | pino-tee error ./logs/error.log",
     "lint": "tslint --force --format verbose \"src/**/*.ts\"",
     "build": "tsc --pretty",
     "clean": "rimraf lib && rimraf coverage",
@@ -38,18 +38,18 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "discord.js": "^11.6.1",
+    "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
     "keyv": "^4.0.0",
     "moment": "^2.24.0",
     "mysql2": "^2.0.2",
+    "pino": "^5.17.0",
     "sequelize": "^5.21.5",
     "sqlite3": "^4.1.1",
-    "pino": "^5.17.0",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
-	"@types/bluebird": "^3.5.30",
+    "@types/bluebird": "^3.5.30",
     "@types/validator": "^12.0.1",
     "@types/keyv": "^3.1.1",
     "@types/node": "^13.7.7",
