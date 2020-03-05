@@ -49,6 +49,7 @@ module.exports = {
     let lastEntry;
     let firstEntry;
     let birthday;
+    let weight;
 
     if (member) {
       lastEntry = member.joinedAt;
@@ -56,10 +57,10 @@ module.exports = {
     }
 
     const dbUser = await users.get(message.guild.id, user.id);
-
     if (dbUser) {
       firstEntry = dbUser.firstEntry;
       birthday = dbUser.birthday;
+      weight = dbUser.weight;
     }
 
     if (firstEntry) {
@@ -82,6 +83,14 @@ module.exports = {
       embed.addField(
         'День рождения',
         moment(birthday).format('DD.MM.YY'),
+        true
+      );
+    }
+
+    if (weight) {
+      embed.addField(
+        'Вес',
+        weight,
         true
       );
     }

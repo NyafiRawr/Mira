@@ -3,6 +3,7 @@ import CustomError from '../../utils/customError';
 import { randomInteger } from '../../utils/tools';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
+import * as cooldowns from '../../utils/kv';
 
 const effects = [
   'ура! Вы стали на newWeight кг жирней! (totalWeight кг)',
@@ -22,26 +23,27 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(
     message: Discord.Message,
-    args: string[],
-    cooldownReset: () => void
+    args: string[]
   ) {
     const currency = (await users.get(message.guild.id, message.author.id))
       ?.balance;
 
     if (!currency) {
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
       throw new CustomError('у вас нет печенья, чтобы его съедать!');
     }
     if (currency < 1) {
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
       throw new CustomError('есть нечего.');
     }
 
     const amount = parseInt(args[0], 1) || 1;
     if (amount < 1) {
-      cooldownReset();
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
       throw new CustomError(`:boom: \`-help ${this.name}\`?`);
     }
     if (amount > currency) {
-      cooldownReset();
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
       throw new CustomError(
         'вы трёте глаза и осознаёте, что у вас гораздо меньше печенья, чем вы думали...'
       );
