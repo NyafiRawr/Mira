@@ -37,7 +37,7 @@ module.exports = {
       throw new CustomError('есть нечего.');
     }
 
-    const amount = parseInt(args[0], 1) || 1;
+    const amount = parseInt(args[0], 10) || 1;
     if (amount < 1) {
       await cooldowns.reset(message.guild.id, message.author.id, this.name);
       throw new CustomError(`:boom: \`-help ${this.name}\`?`);
@@ -49,7 +49,7 @@ module.exports = {
       );
     }
 
-    const newWeight = (amount / 100);
+    const newWeight = amount / 100;
     await economy.set(message.guild.id, message.author.id, -amount);
     await economy.setWeight(message.guild.id, message.author.id, newWeight);
     const totalWeight = await economy.getWeight(
