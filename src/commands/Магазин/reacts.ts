@@ -37,11 +37,29 @@ module.exports = {
       );
     }
 
-    emojis.set(message.channel.id, messageId, reaction, role.id);
-    messageFetch.react(reaction);
+    if (!reaction.startsWith('<')) {
+      const reactionCheck = message.client.emojis.find(emoji => emoji.name === reaction);
+      if (!reactionCheck) {
+        throw new CustomError(
+          `реакция \`${reaction}\` не найдена!`
+        );
+      }
+      emojis.set(message.channel.id, messageId, reaction, role.id);
+      messageFetch.react(reaction);
+    } else {
+      const reactionId = reaction.slice(reaction.lastIndexOf(':') + 1, reaction.length - 1);
+      const reactionCheck = message.guild.emojis.find(emoji => emoji.id === reactionId);
+      if (!reactionCheck) {
+        throw new CustomError(
+          `реакция №\`${reactionId}\` не найдена!`
+        );
+      }
+      emojis.set(message.channel.id, messageId, reactionId, role.id);
+      messageFetch.react(reactionId);
+    }
 
-    message.channel.send(
-      `у сообщения №\`${messageId}\` выдаётся роль \`${role.name}\` по реакции \`${reaction}\``
+    message.reply(
+      `у сообщения №\`${messageId}\` выдаётся роль \`${role.name}\` по реакции ${reaction}`
     );
   },
 };
