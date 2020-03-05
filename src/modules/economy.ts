@@ -2,6 +2,7 @@ import User from '../models/user';
 import CustomError from '../utils/customError';
 import { sequelize } from '../db';
 import * as users from './users';
+import { roundDecimalPlaces } from '../../utils/tools';
 
 /**
  * Установка пользователю печенек, при необходимости добавляет в базу пользователя
@@ -104,7 +105,7 @@ export const setWeight = async (
 
   if (user !== null) {
     return user.update({
-      weight: user.weight + weight,
+      weight: +roundDecimalPlaces(user.weight + weight, 2),
     });
   }
 

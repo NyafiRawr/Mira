@@ -4,7 +4,6 @@ import { randomInteger, roundDecimalPlaces } from '../../utils/tools';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
 import * as cooldowns from '../../utils/kv';
-import { DOUBLE } from 'sequelize/types';
 
 const effects = [
   'ура! Вы стали на newWeight кг жирней! (totalWeight кг)',
