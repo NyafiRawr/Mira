@@ -26,8 +26,7 @@ module.exports = {
       'osu!/links',
       player.gameServer
     );
-    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer)
-      .name;
+    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
     const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString());
 
     const embed = new Discord.RichEmbed()

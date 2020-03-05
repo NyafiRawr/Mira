@@ -8,7 +8,7 @@ import { log } from '../../logger';
 // TODO: навести порядок
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Каталог ролей',
+  description: 'Свой временный голосовой канал',
   aliases: ['v'],
   usage: '[create/invite] <@упоминание>',
   guild: true,

@@ -6,7 +6,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Роли по реакции к сообщению',
   aliases: ['rr'],
-  usage: '<@роль> <реакция> <id-сообщения>',
+  usage: '<id-сообщения> <реакция> <@роль>',
   guild: true,
   hide: false,
   permissions: ['MANAGE_ROLES'],
@@ -22,18 +22,18 @@ module.exports = {
       );
     }
 
-    const role = message.mentions.roles.first(); // Роль
-    if (!role) {
-      throw new CustomError(
-        `не указана роль для выдачи: \`${this.aliases[0]} ${this.usage}\``
-      );
-    }
-    const reaction = args[1]; // Реакция-эмодзи
-    const messageId = args[2]; // Сообщение для ловли
+    const messageId = args[0]; // Сообщение для ловли
     const messageFetch = await message.channel.fetchMessage(messageId);
     if (!messageFetch) {
       throw new CustomError(
         `сообщение \`${messageId}\` не найдено!`
+      );
+    }
+    const reaction = args[1]; // Реакция-эмодзи
+    const role = message.mentions.roles.first(); // Роль
+    if (!role) {
+      throw new CustomError(
+        `не указана роль для выдачи: \`${this.aliases[0]} ${this.usage}\``
       );
     }
 
