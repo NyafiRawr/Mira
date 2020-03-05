@@ -1,6 +1,6 @@
 import { GuildMember, MessageReaction } from 'discord.js';
 import * as emotes from '../utils/emojis';
-
+// Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
   const emoteName =
     reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
@@ -11,7 +11,7 @@ export default async (reaction: MessageReaction, user: GuildMember) => {
     emoteName
   );
 
-  if (emoteDB == null) {
+  if (emoteDB === null) {
     return;
   }
 

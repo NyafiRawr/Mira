@@ -6,7 +6,6 @@ import * as economy from '../../modules/economy';
 import * as tools from '../../utils/tools';
 // TODO: покупка по реакции
 // TODO: страницы?
-// TODO: если не указать куки - NaN - непредсказуемое поведение
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Каталог ролей',
