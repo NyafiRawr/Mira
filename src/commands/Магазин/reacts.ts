@@ -38,17 +38,18 @@ module.exports = {
     }
 
     if (!reaction.startsWith('<')) {
-      const reactionCheck = message.client.emojis.find(emoji => emoji.name === reaction);
+      // TODO: найти способ проверить стандартное эмодзи, наверное нужно двигаться в unicode
+      /*const reactionCheck = message.client.emojis.get(reaction);// .find(emoji => emoji.name === reaction);
       if (!reactionCheck) {
         throw new CustomError(
           `реакция \`${reaction}\` не найдена!`
         );
-      }
+      }*/
       emojis.set(message.channel.id, messageId, reaction, role.id);
       messageFetch.react(reaction);
     } else {
       const reactionId = reaction.slice(reaction.lastIndexOf(':') + 1, reaction.length - 1);
-      const reactionCheck = message.guild.emojis.find(emoji => emoji.id === reactionId);
+      const reactionCheck = message.guild.emojis.get(reactionId);
       if (!reactionCheck) {
         throw new CustomError(
           `реакция №\`${reactionId}\` не найдена!`
