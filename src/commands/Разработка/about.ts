@@ -35,7 +35,7 @@ module.exports = {
       .setURL('https://discord.js.org')
 
       .setDescription(
-        `Разработчики:\n - ${packageFile.author.tag}\n` +
+        `Разработчики:\n - ${packageFile.author.name}\n` +
           packageFile.contributors
             .map((contr: string) => ` - ${contr}`)
             .join('\n')
