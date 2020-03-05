@@ -30,7 +30,7 @@ module.exports = {
       .setTitle(
         `Основа: Discord.JS (NodeJS ${
           process.version
-        } и TS v${packageFile.devDependencies.typescript.slice(1)})`
+        } и TS v${packageFile.dependencies.typescript.slice(1)})`
       )
       .setURL('https://discord.js.org')
 
