@@ -51,7 +51,8 @@ Player.init(
         '2,3',
         '3'
       ),
-      defaultValue: '0',
+      allowNull: true,
+      defaultValue: null,
     },
   },
   {

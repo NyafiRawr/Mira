@@ -42,7 +42,7 @@ module.exports = {
       message.author.id
     );
     if (!change) {
-      cooldowns.reset(message.guild.id, message.author.id, this.name);
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
       if (change === undefined)
         throw new CustomError('ты не решил, что сделать с аккаунтом, отмена.');
       return;
@@ -68,7 +68,7 @@ module.exports = {
           message.author.id
         );
         if (!osuServerIndex) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuServerIndex === undefined)
             throw new CustomError(
               'ты не выбрал сервер для создания/изменения аккаунта, отмена.'
@@ -93,7 +93,7 @@ module.exports = {
           message.author.id
         );
         if (!osuFavoriteMode) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuFavoriteMode === undefined)
             throw new CustomError(
               'ты не выбрал избранный режимы для аккаунта, отмена.'
@@ -118,7 +118,7 @@ module.exports = {
           message.author.id
         );
         if (!osuModesIndexes && !osuModesIndexes!.length) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuModesIndexes === undefined)
             throw new CustomError(
               'ты не выбрал играемые режимы для аккаунта, отмена.'
@@ -133,7 +133,7 @@ module.exports = {
           message.author.id
         );
         if (!osuName) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           throw new CustomError('не был указан ник, отмена.');
         }
         embed.setTitle('Успех!');
@@ -160,7 +160,7 @@ module.exports = {
           Object.keys(servers)[osuServerIndex as any],
           {
             nickname: osuName,
-            modes: osuModesIndexes!.join(','),
+            modes: osuModesIndexes!.join(',') || null,
             modeFavorite: osuFavoriteMode,
             gameServerFavorite,
           }
@@ -171,7 +171,7 @@ module.exports = {
         embed.setTitle('Указать основной сервер');
         const listServersPlayer = await players.getAll(message.author.id);
         if (!listServersPlayer || listServersPlayer.length === 0) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           embed.setDescription('Нет привязанных аккаунтов для выбора');
           return embedMessage.edit(message.author, { embed });
         }
@@ -196,7 +196,7 @@ module.exports = {
           message.author.id
         );
         if (!osuServerIndex) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuServerIndex === undefined)
             throw new CustomError('ты не указал основной сервер, отмена.');
           return;
@@ -226,7 +226,7 @@ module.exports = {
         embed.setTitle('Удалить');
         const listServersPlayer = await players.getAll(message.author.id);
         if (listServersPlayer == null || listServersPlayer.length === 0) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           embed.setDescription('Нет привязанных аккаунтов для удаления');
           return embedMessage.edit(message.author, { embed });
         }
@@ -248,7 +248,7 @@ module.exports = {
           message.author.id
         );
         if (!osuServerIndex) {
-          cooldowns.reset(message.guild.id, message.author.id, this.name);
+          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuServerIndex === undefined)
             throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
           return;
@@ -270,6 +270,6 @@ module.exports = {
       }
       default:
     }
-    cooldowns.reset(message.guild.id, message.author.id, this.name);
+    await cooldowns.reset(message.guild.id, message.author.id, this.name);
   },
 };
