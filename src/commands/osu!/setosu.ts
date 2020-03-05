@@ -117,7 +117,7 @@ module.exports = {
           ),
           message.author.id
         );
-        if (!osuModesIndexes && !osuModesIndexes!.length) {
+        if (osuModesIndexes === null || osuModesIndexes === undefined) {
           await cooldowns.reset(message.guild.id, message.author.id, this.name);
           if (osuModesIndexes === undefined)
             throw new CustomError(
@@ -160,7 +160,7 @@ module.exports = {
           Object.keys(servers)[osuServerIndex as any],
           {
             nickname: osuName,
-            modes: osuModesIndexes!.join(',') || null,
+            modes: osuModesIndexes!.join(',') || osuFavoriteMode || null,
             modeFavorite: osuFavoriteMode,
             gameServerFavorite,
           }

@@ -34,7 +34,7 @@ User.init(
     },
     weight: {
       type: DOUBLE,
-      defaultValue: 0,
+      defaultValue: 0.0,
     },
   },
   {

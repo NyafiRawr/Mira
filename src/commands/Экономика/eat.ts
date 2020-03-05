@@ -47,7 +47,7 @@ module.exports = {
       );
     }
 
-    const newWeight = amount / 100;
+    const newWeight = (amount / 100);
     await economy.set(message.guild.id, message.author.id, -amount);
     await economy.setWeight(message.guild.id, message.author.id, newWeight);
     const totalWeight = await economy.getWeight(
