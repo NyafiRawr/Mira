@@ -29,11 +29,17 @@ module.exports = {
         throw new CustomError(errorNotEnoughtArgs);
       }
 
-      const newVar = await vars.set(message.guild.id, args[1], args.slice(2).join(' '));
+      const newVar = await vars.set(
+        message.guild.id,
+        args[1],
+        args.slice(2).join(' ')
+      );
 
       await message.reply(`переменная __${newVar.name}__ установлена.`);
     } else if (args[0] === 'remove') {
-      if (args.length < 2) { throw new CustomError(errorNotEnoughtArgs); }
+      if (args.length < 2) {
+        throw new CustomError(errorNotEnoughtArgs);
+      }
 
       await vars.remove(message.guild.id, args[1]);
       await message.reply(`переменная __${args[1]}__ удалена.`);
@@ -41,7 +47,7 @@ module.exports = {
       const embed = new Discord.RichEmbed();
       embed.setAuthor(
         `Переменные бота для ${message.guild.name}`,
-        message.guild.iconURL,
+        message.guild.iconURL
       );
 
       const all = await vars.getAll(message.guild.id);

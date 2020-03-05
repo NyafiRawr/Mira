@@ -20,38 +20,48 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "start": "ts-node . | pino-pretty",
-    "start:dev": "nodemon --watch 'src/**/*.ts' --ext 'ts' --exec 'node' -r ts-node/register --inspect=9229 . | pino-pretty",
+    "start:dev": "ts-node-dev . | pino-pretty",
+	"start:prod": "npm run build && node ./lib/index.js | pino-tee error ./logs/error.log",
     "lint": "tslint --force --format verbose \"src/**/*.ts\"",
-    "build": "tsc --pretty"
+    "build": "tsc --pretty",
+    "clean": "rimraf lib && rimraf coverage",
+    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
+    "coverage": "jest --forceExit --coverage",
+    "watch": "npm run build -- --watch",
+    "release:major": "npm version major && git push origin && git push origin --tags",
+    "release:minor": "npm version minor && git push origin && git push origin --tags",
+    "release:patch": "npm version patch && git push origin && git push origin --tags"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "dependencies": {
-    "@types/bluebird": "^3.5.30",
-    "@types/validator": "^12.0.1",
     "axios": "^0.19.2",
     "discord.js": "^11.6.1",
     "dotenv": "^8.2.0",
     "keyv": "^4.0.0",
     "moment": "^2.24.0",
     "mysql2": "^2.0.2",
-    "pino": "^5.17.0",
-    "pino-pretty": "^3.6.1",
-    "pino-tee": "^0.3.0",
     "sequelize": "^5.21.5",
-    "sqlite3": "^4.1.1",
-    "typescript": "^3.8.3"
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
+	"@types/bluebird": "^3.5.30",
+    "@types/validator": "^12.0.1",
     "@types/keyv": "^3.1.1",
     "@types/node": "^13.7.7",
     "@types/pino": "^5.15.1",
-    "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
+	"pino": "^5.17.0",
+    "pino-pretty": "^3.6.1",
+    "pino-tee": "^0.3.0",
     "rimraf": "^3.0.2",
     "ts-node": "^8.6.2",
+	"ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^6.0.0",
-    "tslint-config-prettier": "^1.18.0"
+    "tslint-config-prettier": "^1.18.0",
+	"typescript": "^3.8.3"
   }
 }

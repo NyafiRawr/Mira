@@ -43,9 +43,14 @@ export default async (message: Message) => {
   }
 
   const channel = message.guild.channels.find('id', message.channel.id);
-  if (message.guild && !channel.permissionsFor(message.client.user)!.has('SEND_MESSAGES')) {
+  if (
+    message.guild &&
+    !channel.permissionsFor(message.client.user)!.has('SEND_MESSAGES')
+  ) {
     return message.author
-      .send(`${message.author}, нет права отправлять сообщения в ${message.channel} на сервере **${message.guild}**!`)
+      .send(
+        `${message.author}, нет права отправлять сообщения в ${message.channel} на сервере **${message.guild}**!`
+      )
       .catch(); // ЛС закрыто, вот и пусть гадает в чём проблема ;)
   }
 

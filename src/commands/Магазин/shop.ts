@@ -32,17 +32,14 @@ module.exports = {
       roles.forEach((role: any, idx: number) =>
         embed.setDescription(
           `${idx + 1}. ${message.guild.roles.get(role.roleId)} ${
-          role.cost
+            role.cost
           }:cookie:`
         )
       );
     } else if (args[0] === 'buy' && message.mentions.roles.size > 0) {
       const roleMention = message.mentions.roles.first();
 
-      const roleShop = await shop.get<any>(
-        message.guild.id,
-        roleMention.id
-      );
+      const roleShop = await shop.get<any>(message.guild.id, roleMention.id);
       if (roleShop === null) {
         throw new CustomError('такой роли в продаже нет.');
       }

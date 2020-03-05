@@ -52,7 +52,7 @@ Player.init(
         '3'
       ),
       defaultValue: '0',
-    }
+    },
   },
   {
     modelName: 'player',

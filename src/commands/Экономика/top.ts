@@ -31,17 +31,18 @@ module.exports = {
       if (!!member && !member.user.bot && user.balance > 0) {
         onlyLiveHumans.push({
           id: user.id,
-          balance: user.balance
+          balance: user.balance,
         });
       }
     });
 
-    const maxTopSize = topSize > onlyLiveHumans.length ? onlyLiveHumans.length : topSize;
+    const maxTopSize =
+      topSize > onlyLiveHumans.length ? onlyLiveHumans.length : topSize;
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < maxTopSize; i += 1) {
       // tslint:disable-next-line: prefer-for-of
       for (let j = i + 1; j < onlyLiveHumans.length; j += 1) {
-        if ((onlyLiveHumans[i]).balance < (onlyLiveHumans[j]).balance) {
+        if (onlyLiveHumans[i].balance < onlyLiveHumans[j].balance) {
           const temp = onlyLiveHumans[i];
           onlyLiveHumans[i] = onlyLiveHumans[j];
           onlyLiveHumans[j] = temp;
@@ -50,19 +51,16 @@ module.exports = {
     }
 
     const msg: any[] = [];
-    onlyLiveHumans.slice(0, maxTopSize)
-      .forEach(user => {
-        const member = message.guild.members.get(user.id);
-        if (member) {
-          msg.push(
-            `  **${rangs[msg.length]}. ${
-              !member || !member.nickname
-                ? member.user.username
-                : member.nickname
-            }** ${tools.separateThousandth(user.balance)}:cookie:`
-          );
-        }
-      });
+    onlyLiveHumans.slice(0, maxTopSize).forEach(user => {
+      const member = message.guild.members.get(user.id);
+      if (member) {
+        msg.push(
+          `  **${rangs[msg.length]}. ${
+            !member || !member.nickname ? member.user.username : member.nickname
+          }** ${tools.separateThousandth(user.balance)}:cookie:`
+        );
+      }
+    });
 
     message.reply(`**печеньковые богачи:**\n${msg.join('\n')}`);
   },

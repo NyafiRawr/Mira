@@ -39,8 +39,8 @@ export const getUser = async (
     join_date: data.join_date,
     total_hits: String(
       parseInt(data.count300, 10) +
-      parseInt(data.count100, 10) +
-      parseInt(data.count50, 10)
+        parseInt(data.count100, 10) +
+        parseInt(data.count50, 10)
     ),
     playcount: data.playcount,
     ranked_score: data.ranked_score,
@@ -151,9 +151,11 @@ export const getUserRecents = async (
   }
   const { data } = response;
   if (!data || !data.length) {
-    throw new CustomError(`игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
+    throw new CustomError(
+      `игрок \`${idOrName}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`
+    );
   }
-    const recents: { [key: string]: any }[] = [];
+  const recents: { [key: string]: any }[] = [];
 
   for (const recent of data)
     recents.push({
@@ -211,7 +213,9 @@ export const getUserTops = async (
   }
   const { data } = response;
   if (!data || !data.length) {
-    throw new CustomError(`у игрока \`${idOrName}\` на \`${server}\` нет результатов.`);
+    throw new CustomError(
+      `у игрока \`${idOrName}\` на \`${server}\` нет результатов.`
+    );
   }
   const bests: { [key: string]: any }[] = [];
 
@@ -274,7 +278,10 @@ export const getScores = async (
     throw new CustomError(responseFail(response.statusText));
   }
   const { data } = response;
-  if (!data || !data.length) throw new CustomError(`никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`);
+  if (!data || !data.length)
+    throw new CustomError(
+      `никаких результатов на \`${idBeatmap}\` от игрока \`${idOrName}\` на \`${server}\` в режиме \`${mode}\`.`
+    );
   const scoresOnBeatmap: { [key: string]: any }[] = [];
 
   for (const score of data)

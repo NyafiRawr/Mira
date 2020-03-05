@@ -17,7 +17,9 @@ module.exports = {
 
     if (args[0]) {
       limit = parseInt(args[0], 10);
-      throw new CustomError(Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?');
+      throw new CustomError(
+        Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?'
+      );
     }
 
     message.reply(

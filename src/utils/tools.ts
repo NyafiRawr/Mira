@@ -80,11 +80,10 @@ export const embedFooter = (message: Message, nameCommand: string) => {
     !memberRequest || !memberRequest.nickname
       ? message.author.username
       : memberRequest.nickname
-    } | ${config.bot.prefix}${nameCommand}`;
+  } | ${config.bot.prefix}${nameCommand}`;
 };
 // Получить файл name.json
-export const getData = (name: string) =>
-  require(`../../data/${name}.json`);
+export const getData = (name: string) => require(`../../data/${name}.json`);
 // Получить ключ из name.json у которого есть значение. Ключ может иметь массив значений
 export const getDataKeyOnValue = (name: string, value: string) => {
   const data = getData(name);
@@ -109,7 +108,20 @@ export const getDataValueOnKey = (name: string, key: string) => {
   return null;
 };
 // Конвертер unix timestamp в дату
-const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+const months = [
+  'Янв',
+  'Фев',
+  'Мар',
+  'Апр',
+  'Май',
+  'Июн',
+  'Июл',
+  'Авг',
+  'Сен',
+  'Окт',
+  'Ноя',
+  'Дек',
+];
 export const unixToDate = (unix_timestamp: number) => {
   const timestamp = new Date(unix_timestamp * 1000);
   const year = timestamp.getFullYear();

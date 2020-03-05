@@ -15,10 +15,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[]
-  ) {
+  async execute(message: Discord.Message, args: string[]) {
     const user: any =
       message.mentions.users.first() ||
       message.client.users.find(
@@ -31,14 +28,13 @@ module.exports = {
 
     let title = 'Кажется, это вы!';
     if (message.author.id !== user.id) {
-      title = `Информация о ${!member || !member.nickname ? user.username : member.nickname}`;
+      title = `Информация о ${
+        !member || !member.nickname ? user.username : member.nickname
+      }`;
     }
 
     const embed = new Discord.RichEmbed();
-    embed.setAuthor(
-      title,
-      user.avatarURL || user.user.avatarURL
-    );
+    embed.setAuthor(title, user.avatarURL || user.user.avatarURL);
 
     embed.setThumbnail(user.avatarURL || user.user.avatarURL);
 

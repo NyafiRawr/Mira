@@ -30,7 +30,10 @@ export const waitReaction = async (
 
   await embed.clearReactions().catch(error => clearFail(error));
 
-  if ((answer ? rects[parseInt(answer, 10)] : null) === emojiCharacters.words.cancel) {
+  if (
+    (answer ? rects[parseInt(answer, 10)] : null) ===
+    emojiCharacters.words.cancel
+  ) {
     return null;
   }
   return answer;
@@ -50,9 +53,9 @@ export const waitReactionComplete = async (
   await embed.react(emojiCharacters.words.cancel);
 
   const filter = (reaction: Discord.MessageReaction, user: Discord.User) =>
-    user.id === selectorId
-    && ((emojiCharacters.words.complete === reaction.emoji.name)
-      || (emojiCharacters.words.cancel === reaction.emoji.name));
+    user.id === selectorId &&
+    (emojiCharacters.words.complete === reaction.emoji.name ||
+      emojiCharacters.words.cancel === reaction.emoji.name);
 
   const answer = await embed
     .awaitReactions(filter, { max: 1, time: 30000, errors: ['time'] })
@@ -81,7 +84,9 @@ export const waitMessage = async (channel: any, selectorId: string) => {
   return channel
     .awaitMessages(filter, { maxMatches: 1, time: 30000, errors: ['time'] })
     .then((collected: any) => {
-      channel.fetchMessage(collected.first()).then((answer: { delete: () => any; }) => answer.delete());
+      channel
+        .fetchMessage(collected.first())
+        .then((answer: { delete: () => any }) => answer.delete());
       return collected.first().content;
     })
     .catch(() => undefined);

@@ -18,8 +18,15 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
 
   async getCategoryId(serverId: string) {
-    const value = vars.get<string | null>(serverId, 'TEMP_CHANNELS_CATEGORY_ID', null);
-    if (value === null) throw new CustomError('Категория создания каналов не указана, попросите админов сделать это!');
+    const value = vars.get<string | null>(
+      serverId,
+      'TEMP_CHANNELS_CATEGORY_ID',
+      null
+    );
+    if (value === null)
+      throw new CustomError(
+        'Категория создания каналов не указана, попросите админов сделать это!'
+      );
 
     return value;
   },
@@ -51,9 +58,12 @@ module.exports = {
           USE_VAD: true,
         });
 
-        const invite = await tempVoice.createInvite({
-          maxAge: 10 * 60 * 1000
-        }, `Приглашение в ${tempVoice.toString()}`);
+        const invite = await tempVoice.createInvite(
+          {
+            maxAge: 10 * 60 * 1000,
+          },
+          `Приглашение в ${tempVoice.toString()}`
+        );
         await message.reply(
           `Пользователь ${target.displayName} добавлен в ${tempVoiceName}. ${invite.url}`
         );
@@ -76,7 +86,11 @@ module.exports = {
         );
       }
     } else if (args[0] === 'create') {
-      await economy.pay(message.guild.id, message.author.id, await this.getPrice(message.guild.id));
+      await economy.pay(
+        message.guild.id,
+        message.author.id,
+        await this.getPrice(message.guild.id)
+      );
 
       const tempVoice = (await message.guild.createChannel(tempVoiceName, {
         type: 'voice',
@@ -98,23 +112,25 @@ module.exports = {
           },
         ],
         parent: await this.getCategoryId(message.guild.id),
-        topic:
-          'Канал будет удален после того, как все выйдут из него!',
+        topic: 'Канал будет удален после того, как все выйдут из него!',
       })) as Discord.VoiceChannel;
 
-      const invite = await tempVoice.createInvite({
-        maxAge: 10 * 60,
-        temporary: true,
-      }, `Приглашение в ${tempVoice.toString()}`);
-      await message.reply(`канал __${tempVoice.toString()}__ создан! ${invite.url}`);
+      const invite = await tempVoice.createInvite(
+        {
+          maxAge: 10 * 60,
+          temporary: true,
+        },
+        `Приглашение в ${tempVoice.toString()}`
+      );
+      await message.reply(
+        `канал __${tempVoice.toString()}__ создан! ${invite.url}`
+      );
 
       const deleteChannel = () =>
         tempVoice
           .delete()
           .then(() =>
-            message.reply(
-              `Пустующий канал __${tempVoice.toString()}__ удалён!`
-            )
+            message.reply(`Пустующий канал __${tempVoice.toString()}__ удалён!`)
           )
           .catch(log.error);
 

@@ -28,14 +28,17 @@ module.exports = {
     const embed = new Discord.RichEmbed()
       .setAuthor('Информация обо мне', 'https://i.imgur.com/wSTFkRM.png')
       .setTitle(
-        `Основа: Discord.JS (NodeJS ${process.version} и TS v${(packageFile.dependencies.typescript).slice(1)})`
+        `Основа: Discord.JS (NodeJS ${
+          process.version
+        } и TS v${packageFile.dependencies.typescript.slice(1)})`
       )
       .setURL('https://discord.js.org')
 
-      .setDescription(`Разработчики:\n - ${packageFile.author.tag}\n` +
-        packageFile.contributors
-          .map((contr: string) => ` - ${contr}`)
-          .join('\n')
+      .setDescription(
+        `Разработчики:\n - ${packageFile.author.tag}\n` +
+          packageFile.contributors
+            .map((contr: string) => ` - ${contr}`)
+            .join('\n')
       )
 
       .addField('Версия', packageFile.version, true)

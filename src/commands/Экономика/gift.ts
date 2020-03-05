@@ -15,8 +15,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[]
-  ) {
+  async execute(message: Discord.Message, args: string[]) {
     // TODO: pay or gift or give?
     if (!(message.mentions.users.size && args[0].length)) {
       throw new CustomError('вы никого не упомянули.');

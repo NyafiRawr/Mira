@@ -22,8 +22,12 @@ module.exports = {
       modePick
     );
 
-    const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
-    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
+    const serverLinks = tools.getDataValueOnKey(
+      'osu!/links',
+      player.gameServer
+    );
+    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer)
+      .name;
     const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString());
 
     const embed = new Discord.RichEmbed()
@@ -38,12 +42,14 @@ module.exports = {
           .replace('MODE', mode.mode)
       )
       .setDescription(
-        `**Место в мире:** #${tools.separateThousandth(osuUser.pp_rank)} `
-        + `(**${osuUser.country}**#${tools.separateThousandth(osuUser.pp_country_rank)})`
-        + `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}`
-        + `\n**PP:** ${tools.separateThousandth(osuUser.pp_raw)}`
-        + `\n**Точность:** ${tools.roundDecimalPlaces(osuUser.accuracy, 2)}%`
-        + `\n**Сыграно карт:** ${tools.separateThousandth(osuUser.playcount)}`
+        `**Место в мире:** #${tools.separateThousandth(osuUser.pp_rank)} ` +
+          `(**${osuUser.country}**#${tools.separateThousandth(
+            osuUser.pp_country_rank
+          )})` +
+          `\n**Уровень:** ${tools.roundDecimalPlaces(osuUser.level, 2)}` +
+          `\n**PP:** ${tools.separateThousandth(osuUser.pp_raw)}` +
+          `\n**Точность:** ${tools.roundDecimalPlaces(osuUser.accuracy, 2)}%` +
+          `\n**Сыграно карт:** ${tools.separateThousandth(osuUser.playcount)}`
       )
       .setThumbnail(serverLinks.avatar.replace('ID', osuUser.user_id))
       .setColor(tools.randomHexColor())

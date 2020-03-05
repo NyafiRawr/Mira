@@ -140,7 +140,7 @@ export const showStats = (
 export const decodeMods = (code: string) => {
   const mods = tools.getData('osu!/mods');
   let enCode = parseInt(code, 10);
-  const result = [];
+  const result: any[] = [];
 
   for (let i = 0; i < Object.keys(mods).length; i += 1) {
     const parsed = parseInt(Object.keys(mods)[i], 10);
@@ -162,7 +162,10 @@ const servers = tools.getData('osu!/servers');
 const modes = tools.getData('osu!/modes');
 
 // Вытаскивание из аргументов: ника (строка или @) и параметров /mode /server
-export const getPlayerFromMessage = async (message: Discord.Message, args: string[]) => {
+export const getPlayerFromMessage = async (
+  message: Discord.Message,
+  args: string[]
+) => {
   const parsingArgs = args
     .filter(arg => arg.startsWith('/'))
     .map(arg => arg.substr(1));
@@ -170,7 +173,9 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
   let specificMode;
 
   if (parsingArgs.length > 2) {
-    throw new CustomError(`много дополнительных параметров: \`${parsingArgs}\``);
+    throw new CustomError(
+      `много дополнительных параметров: \`${parsingArgs}\``
+    );
   }
 
   if (parsingArgs.length !== 0) {
@@ -211,23 +216,34 @@ export const getPlayerFromMessage = async (message: Discord.Message, args: strin
   }
 
   let player = {
-    nickname: message.guild.members.get(message.author.id)?.nickname || message.author.username,
+    nickname:
+      message.guild.members.get(message.author.id)?.nickname ||
+      message.author.username,
     gameServer: specificServer,
-    modeFavorite: specificMode
+    modeFavorite: specificMode,
   };
 
   if (message.mentions.members.size) {
     player =
       (await players.get(
         message.mentions.members.first().id,
-        specificServer, specificServer ? false : true
-      )) || (await players.get(
+        specificServer,
+        specificServer ? false : true
+      )) ||
+      (await players.get(
         message.author.id,
-        specificServer, specificServer ? false : true
-      )) || player;
+        specificServer,
+        specificServer ? false : true
+      )) ||
+      player;
     player.nickname = message.mentions.members.first().displayName;
   } else {
-    player = (await players.get(message.author.id, specificServer, specificServer ? false : true)) || player;
+    player =
+      (await players.get(
+        message.author.id,
+        specificServer,
+        specificServer ? false : true
+      )) || player;
     const amountParams = args.filter(arg => arg.startsWith('/'))?.length || 0;
     args.splice(args.length - amountParams, amountParams);
     const shouldBeNickname = args.join(' ');

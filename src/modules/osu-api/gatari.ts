@@ -15,7 +15,7 @@ export const getUser = async (
   const responseInfo = await axios.get('/users/get', {
     baseURL: `https://${configServer.api.url}`,
     params: {
-      u: nickname
+      u: nickname,
     },
   });
   const responseStats = await axios.get('/user/stats', {
@@ -26,10 +26,14 @@ export const getUser = async (
     },
   });
   if (responseStats.status !== 200 || responseStats.data.code !== 200) {
-    throw new CustomError(responseFail(responseStats.data?.error || responseStats.statusText));
+    throw new CustomError(
+      responseFail(responseStats.data?.error || responseStats.statusText)
+    );
   }
   if (responseInfo.status !== 200 || responseInfo.data.code !== 200) {
-    throw new CustomError(responseFail(responseInfo.data?.error || responseInfo.statusText));
+    throw new CustomError(
+      responseFail(responseInfo.data?.error || responseInfo.statusText)
+    );
   }
   const dataInfos = responseInfo.data.users;
   const dataStats = responseStats.data.stats;
@@ -78,7 +82,9 @@ export const getBeatmap = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data?.error || response.statusText));
+    throw new CustomError(
+      responseFail(response.data?.error || response.statusText)
+    );
   }
   const { data } = response.data;
   if (!data || !data.length) {
@@ -152,11 +158,15 @@ export const getUserRecents = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data?.error || response.statusText));
+    throw new CustomError(
+      responseFail(response.data?.error || response.statusText)
+    );
   }
   const { scores } = response.data;
   if (!scores || !scores.length) {
-    throw new CustomError(`игрок \`${nickname}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`);
+    throw new CustomError(
+      `игрок \`${nickname}\` последнее время ничего не играл на \`${server}\` в режиме \`${mode}\`.`
+    );
   }
 
   const recents: { [key: string]: any }[] = [];
@@ -203,11 +213,15 @@ export const getUserTops = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data?.error || response.statusText));
+    throw new CustomError(
+      responseFail(response.data?.error || response.statusText)
+    );
   }
   const { scores } = response.data;
   if (!scores || !scores.length) {
-    throw new CustomError(`у игрока \`${nickname}\` на \`${server}\` нет результатов.`);
+    throw new CustomError(
+      `у игрока \`${nickname}\` на \`${server}\` нет результатов.`
+    );
   }
 
   const bests: { [key: string]: any }[] = [];
@@ -257,11 +271,15 @@ export const getScores = async (
     },
   });
   if (response.status !== 200 || response.data.code !== 200) {
-    throw new CustomError(responseFail(response.data?.error || response.statusText));
+    throw new CustomError(
+      responseFail(response.data?.error || response.statusText)
+    );
   }
   const { score } = response.data;
   if (!score || !Object.keys(score).length) {
-    throw new CustomError(`нет результата на \`${idBeatmap}\` от игрока \`${nickname}\` на \`${server}\` в режиме \`${mode}\`.`);
+    throw new CustomError(
+      `нет результата на \`${idBeatmap}\` от игрока \`${nickname}\` на \`${server}\` в режиме \`${mode}\`.`
+    );
   }
 
   const scoreOnBeatmap = {

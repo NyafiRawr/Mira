@@ -9,14 +9,14 @@ export const get = async (
     return Player.findOne({
       where: {
         userId,
-        gameServerFavorite
+        gameServerFavorite,
       },
     });
   } else {
     return Player.findOne({
       where: {
         userId,
-        gameServer
+        gameServer,
       },
     });
   }

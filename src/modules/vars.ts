@@ -3,18 +3,16 @@ import Vars from '../models/vars';
 export const get = async <T = any>(
   serverId: string,
   name: string,
-  def?: T,
+  def?: T
 ): Promise<T> => {
   const res = await Vars.findOne({
     where: { name, serverId },
   });
 
-  return JSON.parse(res?.value || 'false') as any || def;
+  return (JSON.parse(res?.value || 'false') as any) || def;
 };
 
-export const getAll = async(
-  serverId: string,
-): Promise<Vars[]> =>
+export const getAll = async (serverId: string): Promise<Vars[]> =>
   Vars.findAll({
     where: { serverId },
   });
@@ -22,7 +20,7 @@ export const getAll = async(
 export const set = async (
   serverId: string,
   name: string,
-  value: any,
+  value: any
 ): Promise<Vars> => {
   const variable = await Vars.findOne({
     where: { name, serverId },
@@ -48,5 +46,5 @@ export const remove = async (serverId: string, name: string) =>
       serverId,
       name,
     },
-    truncate: true
+    truncate: true,
   });

@@ -14,10 +14,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[]
-  ) {
+  async execute(message: Discord.Message, args: string[]) {
     if (!message.member.hasPermission(this.permissions[0])) {
       throw new CustomError('недостаточно привилегий!');
     }

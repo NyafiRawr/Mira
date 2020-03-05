@@ -26,8 +26,12 @@ module.exports = {
     const recentScore = osuRecent[0];
     const recentBeatmap = recentScore.beatmap;
 
-    const serverLinks = tools.getDataValueOnKey('osu!/links', player.gameServer);
-    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer).name;
+    const serverLinks = tools.getDataValueOnKey(
+      'osu!/links',
+      player.gameServer
+    );
+    const server = tools.getDataValueOnKey('osu!/servers', player.gameServer)
+      .name;
     const mode = tools.getDataValueOnKey('osu!/modes', modePick.toString());
 
     const embed = new Discord.RichEmbed()
@@ -35,10 +39,15 @@ module.exports = {
         `${player.nickname} играл в osu! ${mode.name} на ${server}`,
         serverLinks.avatar.replace('ID', recentScore.user_id)
       )
-      .setTitle(`${recentBeatmap.artist} - ${recentBeatmap.version}${
-        !!recentBeatmap.creator ? ' // ' + recentBeatmap.creator : ''}`)
+      .setTitle(
+        `${recentBeatmap.artist} - ${recentBeatmap.version}${
+          !!recentBeatmap.creator ? ' // ' + recentBeatmap.creator : ''
+        }`
+      )
       .setURL(serverLinks.beatmap.replace('ID', recentScore.beatmap_id))
-      .setImage(serverLinks.beatmapset_cover.replace('ID', recentBeatmap.beatmapset_id))
+      .setImage(
+        serverLinks.beatmapset_cover.replace('ID', recentBeatmap.beatmapset_id)
+      )
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
@@ -46,25 +55,45 @@ module.exports = {
       )
 
       .setDescription(
-        `**Сложность:** ${recentBeatmap.version} (★${tools.roundDecimalPlaces(recentBeatmap.difficultyrating)})`
-        + ` ${modePick === 3 && !recentBeatmap.diff_size ? `[${recentBeatmap.diff_size}K]` : ''}`
-        + (recentScore.enabled_mods === '-' ? `\n**Моды:** ${osu.decodeMods(recentScore.enabled_mods)}` : '')
+        `**Сложность:** ${recentBeatmap.version} (★${tools.roundDecimalPlaces(
+          recentBeatmap.difficultyrating
+        )})` +
+          ` ${
+            modePick === 3 && !recentBeatmap.diff_size
+              ? `[${recentBeatmap.diff_size}K]`
+              : ''
+          }` +
+          (recentScore.enabled_mods === '-'
+            ? `\n**Моды:** ${osu.decodeMods(recentScore.enabled_mods)}`
+            : '')
       )
 
-      .addField('Результат',
-        `**Оценка:** ${tools.getDataValueOnKey('osu!/ranks', recentScore.rank) || recentScore.rank}`
-        + `\n**Точность:** ${tools.roundDecimalPlaces(recentScore.accuracy)}%`
-        + `\n**Комбо:** ${tools.separateThousandth(recentScore.maxcombo)}${
-        !!recentBeatmap.max_combo ? ' / ' + tools.separateThousandth(recentBeatmap.max_combo) : ''}`
-        + `\n**Счет:** ${tools.separateThousandth(recentScore.score)}`
-        , true)
-      .addField('Характеристики',
-        `**PP:** ${recentScore.pp || '-'}`
-        + `\n**Длина:** ${osu.styleLengthInMS(recentBeatmap.total_length)}`
-        + `\n**BPM:** ${recentBeatmap.bpm}`
-        + `${modePick === 3 ? '' : `\n**CS:** ${recentBeatmap.diff_size}`} **AR:** ${recentBeatmap.diff_approach}`
-        + `\n**OD:** ${recentBeatmap.diff_overall} **HP:** ${recentBeatmap.diff_drain}`
-        , true);
+      .addField(
+        'Результат',
+        `**Оценка:** ${tools.getDataValueOnKey(
+          'osu!/ranks',
+          recentScore.rank
+        ) || recentScore.rank}` +
+          `\n**Точность:** ${tools.roundDecimalPlaces(recentScore.accuracy)}%` +
+          `\n**Комбо:** ${tools.separateThousandth(recentScore.maxcombo)}${
+            !!recentBeatmap.max_combo
+              ? ' / ' + tools.separateThousandth(recentBeatmap.max_combo)
+              : ''
+          }` +
+          `\n**Счет:** ${tools.separateThousandth(recentScore.score)}`,
+        true
+      )
+      .addField(
+        'Характеристики',
+        `**PP:** ${recentScore.pp || '-'}` +
+          `\n**Длина:** ${osu.styleLengthInMS(recentBeatmap.total_length)}` +
+          `\n**BPM:** ${recentBeatmap.bpm}` +
+          `${
+            modePick === 3 ? '' : `\n**CS:** ${recentBeatmap.diff_size}`
+          } **AR:** ${recentBeatmap.diff_approach}` +
+          `\n**OD:** ${recentBeatmap.diff_overall} **HP:** ${recentBeatmap.diff_drain}`,
+        true
+      );
 
     message.channel.send({ embed });
   },

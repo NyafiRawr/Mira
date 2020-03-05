@@ -19,13 +19,15 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, ) {
+  async execute(message: Discord.Message) {
     const embed = new Discord.RichEmbed()
       .setAuthor('Настройка аккаунта osu!')
       .setTitle('Меню')
-      .setDescription(`${emojiCharacters.numbers[1]} Добавить/Изменить`
-        + `\n${emojiCharacters.numbers[2]} Указать основной`
-        + `\n${emojiCharacters.numbers[3]} Удалить`)
+      .setDescription(
+        `${emojiCharacters.numbers[1]} Добавить/Изменить` +
+          `\n${emojiCharacters.numbers[2]} Указать основной` +
+          `\n${emojiCharacters.numbers[3]} Удалить`
+      )
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
@@ -41,7 +43,8 @@ module.exports = {
     );
     if (!change) {
       cooldowns.reset(message.guild.id, message.author.id, this.name);
-      if (change === undefined) throw new CustomError('ты не решил, что сделать с аккаунтом, отмена.');
+      if (change === undefined)
+        throw new CustomError('ты не решил, что сделать с аккаунтом, отмена.');
       return;
     }
     switch (change) {
@@ -52,18 +55,24 @@ module.exports = {
         for (let i = 0; i < Object.keys(servers).length; i += 1) {
           changeServer += `${emojiCharacters.numbers[i + 1]} ${
             Object.values<any>(servers)[i].name
-            }\n`;
+          }\n`;
         }
         embed.setDescription(changeServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(
           embedMessage,
-          Object.values(emojiCharacters.numbers).slice(1, Object.keys(servers).length + 1),
+          Object.values(emojiCharacters.numbers).slice(
+            1,
+            Object.keys(servers).length + 1
+          ),
           message.author.id
         );
         if (!osuServerIndex) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для создания/изменения аккаунта, отмена.');
+          if (osuServerIndex === undefined)
+            throw new CustomError(
+              'ты не выбрал сервер для создания/изменения аккаунта, отмена.'
+            );
           return;
         }
         // Выбор играемых режимов - ГЛАВНЫЙ!
@@ -71,18 +80,24 @@ module.exports = {
         for (let i = 0; i < Object.keys(modes).length; i += 1) {
           favoriteMode += `${emojiCharacters.numbers[i + 1]} ${
             Object.values<any>(modes)[i].name
-            }\n`;
+          }\n`;
         }
         embed.setDescription(favoriteMode);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuFavoriteMode = await menu.waitReaction(
           embedMessage,
-          Object.values(emojiCharacters.numbers).slice(1, Object.keys(modes).length + 1),
+          Object.values(emojiCharacters.numbers).slice(
+            1,
+            Object.keys(modes).length + 1
+          ),
           message.author.id
         );
         if (!osuFavoriteMode) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuFavoriteMode === undefined) throw new CustomError('ты не выбрал избранный режимы для аккаунта, отмена.');
+          if (osuFavoriteMode === undefined)
+            throw new CustomError(
+              'ты не выбрал избранный режимы для аккаунта, отмена.'
+            );
           return;
         }
         // Выбор играемых режимов - ДРУГИЕ!
@@ -90,18 +105,24 @@ module.exports = {
         for (let i = 0; i < Object.keys(modes).length; i += 1) {
           changeMode += `${emojiCharacters.numbers[i + 1]} ${
             Object.values<any>(modes)[i].name
-            }\n`;
+          }\n`;
         }
         embed.setDescription(changeMode);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuModesIndexes = await menu.waitReactionComplete(
           embedMessage,
-          Object.values(emojiCharacters.numbers).slice(1, Object.keys(modes).length + 1),
+          Object.values(emojiCharacters.numbers).slice(
+            1,
+            Object.keys(modes).length + 1
+          ),
           message.author.id
         );
         if (!osuModesIndexes && !osuModesIndexes!.length) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuModesIndexes === undefined) throw new CustomError('ты не выбрал играемые режимы для аккаунта, отмена.');
+          if (osuModesIndexes === undefined)
+            throw new CustomError(
+              'ты не выбрал играемые режимы для аккаунта, отмена.'
+            );
           return;
         }
         // Запись ника и запись в базу
@@ -116,14 +137,22 @@ module.exports = {
           throw new CustomError('не был указан ник, отмена.');
         }
         embed.setTitle('Успех!');
-        const playModes = [...new Set(osuModesIndexes!.concat(osuFavoriteMode))];
-        embed.setDescription(`Ты **${osuName}** на сервере **${
-          Object.values<any>(servers)[osuServerIndex as any].name
+        const playModes = [
+          ...new Set(osuModesIndexes!.concat(osuFavoriteMode)),
+        ];
+        embed.setDescription(
+          `Ты **${osuName}** на сервере **${
+            Object.values<any>(servers)[osuServerIndex as any].name
           }** любишь и играешь **${playModes!
             .map(mode => modes[mode].name)
-            .join(', ')}**!`);
+            .join(', ')}**!`
+        );
         await embedMessage.edit(message.author, { embed });
-        const listServersPlayer = await players.get(message.author.id, '', true);
+        const listServersPlayer = await players.get(
+          message.author.id,
+          '',
+          true
+        );
         let gameServerFavorite = false;
         if (!listServersPlayer) gameServerFavorite = true;
         await players.set(
@@ -133,7 +162,7 @@ module.exports = {
             nickname: osuName,
             modes: osuModesIndexes!.join(','),
             modeFavorite: osuFavoriteMode,
-            gameServerFavorite
+            gameServerFavorite,
           }
         );
         break;
@@ -151,37 +180,42 @@ module.exports = {
         let nameFavServer = '';
         for (let i = 0; i < listServersPlayer.length; i += 1) {
           favoriteServer += `${emojiCharacters.numbers[i + 1]} ${
-            servers[listServersPlayer[i].gameServer].name}\n`;
-          if (listServersPlayer[i].gameServerFavorite) nameFavServer = listServersPlayer[i].gameServer;
+            servers[listServersPlayer[i].gameServer].name
+          }\n`;
+          if (listServersPlayer[i].gameServerFavorite)
+            nameFavServer = listServersPlayer[i].gameServer;
         }
         embed.setDescription(favoriteServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(
           embedMessage,
-          Object.values(emojiCharacters.numbers).slice(1, listServersPlayer.length + 1),
+          Object.values(emojiCharacters.numbers).slice(
+            1,
+            listServersPlayer.length + 1
+          ),
           message.author.id
         );
         if (!osuServerIndex) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuServerIndex === undefined) throw new CustomError('ты не указал основной сервер, отмена.');
+          if (osuServerIndex === undefined)
+            throw new CustomError('ты не указал основной сервер, отмена.');
           return;
         }
         // Отвязка
-        await players
-          .set(message.author.id, nameFavServer, {
-            gameServerFavorite: false
-          });
+        await players.set(message.author.id, nameFavServer, {
+          gameServerFavorite: false,
+        });
         // Привязка
         const idx = parseInt(osuServerIndex || '0', 10);
         await players
           .set(message.author.id, listServersPlayer[idx].gameServer, {
-            gameServerFavorite: true
+            gameServerFavorite: true,
           })
           .then(() => {
             embed.setTitle('Сервер избран!');
             embed.setDescription(
               `Аккаунт **${listServersPlayer[idx].nickname}** при сервере **${
-              servers[listServersPlayer[idx].gameServer].name
+                servers[listServersPlayer[idx].gameServer].name
               }** стал основой!`
             );
             embedMessage.edit(message.author, { embed });
@@ -201,18 +235,22 @@ module.exports = {
         for (let i = 0; i < listServersPlayer.length; i += 1) {
           changeServer += `${emojiCharacters.numbers[i + 1]} ${
             servers[listServersPlayer[i].gameServer].name
-            }\n`;
+          }\n`;
         }
         embed.setDescription(changeServer);
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(
           embedMessage,
-          Object.values(emojiCharacters.numbers).slice(1, listServersPlayer.length + 1),
+          Object.values(emojiCharacters.numbers).slice(
+            1,
+            listServersPlayer.length + 1
+          ),
           message.author.id
         );
         if (!osuServerIndex) {
           cooldowns.reset(message.guild.id, message.author.id, this.name);
-          if (osuServerIndex === undefined) throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
+          if (osuServerIndex === undefined)
+            throw new CustomError('ты не выбрал сервер для отвязки, отмена.');
           return;
         }
         // Отвязка
@@ -223,7 +261,7 @@ module.exports = {
             embed.setTitle('Удалено');
             embed.setDescription(
               `Аккаунт **${listServersPlayer[idx].nickname}** при сервере **${
-              servers[listServersPlayer[idx].gameServer].name
+                servers[listServersPlayer[idx].gameServer].name
               }** отвязан`
             );
             embedMessage.edit(message.author, { embed });

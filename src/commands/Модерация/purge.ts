@@ -66,7 +66,9 @@ module.exports = {
               });
           })
           .catch(error => {
-            throw new CustomError(`невозможно удалить сообщения, потому что: \n${error}`);
+            throw new CustomError(
+              `невозможно удалить сообщения, потому что: \n${error}`
+            );
           });
       });
   },
