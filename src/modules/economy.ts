@@ -2,7 +2,7 @@ import User from '../models/user';
 import CustomError from '../utils/customError';
 import { sequelize } from '../db';
 import * as users from './users';
-import { roundDecimalPlaces } from '../../utils/tools';
+import { roundDecimalPlaces } from '../utils/tools';
 
 /**
  * Установка пользователю печенек, при необходимости добавляет в базу пользователя
