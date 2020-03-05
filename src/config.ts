@@ -20,7 +20,8 @@ export default {
     level: process.env.LEVEL || 'info',
   },
   bot: {
-    prefix: process.env.BOT_PREFIX || '!',
+    prefixs: process.env.BOT_PREFIXS?.split(' ') || '',
+    prefix: process.env.BOT_PREFIXS?.split(' ')[0] || '',
     token: requireProcessEnv('BOT_TOKEN'),
   },
   db: {

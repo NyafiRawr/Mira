@@ -22,18 +22,16 @@ export default async (message: Message) => {
     content = itSelf ? `${config.bot.prefix}about` : content;
   }
 
-  let prefix;
-
-  // todo: работы с несколькими префиксами
-  if (content.startsWith(config.bot.prefix)) {
-    prefix = config.bot.prefix;
+  let prefixHave = false;
+  for (const prefix of config.bot.prefixs) {
+    if (content.startsWith(prefix)) {
+      prefixHave = true;
+      break;
+    }
   }
+  if (!prefixHave) return;
 
-  if (!prefix) {
-    return;
-  }
-
-  const args = content.slice(prefix.length).split(/ +/);
+  const args = content.slice(config.bot.prefix.length).split(/ +/);
 
   const commandName = args.shift()!.toLowerCase();
   const command = commands.get(commandName);
