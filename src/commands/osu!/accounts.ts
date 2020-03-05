@@ -41,8 +41,10 @@ module.exports = {
           + (0 + parseInt(user.count_rank_sh, 10)) + (0 + parseInt(user.count_rank_a, 10));
         embed
           .addField(
-            `**${account.gameServer[0].toUpperCase() +
-            account.gameServer.slice(1)}**`,
+            (account.gameServerFavorite ? '__' : '')
+            + `**${account.gameServer[0].toUpperCase() +
+            account.gameServer.slice(1)}**`
+            + (account.gameServerFavorite ? '__' : ''),
             `PP: ${tools.separateThousandth(
               user.pp_raw
             )}\nМесто: #${tools.separateThousandth(user.pp_rank)}`,
