@@ -90,7 +90,7 @@ module.exports = {
     if (weight) {
       embed.addField(
         'Вес',
-        `${weight} кг,
+        `${weight} кг`,
         true
       );
     }
