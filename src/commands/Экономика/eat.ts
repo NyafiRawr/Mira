@@ -1,9 +1,10 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../utils/customError';
-import { randomInteger } from '../../utils/tools';
+import { randomInteger, roundDecimalPlaces } from '../../utils/tools';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
 import * as cooldowns from '../../utils/kv';
+import { DOUBLE } from 'sequelize/types';
 
 const effects = [
   'ура! Вы стали на newWeight кг жирней! (totalWeight кг)',
@@ -49,9 +50,9 @@ module.exports = {
       );
     }
 
-    const newWeight = amount / 100;
+    const newWeight = roundDecimalPlaces(amount / 100, 2);
     await economy.set(message.guild.id, message.author.id, -amount);
-    await economy.setWeight(message.guild.id, message.author.id, newWeight);
+    await economy.setWeight(message.guild.id, message.author.id, +newWeight);
     const totalWeight = await economy.getWeight(
       message.guild.id,
       message.author.id
