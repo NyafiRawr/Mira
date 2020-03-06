@@ -21,7 +21,7 @@ export const set = async (
 ): Promise<Emoji> => {
   const role = await get(channelId, messageId, emojiId);
 
-  if (role != null) {
+  if (role !== null) {
     return role.update({
       roleId,
     });

@@ -72,7 +72,7 @@ export const getBeatmap = async (
   const response = await axios.get('/api/get_beatmaps', {
     baseURL: `http://${configServer.api.url}`,
     params: {
-      m: mode,
+      // m: mode, - не стабильно работает, иногда является причиной возврата []
       b: idBeatmap,
       k: server === 'bancho' ? config.osu_token : undefined,
     },
