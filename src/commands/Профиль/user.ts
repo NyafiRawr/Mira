@@ -88,11 +88,7 @@ module.exports = {
     }
 
     if (weight) {
-      embed.addField(
-        'Вес',
-        `${weight} кг`,
-        true
-      );
+      embed.addField('Вес', `${weight} кг`, true);
     }
 
     embed.setColor(tools.randomHexColor());

@@ -40,12 +40,14 @@ module.exports = {
       amount = 1000000000000;
     }
 
-    victims.forEach(member => economy.set(message.guild.id, member.id, -amount));
+    victims.forEach(member =>
+      economy.set(message.guild.id, member.id, -amount)
+    );
 
     message.reply(
-      `вы забрали у ${Array.from(victims).join(', ')} -${tools.separateThousandth(
-        amount.toString()
-      )}:cookie:`
+      `вы забрали у ${Array.from(victims).join(
+        ', '
+      )} -${tools.separateThousandth(amount.toString())}:cookie:`
     );
   },
 };

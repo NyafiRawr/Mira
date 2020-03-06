@@ -31,7 +31,7 @@ Emoji.init(
     modelName: 'emoji',
     sequelize,
     charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci'
+    collate: 'utf8mb4_unicode_ci',
   }
 );
 

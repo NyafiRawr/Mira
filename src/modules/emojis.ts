@@ -4,14 +4,21 @@ export const get = async (
   channelId: string,
   messageId: string,
   emojiId: string
-): Promise<Emoji | null> =>
-  Emoji.findOne({
+): Promise<Emoji | null> => {
+  // findOne меняет кодировку, как следствие сравнение неправильное
+  const allEmojis = await Emoji.findAll({
     where: {
       channelId,
       messageId,
-      emojiId,
     },
   });
+  for (const emoji of allEmojis) {
+    if (emoji.emojiId === emojiId) {
+      return emoji;
+    }
+  }
+  return null;
+};
 
 export const set = async (
   channelId: string,

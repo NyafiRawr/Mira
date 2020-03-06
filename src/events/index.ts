@@ -7,6 +7,7 @@ import onGuildMemberAdd from './onGuildMemberAdd';
 import onMessageReactionAdd from './onMessageReactionAdd';
 import onMessageReactionRemove from './onMessageReactionRemove';
 import onMessage from './onMessage';
+import onRaw from './onRaw';
 
 export default {
   onReady,
@@ -18,4 +19,5 @@ export default {
   onMessageReactionAdd,
   onMessageReactionRemove,
   onMessage,
+  onRaw,
 };

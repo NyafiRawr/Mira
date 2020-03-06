@@ -36,22 +36,26 @@ module.exports = {
       );
       if (user != null) {
         const topScores =
-          parseInt(user.count_rank_ss, 10) + parseInt(user.count_rank_s, 10)
-          + parseInt(user.count_rank_ssh, 10)
-          + (0 + parseInt(user.count_rank_sh, 10)) + (0 + parseInt(user.count_rank_a, 10));
+          parseInt(user.count_rank_ss, 10) +
+          parseInt(user.count_rank_s, 10) +
+          parseInt(user.count_rank_ssh, 10) +
+          (0 + parseInt(user.count_rank_sh, 10)) +
+          (0 + parseInt(user.count_rank_a, 10));
         embed
           .addField(
-            (account.gameServerFavorite ? '__' : '')
-            + `**${account.gameServer[0].toUpperCase() +
-            account.gameServer.slice(1)}**`
-            + (account.gameServerFavorite ? '__' : ''),
+            (account.gameServerFavorite ? '__' : '') +
+              `**${account.gameServer[0].toUpperCase() +
+                account.gameServer.slice(1)}**` +
+              (account.gameServerFavorite ? '__' : ''),
             `PP: ${tools.separateThousandth(
               user.pp_raw
             )}\nМесто: #${tools.separateThousandth(user.pp_rank)}`,
             true
           )
           .addField(
-            `**${tools.getDataValueOnKey('osu!/modes', account.modeFavorite).name}**`,
+            `**${
+              tools.getDataValueOnKey('osu!/modes', account.modeFavorite).name
+            }**`,
             `Уровень: ${Math.floor(
               user.level
             )}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`,

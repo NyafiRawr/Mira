@@ -26,7 +26,9 @@ module.exports = {
       );
     }
     if (!message.member.hasPermission(this.permissions[1])) {
-      throw new CustomError('мне нужно право добавлять реакции в указанном канале!');
+      throw new CustomError(
+        'мне нужно право добавлять реакции в указанном канале!'
+      );
     }
 
     if (args.length !== 4) {
@@ -38,9 +40,7 @@ module.exports = {
     const messageId = args[1]; // ID сообщения для ловли
     const messageFetch = await channel.fetchMessage(messageId);
     if (!messageFetch) {
-      throw new CustomError(
-        `сообщение \`${messageId}\` не найдено!`
-      );
+      throw new CustomError(`сообщение \`${messageId}\` не найдено!`);
     }
     const reaction = args[2]; // Реакция-эмодзи
     const role = message.mentions.roles.first(); // Роль
@@ -54,7 +54,10 @@ module.exports = {
       await emojis.set(channel.id, messageId, reaction, role.id);
       await messageFetch.react(reaction);
     } else {
-      const reactionId = reaction.slice(reaction.lastIndexOf(':') + 1, reaction.length - 1);
+      const reactionId = reaction.slice(
+        reaction.lastIndexOf(':') + 1,
+        reaction.length - 1
+      );
       const reactionCheck = message.guild.emojis.get(reactionId);
       if (!reactionCheck) {
         throw new CustomError(

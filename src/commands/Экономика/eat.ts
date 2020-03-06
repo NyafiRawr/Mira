@@ -21,10 +21,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(
-    message: Discord.Message,
-    args: string[]
-  ) {
+  async execute(message: Discord.Message, args: string[]) {
     const currency = (await users.get(message.guild.id, message.author.id))
       ?.balance;
 

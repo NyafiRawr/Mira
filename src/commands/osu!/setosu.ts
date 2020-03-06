@@ -172,7 +172,9 @@ module.exports = {
         const listServersPlayer = await players.getAll(message.author.id);
         if (!listServersPlayer || listServersPlayer.length === 0) {
           await cooldowns.reset(message.guild.id, message.author.id, this.name);
-          embed.setDescription('Нет привязанных аккаунтов для выбора, добавь какой-нибудь аккаунт и он автоматический станет основным!');
+          embed.setDescription(
+            'Нет привязанных аккаунтов для выбора, добавь какой-нибудь аккаунт и он автоматический станет основным!'
+          );
           return embedMessage.edit(message.author, { embed });
         }
         // Выбор основы
