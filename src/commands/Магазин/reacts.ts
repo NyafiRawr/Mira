@@ -1,6 +1,7 @@
 import CustomError from '../../utils/customError';
 import * as emojis from '../../modules/emojis';
 import * as Discord from 'discord.js';
+import { toUnicode } from 'punycode';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -38,13 +39,6 @@ module.exports = {
     }
 
     if (!reaction.startsWith('<')) {
-      // TODO: найти способ проверить стандартное эмодзи, наверное нужно двигаться в unicode
-      /*const reactionCheck = message.client.emojis.get(reaction);// .find(emoji => emoji.name === reaction);
-      if (!reactionCheck) {
-        throw new CustomError(
-          `реакция \`${reaction}\` не найдена!`
-        );
-      }*/
       emojis.set(message.channel.id, messageId, reaction, role.id);
       messageFetch.react(reaction);
     } else {
@@ -52,7 +46,7 @@ module.exports = {
       const reactionCheck = message.guild.emojis.get(reactionId);
       if (!reactionCheck) {
         throw new CustomError(
-          `реакция №\`${reactionId}\` не найдена!`
+          `серверная реакция №\`${reactionId}\` не найдена!`
         );
       }
       emojis.set(message.channel.id, messageId, reactionId, role.id);
