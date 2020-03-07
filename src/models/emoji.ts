@@ -2,6 +2,7 @@ import { Model, STRING } from 'sequelize';
 import { sequelize } from '../db';
 
 class Emoji extends Model {
+  public serverId!: string;
   public channelId!: string;
   public messageId!: string;
   public emojiId!: string;
@@ -10,6 +11,10 @@ class Emoji extends Model {
 
 Emoji.init(
   {
+    serverId: {
+      type: STRING,
+      allowNull: false,
+    },
     channelId: {
       type: STRING,
       allowNull: false,

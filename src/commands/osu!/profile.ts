@@ -5,7 +5,7 @@ import * as tools from '../../utils/tools';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Профиль игрока',
-  aliases: ['p', 'osuprofile', 'osu'],
+  aliases: ['p', 'osuprofile', 'osu', 'gameprofile'],
   usage: '[@ или ник] [/режим] [/сервер]',
   guild: true,
   cooldown: undefined,

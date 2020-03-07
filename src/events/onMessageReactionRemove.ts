@@ -6,6 +6,7 @@ export default async (reaction: MessageReaction, user: GuildMember) => {
     reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
 
   const emoteDB = await emotes.get(
+    reaction.message.guild.id,
     reaction.message.channel.id,
     reaction.message.id,
     emoteName
