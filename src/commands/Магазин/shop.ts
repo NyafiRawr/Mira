@@ -22,7 +22,7 @@ module.exports = {
   permisions: ['MANAGE_ROLES'],
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed()
-      .setAuthor('Магазин', message.guild.iconURL)
+      .setAuthor('Магазин ролей', message.guild.iconURL)
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
@@ -50,7 +50,7 @@ module.exports = {
       const readyBuy = await menu.waitReaction(embedMessage, [emojiCharacters.words.cookie], message.author.id);
       if (!readyBuy) {
         await cooldowns.reset(message.guild.id, message.author.id, this.name);
-        if (readyBuy === undefined) return;
+        if (!readyBuy) return;
       }
 
       const processBuy: any = await message.reply('а теперь напиши в чат номер роли которую ты хочешь купить!');
@@ -69,7 +69,7 @@ module.exports = {
       const roleBuy = message.guild.roles.get(roles[idBuy].roleId) as Discord.Role;
       await economy.pay(message.guild.id, message.author.id, roles[idBuy].cost);
       await message.member.addRole(roleBuy);
-      return processBuy.edit(`${message.author}, роль ${roleBuy.name} уже на тебе!`);
+      return processBuy.edit(`${message.author}, роль **${roleBuy.name}** уже на тебе!`);
     }
 
     if (args[0] === 'add') {

@@ -86,15 +86,15 @@ module.exports = {
     }
 
     const messageId = args[1]; // ID сообщения для ловли
-    const messageFetch = await channel.fetchMessage(messageId);
+    const messageFetch = await channel.fetchMessage(messageId).catch(() => null);
     if (!messageFetch) {
-      throw new CustomError(`сообщение \`${messageId}\` не найдено!`);
+      throw new CustomError(`сообщение \`${messageId}\` не найдено в канале ${channel}!`);
     }
     // Создание выдачи
-    const roles = message.mentions.roles.entries();
     const compliance: string[] = [];
+    const roles = message.mentions.roles.map((role) => role);
     for (let i = 0; i < message.mentions.roles.size; i += 1) {
-      const role = roles.next().value[1];
+      const role = roles[i];
       const reaction = args[(i + 1) * 2]; // Реакция-эмодзи
       compliance.push(`${role} - ${reaction}`);
       if (!reaction.startsWith('<')) {
