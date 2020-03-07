@@ -5,7 +5,7 @@ import * as Discord from 'discord.js';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Роли по реакции к сообщению',
+  description: 'Роль по реакции к сообщению',
   aliases: ['rr'],
   usage: '<#канал> <id-сообщения> <реакция> <@роль>, ...',
   guild: true,

@@ -1,15 +1,15 @@
-import DonateRoles from '../models/shop';
+import Shop from '../models/shop';
 
-export const get = async <T = DonateRoles>(
+export const get = async <T = Shop>(
   serverId: string,
   roleId: string
 ): Promise<T | null> =>
-  DonateRoles.findOne({
+  Shop.findOne({
     where: { roleId, serverId },
   }) as any;
 
 export const getAll = async (serverId: string) => {
-  const shop = await DonateRoles.findAll({
+  const shop = await Shop.findAll({
     where: {
       serverId,
     },
@@ -31,7 +31,7 @@ export const set = async (
     });
   }
 
-  return DonateRoles.create({
+  return Shop.create({
     roleId,
     serverId,
     cost,

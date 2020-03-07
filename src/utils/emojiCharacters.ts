@@ -49,6 +49,5 @@ export const chars: { [k: string]: string } = {
 };
 
 export const words: { [k: string]: string } = {
-  complete: '✅',
-  cancel: '✖️',
+  complete: '✅', cancel: '✖️', cookie: '🍪'
 };

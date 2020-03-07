@@ -33,9 +33,9 @@ module.exports = {
         tools.embedFooter(message, this.name),
         message.author.displayAvatarURL
       );
-    let embedMessage = (await message.channel.send(message.author, {
+    let embedMessage = await message.channel.send(message.author, {
       embed,
-    })) as Discord.Message;
+    }) as Discord.Message;
     const change = await menu.waitReaction(
       embedMessage,
       Object.values(emojiCharacters.numbers).slice(1, 4),

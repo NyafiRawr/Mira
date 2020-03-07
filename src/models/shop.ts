@@ -11,7 +11,6 @@ Shop.init(
   {
     serverId: {
       type: STRING,
-      primaryKey: true,
     },
     roleId: {
       type: STRING,

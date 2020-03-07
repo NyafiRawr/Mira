@@ -1,98 +1,121 @@
 import * as Discord from 'discord.js';
-import config from '../../config';
 import CustomError from '../../utils/customError';
 import * as shop from '../../modules/shop';
 import * as economy from '../../modules/economy';
 import * as tools from '../../utils/tools';
-// TODO: покупка по реакции
-// TODO: страницы
-// TODO: навести порядок
+import * as menu from '../../utils/menu';
+import * as emojiCharacters from '../../utils/emojiCharacters';
+import * as cooldowns from '../../utils/kv';
+
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Каталог ролей',
-  aliases: [],
-  usage: '[all/add/rem/buy] <@роль> [<цена для витрины>]',
+  description: 'Магазин ролей',
+  aliases: undefined,
+  usage: '[add/rem <@роль>] [цена для витрины]',
   guild: true,
   hide: false,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  cooldown: 1,
-  cooldownMessage:
-    'Вы наверное самая быстрая рука на диком западе, я немного не успеваю',
-  managePermisions: ['MANAGE_ROLES'],
+  cooldown: 30,
+  cooldownMessage: [
+    'ты наверное самая быстрая рука на диком западе? Я не успеваю выставить товары!'
+  ],
+  permisions: ['MANAGE_ROLES'],
   async execute(message: Discord.Message, args: string[]) {
-    const embed = new Discord.RichEmbed();
+    const embed = new Discord.RichEmbed()
+      .setAuthor('Магазин', message.guild.iconURL)
+      .setColor(tools.randomHexColor())
+      .setFooter(
+        tools.embedFooter(message, this.name),
+        message.author.displayAvatarURL
+      );
 
-    if (args[0] === 'all' || args.length === 0) {
+    if (!args.length) {
       const roles = await shop.getAll(message.guild.id);
       if (!roles.length) {
-        throw new CustomError('магазин пуст...');
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('в магазине ничего нет!');
       }
 
-      embed.setTitle('Магазин');
-      roles.forEach((role: any, idx: number) =>
-        embed.setDescription(
-          `${idx + 1}. ${message.guild.roles.get(role.roleId)} ${
-            role.cost
-          }:cookie:`
-        )
-      );
-    } else if (args[0] === 'buy' && message.mentions.roles.size > 0) {
-      const roleMention = message.mentions.roles.first();
-
-      const roleShop = await shop.get<any>(message.guild.id, roleMention.id);
-      if (roleShop === null) {
-        throw new CustomError('такой роли в продаже нет.');
-      }
-
-      if (message.guild.member(message.author.id).roles.has(roleMention.id)) {
-        throw new CustomError('у вас уже есть эта роль!');
-      }
-
-      await economy.pay(message.guild.id, message.author.id, -roleShop.cost);
-      message.member.addRole(roleMention);
-
-      embed.setDescription(
-        `Вы купили роль ${roleMention} за ${roleShop.cost}:cookie:`
-      );
-    } else if (args[0] === 'add' && message.mentions.roles.size > 0) {
-      if (!message.member.hasPermissions(this.managePermisions)) {
-        return;
-      }
-
-      const role = message.mentions.roles.first();
-      let cost = 0;
-      if (args.length > 2) {
-        const userCost = parseInt(args[1], 10);
-        if (isNaN(userCost)) {
-          throw new CustomError('неправильно указана цена!');
+      embed.setImage(message.guild.splashURL);
+      roles.forEach(async (role: any, id: number) => {
+        const roleName = message.guild.roles.get(role.roleId);
+        if (!roleName) {
+          await shop.remove(message.guild.id, role.roleId);
+        } else {
+          embed.addField(`**№${id + 1}: ${role.cost}**:cookie:`, `**${roleName}**`, true);
         }
-        cost = userCost;
+      });
+
+      const embedMessage = await message.channel.send(embed) as Discord.Message;
+      const readyBuy = await menu.waitReaction(embedMessage, [emojiCharacters.words.cookie], message.author.id);
+      if (!readyBuy) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        if (readyBuy === undefined) return;
       }
 
-      await shop.set(message.guild.id, role.id, cost);
+      const processBuy: any = await message.reply('а теперь напиши в чат номер роли которую ты хочешь купить!');
+      const indexBuy = await menu.waitMessage(message.channel, message.author.id);
+      if (!indexBuy) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        if (indexBuy === undefined) throw new CustomError('ты не указал роль для покупки, отмена.');
+      }
+      const index = parseInt(indexBuy, 10);
+      if (isNaN(index)) throw new CustomError('номер указан с ошибкой, попробуй ещё раз.');
+      const idBuy = index - 1;
+      if (idBuy > roles.length || idBuy < 0) throw new CustomError('выход за пределы диапазона.');
+      if (message.guild.member(message.author.id).roles.has(roles[idBuy].roleId)) {
+        throw new CustomError('у тебя уже есть эта роль!');
+      }
+      const roleBuy = message.guild.roles.get(roles[idBuy].roleId) as Discord.Role;
+      await economy.pay(message.guild.id, message.author.id, roles[idBuy].cost);
+      await message.member.addRole(roleBuy);
+      return processBuy.edit(`${message.author}, роль ${roleBuy.name} уже на тебе!`);
+    }
 
+    if (args[0] === 'add') {
+      if (!message.member.hasPermissions(this.permisions[0])) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('нужно иметь право управлять ролями.');
+      }
+      const role = message.mentions.roles.first();
+      if (!role) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('не указана роль для продажи.');
+      }
+      const cost = args.length === 3 ? parseInt(args[2], 10) : 0;
+      if (isNaN(cost) || cost < 0) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('неправильно указана цена.');
+      }
+      const shopList = await shop.getAll(message.guild.id);
+      if (shopList.length > 24) { // Максимум дискорда: 25
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('на витрину больше не влезает :(');
+      }
+      await shop.set(message.guild.id, role.id, cost);
       embed.setDescription(
         `Роль **${role}** выставлена за **${cost}**:cookie:`
       );
-    } else if (args[0] === 'rem' && message.mentions.roles.size > 0) {
-      if (!message.member.hasPermissions(this.managePermisions)) {
-        return;
-      }
-
-      const role = message.mentions.roles.first();
-
-      await shop.remove(message.guild.id, role.id);
-      embed.setDescription(`Роль **${role}** удалена из магазина`);
-    } else {
-      throw new CustomError(
-        `не хватает параметров, пример команды: \`${config.bot.prefix}${this.name}\` или \`${config.bot.prefix}${this.name} buy @Какая-торольизмагазина\``
-      );
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
+      return message.channel.send(embed);
     }
 
-    embed.setFooter(
-      tools.embedFooter(message, this.name),
-      message.author.displayAvatarURL
-    );
-    message.channel.send(embed);
+    if (args[0] === 'rem') {
+      if (!message.member.hasPermissions(this.permisions[0])) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('нужно иметь право управлять ролями.');
+      }
+      const role = message.mentions.roles.first();
+      if (!role) {
+        await cooldowns.reset(message.guild.id, message.author.id, this.name);
+        throw new CustomError('не указана роль для удаления.');
+      }
+      await shop.remove(message.guild.id, role.id);
+      embed.setDescription(
+        `Роль **${role}** удалена из магазина :(`
+      );
+      await cooldowns.reset(message.guild.id, message.author.id, this.name);
+      return message.channel.send(embed);
+    }
   },
 };
