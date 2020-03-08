@@ -12,6 +12,10 @@ export const waitReaction = async (
   reactions: string[],
   selectorId: string
 ) => {
+  if (!embed.guild.me.hasPermission('ADD_REACTIONS')) {
+    throw new CustomError('мне нужно право добавлять реакции!');
+  }
+
   await embed.clearReactions().catch(error => clearFail(error));
 
   for await (const emoji of reactions) {
@@ -44,6 +48,10 @@ export const waitReactionComplete = async (
   reactions: string[],
   selectorId: string
 ) => {
+  if (!embed.guild.me.hasPermission('ADD_REACTIONS')) {
+    throw new CustomError('мне нужно право добавлять реакции!');
+  }
+
   await embed.clearReactions().catch(error => clearFail(error));
 
   for await (const emoji of reactions) {
@@ -86,7 +94,9 @@ export const waitMessage = async (channel: any, selectorId: string) => {
     .then((collected: any) => {
       channel
         .fetchMessage(collected.first())
-        .then((answer: { delete: () => any }) => answer.delete());
+        .then((answer: { delete: () => any }) =>
+          answer.delete().catch(() => undefined)
+        );
       return collected.first().content;
     })
     .catch(() => undefined);

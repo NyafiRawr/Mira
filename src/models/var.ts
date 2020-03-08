@@ -1,14 +1,13 @@
 import { Model, STRING } from 'sequelize';
 import { sequelize } from '../db';
 
-class Vars extends Model {
+class Var extends Model {
   public serverId!: string;
-
   public name!: string;
   public value!: string;
 }
 
-Vars.init(
+Var.init(
   {
     serverId: {
       type: STRING,
@@ -23,11 +22,11 @@ Vars.init(
     },
   },
   {
-    modelName: 'vars',
+    modelName: 'var',
     sequelize,
   }
 );
 
-export default Vars;
+export default Var;
 
-Vars.sync();
+Var.sync();

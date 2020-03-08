@@ -3,7 +3,7 @@ import CustomError from '../../utils/customError';
 import { randomInteger, roundDecimalPlaces } from '../../utils/tools';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
-import * as cooldowns from '../../utils/kv';
+import * as cooldowns from '../../utils/cooldowns';
 
 const effects = [
   'ура! Вы стали на newWeight кг жирней! (totalWeight кг)',

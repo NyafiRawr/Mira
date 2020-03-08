@@ -1,23 +1,23 @@
-import Emoji from '../models/emoji';
+import ReactionRole from '../models/reactionrole';
 import CustomError from '../utils/customError';
 
 export const get = async (
   serverId: string,
   channelId: string,
   messageId: string,
-  emojiId: string
-): Promise<Emoji | null> => {
+  emoji: string
+): Promise<ReactionRole | null> => {
   // findOne меняет кодировку, как следствие сравнение неправильное
-  const allEmojis = await Emoji.findAll({
+  const database = await ReactionRole.findAll({
     where: {
       serverId,
       channelId,
       messageId,
     },
   });
-  for (const emoji of allEmojis) {
-    if (emoji.emojiId === emojiId) {
-      return emoji;
+  for (const rr of database) {
+    if (rr.emoji === emoji) {
+      return rr;
     }
   }
   return null;
@@ -25,20 +25,21 @@ export const get = async (
 
 export const getServer = async (
   serverId: string
-): Promise<Emoji[] | null> => Emoji.findAll({
-  where: {
-    serverId
-  },
-});
+): Promise<ReactionRole[] | null> =>
+  ReactionRole.findAll({
+    where: {
+      serverId,
+    },
+  });
 
 export const set = async (
   serverId: string,
   channelId: string,
   messageId: string,
-  emojiId: string,
+  emoji: string,
   roleId: string
-): Promise<Emoji> => {
-  const role = await get(serverId, channelId, messageId, emojiId);
+): Promise<ReactionRole> => {
+  const role = await get(serverId, channelId, messageId, emoji);
 
   if (role !== null) {
     return role.update({
@@ -46,11 +47,11 @@ export const set = async (
     });
   }
 
-  return Emoji.create({
+  return ReactionRole.create({
     serverId,
     channelId,
     messageId,
-    emojiId,
+    emoji,
     roleId,
   });
 };
@@ -59,15 +60,15 @@ export const remove = async (
   serverId: string,
   channelId: string,
   messageId: string,
-  emojiId: string,
+  emoji: string
 ): Promise<void> => {
-  const role = await get(serverId, channelId, messageId, emojiId);
+  const role = await get(serverId, channelId, messageId, emoji);
 
   if (role !== null) {
     return role.destroy();
   }
 
   throw new CustomError(
-    `выдача S: \`${serverId}\` C: \`${channelId}\` M: \`${messageId}\` E: \`${emojiId}\` не найдена, удаление невозможно.`
+    `выдача S: \`${serverId}\` C: \`${channelId}\` M: \`${messageId}\` E: \`${emoji}\` не найдена, удаление невозможно.`
   );
 };

@@ -1,23 +1,21 @@
 import { GuildMember, MessageReaction } from 'discord.js';
-import * as emotes from '../modules/emojis';
+import * as ReactionRoles from '../modules/reactionroles';
 // Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
-  const emoteName =
+  const emoji =
     reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
 
-  const emoteDB = await emotes.get(
+  const response = await ReactionRoles.get(
     reaction.message.guild.id,
     reaction.message.channel.id,
     reaction.message.id,
-    emoteName
+    emoji
   );
 
-  if (emoteDB === null) {
-    return;
-  }
-
-  const customer = await reaction.message.guild.fetchMember(user.id);
-  if (customer) {
-    customer.removeRole(emoteDB.roleId);
+  if (response !== null) {
+    const member = await reaction.message.guild.fetchMember(user.id);
+    if (member) {
+      member.removeRole(response.roleId);
+    }
   }
 };

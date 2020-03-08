@@ -4,7 +4,7 @@ import * as tools from '../../utils/tools';
 import * as menu from '../../utils/menu';
 import * as players from '../../modules/players';
 import * as emojiCharacters from '../../utils/emojiCharacters';
-import * as cooldowns from '../../utils/kv';
+import * as cooldowns from '../../utils/cooldowns';
 
 const servers = tools.getData('osu!/servers');
 const modes = tools.getData('osu!/modes');
@@ -33,9 +33,9 @@ module.exports = {
         tools.embedFooter(message, this.name),
         message.author.displayAvatarURL
       );
-    let embedMessage = await message.channel.send(message.author, {
+    let embedMessage = (await message.channel.send(message.author, {
       embed,
-    }) as Discord.Message;
+    })) as Discord.Message;
     const change = await menu.waitReaction(
       embedMessage,
       Object.values(emojiCharacters.numbers).slice(1, 4),

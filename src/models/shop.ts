@@ -9,12 +9,8 @@ class Shop extends Model {
 
 Shop.init(
   {
-    serverId: {
-      type: STRING,
-    },
-    roleId: {
-      type: STRING,
-    },
+    serverId: STRING,
+    roleId: STRING,
     cost: {
       type: INTEGER,
       defaultValue: 0,

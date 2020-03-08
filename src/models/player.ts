@@ -3,9 +3,9 @@ import { sequelize } from '../db';
 
 class Player extends Model {
   public userId!: string;
+  public nickname!: string;
   public gameServer!: string;
   public gameServerFavorite!: boolean;
-  public nickname!: string;
   public modeFavorite!: string;
   public modes!: string;
 }
@@ -16,23 +16,24 @@ Player.init(
       type: STRING,
       primaryKey: true,
     },
-    // названия известных проектов с учетом субдоменов имеют < 20 символов
+    // Максимальная длина ника: 15 символов (на официальном сервере)
+    nickname: STRING(15),
+    // Названия известных проектов с учетом субдоменов имеют < 20 символов
     gameServer: {
       type: STRING(20),
       primaryKey: true,
     },
+    // Является ли этот аккаунт основным?
     gameServerFavorite: {
       type: BOOLEAN,
       defaultValue: false,
     },
-    // 15 - максимальная длина ника (на официальном сервере)
-    nickname: STRING(15),
-    // избранный режим (вызываемый по умолчанию), только один
+    // Избранный режим (вызываемый по умолчанию), только один
     modeFavorite: {
       type: ENUM('0', '1', '2', '3'),
       defaultValue: '0',
     },
-    // играемые режимы (включая избранный)
+    // Играемые режимы (включая избранный)
     modes: {
       type: ENUM(
         '0',
