@@ -17,7 +17,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   cooldown: 30,
   cooldownMessage: [
-    'ты наверное самая быстрая рука на диком западе? Я не успеваю выставить товары!',
+    'ты наверное самая быстрая рука на диком западе? Я не успеваю убрать и снова выставить товары!',
   ],
   permisions: ['MANAGE_ROLES'],
   async execute(message: Discord.Message, args: string[]) {
@@ -58,9 +58,7 @@ module.exports = {
         }
       });
 
-      const embedMessage = (await message.channel.send(
-        embed
-      )) as Discord.Message;
+      const embedMessage = (await message.channel.send(embed)) as Discord.Message;
       const readyBuy = await menu.waitReaction(
         embedMessage,
         [emojiCharacters.words.cookie],
@@ -89,14 +87,13 @@ module.exports = {
       const idBuy = index - 1;
       if (idBuy > roles.length || idBuy < 0)
         throw new CustomError('выход за пределы диапазона.');
-      if (
-        message.guild.member(message.author.id).roles.has(roles[idBuy].roleId)
-      ) {
+      if (message.guild.member(message.author.id).roles.has(roles[idBuy].roleId)) {
         throw new CustomError('у тебя уже есть эта роль!');
       }
-      const roleBuy = message.guild.roles.get(
-        roles[idBuy].roleId
-      ) as Discord.Role;
+      const roleBuy = message.guild.roles.get(roles[idBuy].roleId) as Discord.Role;
+      if (roleBuy.position >= message.guild.me.highestRole.position) {
+        throw new CustomError('не могу выдать роль, которая выше или равна моей наивысшей!');
+      }
       await economy.pay(message.guild.id, message.author.id, roles[idBuy].cost);
       await message.member.addRole(roleBuy);
       return processBuy.edit(

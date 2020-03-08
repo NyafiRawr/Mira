@@ -67,7 +67,7 @@ module.exports = {
       message.reply({
         embed: {
           title: this.description,
-          description: `Если укажете \`${this.aliases[0]} 1 3 4\` - будут удалены выдачи под нормерами: 1,3,4`,
+          description: `Если укажете \`${this.aliases[0]} 1 3 4\` - будут удалены выдачи под номерами: 1,3,4`,
           color: oneColor,
         },
       });
