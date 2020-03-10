@@ -1,43 +1,50 @@
 import * as Discord from 'discord.js';
-import config from '../../config';
 import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
-import * as vars from '../../modules/vars';
+import * as voices from '../../modules/voices';
+import * as tools from '../../utils/tools';
 
-import { log } from '../../logger';
-// TODO: навести порядок
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Свой временный голосовой канал',
   aliases: ['v'],
-  usage: '[create/invite] <@упоминание>',
+  usage: '[create <название> / invite <@упоминание, @...>] ',
   guild: true,
   hide: false,
   cooldown: 1,
   cooldownMessage: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async getCategoryId(serverId: string) {
-    const value = vars.get<string | null>(
-      serverId,
-      'TEMP_CHANNELS_CATEGORY_ID',
-      null
-    );
-    if (value === null)
-      throw new CustomError(
-        'Категория создания каналов не указана, попросите админов сделать это!'
-      );
-    return value;
-  },
-  async getPrice(serverId: string) {
-    return vars.get(serverId, 'TEMP_CHANNELS_PRICE', 400);
-  },
-
-  /**
-   * Выполняет комманду и результат возвращяет пользователю
-   * @param {Discord.Message} message сообщение
-   * @param {string[]} args параметры запроса
-   */
   async execute(message: Discord.Message, args: string[]) {
+    const embed = new Discord.RichEmbed()
+      .setAuthor(this.description, message.guild.iconURL)
+      .setColor(tools.randomHexColor())
+      .setFooter(
+        tools.embedFooter(message, this.name),
+        message.author.displayAvatarURL
+      );
+
+    const settings = voices.get(message.guild.id);
+    const price = 400; // сообщить если стандартная?
+
+    if (args.length === 0) {
+      // Создан ли уже канал?
+      embed
+        .setTitle('Доступные команды')
+        .setDescription(
+          `**${this.aliases[0]} create** [своё название голосового чата]`
+          + `**${this.aliases[0]} invite** <@>, @...`
+          + `Цена: ${price}:cookie:`
+        );
+      return message.channel.send(embed);
+    }
+
+
+
+    if (settings === null)
+      throw new CustomError(
+        `категория для размещения не установлена, попросите админов сделать это командой \`${this.aliases} cat <id-категории>\`!`
+      );
+
     const tempVoiceName = `${message.member.displayName}`;
 
     const errorNotEnoughtArgs = `не хватает параметров, пример команды: \`${config.bot.prefix}${this.name} invite ${message.client.user}\``;
@@ -142,10 +149,7 @@ module.exports = {
         );
       }, 1e4);
     } else {
-      return message.reply(`__доступные команды:__
-      **${config.bot.prefix}${this.aliases[0]} create** [название голосового чата]
-      **${config.bot.prefix}${this.aliases[0]} invite** <@>
-      *Цена: 400:cookie:*`);
+
     }
   },
 };

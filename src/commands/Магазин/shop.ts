@@ -22,7 +22,7 @@ module.exports = {
   permisions: ['MANAGE_ROLES'],
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed()
-      .setAuthor('Магазин ролей', message.guild.iconURL)
+      .setAuthor(this.description, message.guild.iconURL)
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
