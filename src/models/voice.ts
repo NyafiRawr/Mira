@@ -1,10 +1,10 @@
-import { Model, STRING } from 'sequelize';
+import { Model, STRING, NUMBER } from 'sequelize';
 import { sequelize } from '../db';
 
 class Voice extends Model {
   public serverId!: string;
   public categoryId!: string;
-  public price!: string;
+  public price!: number;
 }
 
 Voice.init(
@@ -14,7 +14,7 @@ Voice.init(
       primaryKey: true,
     },
     categoryId: STRING,
-    price: STRING,
+    price: NUMBER,
   },
   {
     modelName: 'voice',
