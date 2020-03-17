@@ -3,10 +3,8 @@ import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
 import * as voices from '../../modules/voices';
 import * as tools from '../../utils/tools';
-import { MessageChannel } from 'worker_threads';
-import { cursorTo } from 'readline';
 
-const voiceIds = new Map();
+const voiceIds = new Map(); // guild + user = voice
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -29,7 +27,7 @@ module.exports = {
       );
 
     const settings = await voices.get(message.guild.id);
-    const price = settings?.price || 5;
+    const price = settings?.price || 0;
 
     if (args.length === 0) {
       embed
@@ -43,11 +41,11 @@ module.exports = {
     }
 
     let tempVoice;
-    const idVoice = voiceIds.get(message.author.id);
+    const idVoice = voiceIds.get(`${message.guild.id}${message.author.id}`);
     if (!!idVoice) {
       tempVoice = message.guild.channels.get(idVoice);
       if (!tempVoice) {
-        voiceIds.delete(message.author.id);
+        voiceIds.delete(`${message.guild.id}${message.author.id}`);
         throw new CustomError('ошибка, у тебя должен быть голосовой канал, но он не найден, запись о существовании удалена, попробуй снова!');
       }
     }
@@ -59,7 +57,7 @@ module.exports = {
         );
       }
 
-      if (!tempVoice) {
+      if (!!tempVoice) {
         throw new CustomError('у тебя уже есть канал!');
       }
 
@@ -96,13 +94,13 @@ module.exports = {
         maxAge: 10 * 60,
         temporary: true,
       }, `Приглашение в **${newTempVoice}**`);
-      voiceIds.set(message.author.id, newTempVoice.id);
+      voiceIds.set(`${message.guild.id}${message.author.id}`, newTempVoice.id);
       await message.reply(
         `канал __**${newTempVoice}**__ создан! ${invite.url}`
       );
 
       const deleteChannel = () => {
-        voiceIds.delete(message.author.id);
+        voiceIds.delete(`${message.guild.id}${message.author.id}`);
         newTempVoice
           .delete()
           .then(() => message.reply(`пустующий канал __${newTempVoice}__ удалён!`))
@@ -136,17 +134,13 @@ module.exports = {
           SPEAK: true,
           USE_VAD: true,
         });
-
-        const invite = await tempVoice.createInvite(
-          {
-            maxAge: 10 * 60 * 1000,
-          },
-          `Приглашение в ${tempVoice.toString()}`
-        );
-        await message.reply(
-          `пользователь ${target.displayName} добавлен в ${tempVoice.name}. ${invite.url}`
-        );
       }
+
+      const invite = await tempVoice.createInvite({
+        maxAge: 10 * 60
+      });
+
+      await message.reply(`${message.mentions.members.array().join(', ')} добавлен(ы) в ${tempVoice}. Вход: ${invite.url}`);
 
       return;
     }
@@ -167,8 +161,12 @@ module.exports = {
           ),
         });
 
-        await message.reply(`пользователь ${target.displayName} исключен из ${tempVoice.name}`);
+        if (target.voiceChannel === tempVoice) {
+          target.setVoiceChannel(null);
+        }
       }
+
+      await message.reply(`${message.mentions.members.array().join(', ')} исключен(ы) из ${tempVoice}`);
 
       return;
     }
@@ -189,7 +187,7 @@ module.exports = {
       }
       await voices.set(message.guild.id, { categoryId: newCategoryId });
 
-      return message.reply(`установлення категория размещения каналов: ${newCategory}`);
+      return message.reply(`установленная категория размещения каналов: ${newCategory}`);
     }
 
     if (args[0] === 'price') {
@@ -207,7 +205,7 @@ module.exports = {
       }
       await voices.set(message.guild.id, { price: newPrice });
 
-      return message.reply(`новая цена за канал: ${newPrice}`);
+      return message.reply(`новая цена за канал: ${newPrice}:cookie:`);
     }
   },
 };
