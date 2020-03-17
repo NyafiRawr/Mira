@@ -4,9 +4,6 @@ import * as economy from '../../modules/economy';
 import * as voices from '../../modules/voices';
 import * as tools from '../../utils/tools';
 
-const voiceIds = new Map(); // guild + user = voice
-// TODO: перенести в kv и отслеживать мертвяков
-
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Свой временный голосовой канал',
@@ -27,7 +24,7 @@ module.exports = {
         message.author.displayAvatarURL
       );
 
-    const settings = await voices.get(message.guild.id);
+    const settings = await voices.getSettings(message.guild.id);
     const price = settings?.price || 0;
 
     if (args.length === 0) {
@@ -42,11 +39,11 @@ module.exports = {
     }
 
     let tempVoice;
-    const idVoice = voiceIds.get(`${message.guild.id}${message.author.id}`);
+    const idVoice = await voices.getVoiceId(message.guild.id, message.author.id);
     if (!!idVoice) {
       tempVoice = message.guild.channels.get(idVoice);
       if (!tempVoice) {
-        voiceIds.delete(`${message.guild.id}${message.author.id}`);
+        await voices.deleteVoiceId(message.guild.id, message.author.id);
         throw new CustomError('ошибка, у тебя должен быть голосовой канал, но он не найден, запись о существовании удалена, попробуй снова!');
       }
     }
@@ -95,13 +92,13 @@ module.exports = {
         maxAge: 10 * 60,
         temporary: true,
       }, `Приглашение в **${newTempVoice}**`);
-      voiceIds.set(`${message.guild.id}${message.author.id}`, newTempVoice.id);
+      await voices.setVoiceId(message.guild.id, message.author.id, newTempVoice.id);
       await message.reply(
         `канал __**${newTempVoice}**__ создан! ${invite.url}`
       );
 
       const deleteChannel = () => {
-        voiceIds.delete(`${message.guild.id}${message.author.id}`);
+        voices.deleteVoiceId(message.guild.id, message.author.id);
         newTempVoice
           .delete()
           .then(() => message.reply(`пустующий канал __${newTempVoice}__ удалён!`))
@@ -188,7 +185,7 @@ module.exports = {
       if (!newCategory) {
         throw new CustomError('неправильный идентификатор, категория не найден!');
       }
-      await voices.set(message.guild.id, { categoryId: newCategoryId });
+      await voices.setSettings(message.guild.id, { categoryId: newCategoryId });
 
       return message.reply(`установленная категория размещения каналов: ${newCategory}`);
     }
@@ -206,7 +203,7 @@ module.exports = {
       if (isNaN(newPrice) || newPrice < 0) {
         throw new CustomError('неправильно указана цена.');
       }
-      await voices.set(message.guild.id, { price: newPrice });
+      await voices.setSettings(message.guild.id, { price: newPrice });
 
       return message.reply(`новая цена за канал: ${newPrice}:cookie:`);
     }
