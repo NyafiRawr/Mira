@@ -4,6 +4,7 @@ import * as economy from '../../modules/economy';
 import * as voices from '../../modules/voices';
 import * as tools from '../../utils/tools';
 import { MessageChannel } from 'worker_threads';
+import { cursorTo } from 'readline';
 
 const voiceIds = new Map();
 
@@ -16,6 +17,7 @@ module.exports = {
   hide: false,
   cooldown: 1,
   cooldownMessage: undefined,
+  permisions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed()
@@ -42,11 +44,11 @@ module.exports = {
 
     let tempVoice;
     const idVoice = voiceIds.get(message.author.id);
-    if (!idVoice) {
+    if (!!idVoice) {
       tempVoice = message.guild.channels.get(idVoice);
       if (!tempVoice) {
         voiceIds.delete(message.author.id);
-        throw new CustomError('ошибка, у тебя должен быть канал, но он не найден, запись о существовании удалена, попробуй снова!');
+        throw new CustomError('ошибка, у тебя должен быть голосовой канал, но он не найден, запись о существовании удалена, попробуй снова!');
       }
     }
 
@@ -120,7 +122,7 @@ module.exports = {
 
     if (args[0] === 'invite') {
       if (!tempVoice) {
-        throw new CustomError('у тебя нет канала, чтобы приглашать кого-либо.');
+        throw new CustomError('у тебя нет канала, чтобы приглашать кого-либо в него.');
       }
 
       if (args.length <= 1) {
@@ -172,13 +174,40 @@ module.exports = {
     }
 
     if (args[0] === 'cat') {
-      // perms
-      return;
+      if (!message.member.hasPermissions(this.permisions[0])) {
+        throw new CustomError('нужно иметь право администрировать сервер, чтобы менять категорию создания каналов.');
+      }
+
+      if (args.length <= 1) {
+        throw new CustomError('необходимо указать ID категория для размещения!');
+      }
+
+      const newCategoryId = args[1];
+      const newCategory = message.guild.channels.get(newCategoryId);
+      if (!newCategory) {
+        throw new CustomError('неправильный идентификатор, категория не найден!');
+      }
+      await voices.set(message.guild.id, { categoryId: newCategoryId });
+
+      return message.reply(`установлення категория размещения каналов: ${newCategory}`);
     }
 
     if (args[0] === 'price') {
-      // perms
-      return;
+      if (!message.member.hasPermissions(this.permisions[0])) {
+        throw new CustomError('нужно иметь право администрировать сервер, чтобы менять цену канала.');
+      }
+
+      if (args.length <= 1) {
+        throw new CustomError('необходимо указать новую цену канала!');
+      }
+
+      const newPrice = parseInt(args[1], 10);
+      if (isNaN(newPrice) || newPrice < 0) {
+        throw new CustomError('неправильно указана цена.');
+      }
+      await voices.set(message.guild.id, { price: newPrice });
+
+      return message.reply(`новая цена за канал: ${newPrice}`);
     }
   },
 };
