@@ -1,4 +1,4 @@
-import { Model, STRING, NUMBER } from 'sequelize';
+import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize } from '../db';
 
 class Voice extends Model {
@@ -14,7 +14,7 @@ Voice.init(
       primaryKey: true,
     },
     categoryId: STRING,
-    price: NUMBER,
+    price: INTEGER,
   },
   {
     modelName: 'voice',
