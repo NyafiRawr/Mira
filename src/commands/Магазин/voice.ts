@@ -5,6 +5,7 @@ import * as voices from '../../modules/voices';
 import * as tools from '../../utils/tools';
 
 const voiceIds = new Map(); // guild + user = voice
+// TODO: перенести в kv и отслеживать мертвяков
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -140,7 +141,9 @@ module.exports = {
         maxAge: 10 * 60
       });
 
-      await message.reply(`${message.mentions.members.array().join(', ')} добавлен(ы) в ${tempVoice}. Вход: ${invite.url}`);
+      await message.reply(
+        `**${message.mentions.members.array().join(', ')}** добавлен(ы) в **${tempVoice}**. **Вход: ${invite.url}**`
+      );
 
       return;
     }
@@ -166,7 +169,7 @@ module.exports = {
         }
       }
 
-      await message.reply(`${message.mentions.members.array().join(', ')} исключен(ы) из ${tempVoice}`);
+      await message.reply(`**${message.mentions.members.array().join(', ')}** исключен(ы) из **${tempVoice}**`);
 
       return;
     }
