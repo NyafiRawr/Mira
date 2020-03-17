@@ -13,10 +13,13 @@ module.exports = {
   permissions: ['MANAGE_MESSAGES', 'SEND_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
-    // message.channel.createWebhook("Example Webhook", "https://i.imgur.com/p2qNFag.png")
-    //  .then(wb => webhooks.set(message.guild.id, wb.id, wb.token));
-    // webhooks.get(vars.get)
-    // const mentionHook = new Discord.WebhookClient("Webhook ID", "Webhook Token");
+    // TODO: webhooks
+    /*
+    message.channel.createWebhook("Example Webhook", "https://i.imgur.com/p2qNFag.png")
+      .then(wb => webhooks.set(message.guild.id, wb.id, wb.token));
+    webhooks.get(vars.get)
+    const mentionHook = new Discord.WebhookClient("Webhook ID", "Webhook Token");
+   */
     let edit = false;
     let targetChannel: Discord.GuildChannel;
     let targetMessageId = '';
@@ -45,11 +48,11 @@ module.exports = {
         .catch((error: any) => {
           message.reply(
             `сообщение для редакта не найдено!` +
-              `\nКанал: ${targetChannel}\nID: ${targetMessageId}` +
-              `\nНовый текст: \`\`\`fix\n${targetText.substr(
-                0,
-                1424
-              )}\`\`\` ${error}`
+            `\nКанал: ${targetChannel}\nID: ${targetMessageId}` +
+            `\nНовый текст: \`\`\`fix\n${targetText.substr(
+              0,
+              1424
+            )}\`\`\` ${error}`
           );
         });
     } else if (message.mentions.channels.size > 0) {
