@@ -8,14 +8,14 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Список команд',
   aliases: ['commands'],
-  usage: '[имя команды]',
+  usage: '[hide или имя команды]',
   guild: false,
-  hide: true,
+  hide: false,
   cooldown: 3,
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[] /* , CooldownReset */) {
+  execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed();
 
     if (!args.length) {
@@ -24,7 +24,6 @@ module.exports = {
       );
       embed.setAuthor('Список команд');
       const groups = [...new Set(commands.map(command => command.group))];
-      // eslint-disable-next-line no-restricted-syntax
       for (const g of groups) {
         const catList = [
           ...new Set(
@@ -32,6 +31,40 @@ module.exports = {
               .filter(
                 cmd =>
                   cmd.hide !== true &&
+                  cmd.group === g &&
+                  cmd.permissions === undefined
+              )
+              .map(
+                command =>
+                  `${config.bot.prefix}**${command.name}** ${command.usage ||
+                    ''} - ${command.description}`
+              )
+          ),
+        ]
+          .join('\n')
+          .substring(0, 1024);
+        if (catList) {
+          embed.addField(g, catList, false);
+        }
+      }
+      embed.addField(
+        'Подробная информация о команде',
+        `${config.bot.prefix}**${this.name}** [имя команды]`,
+        false
+      );
+    } else if (args[0] === 'hide') {
+      embed.setDescription(
+        'Параметры обёрнутые в <> - обязательны, а в [] - нет'
+      );
+      embed.setAuthor('Список скрытых команд');
+      const groups = [...new Set(commands.map(command => command.group))];
+      for (const g of groups) {
+        const catList = [
+          ...new Set(
+            commands
+              .filter(
+                cmd =>
+                  cmd.hide === true &&
                   cmd.group === g &&
                   cmd.permissions === undefined
               )
