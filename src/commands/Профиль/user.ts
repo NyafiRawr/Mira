@@ -7,7 +7,7 @@ import moment = require('moment');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Информация о участнике',
-  aliases: ['userinfo', 'member'],
+  aliases: ['userinfo', 'member', 'stats'],
   usage: '[@упоминание]',
   guild: true,
   hide: false,
@@ -50,6 +50,7 @@ module.exports = {
     let firstEntry;
     let birthday;
     let weight;
+    let reputation;
 
     if (member) {
       lastEntry = member.joinedAt;
@@ -61,6 +62,7 @@ module.exports = {
       firstEntry = dbUser.firstEntry;
       birthday = dbUser.birthday;
       weight = dbUser.weight;
+      reputation = dbUser.reputation;
     }
 
     if (firstEntry) {
@@ -85,6 +87,10 @@ module.exports = {
         moment(birthday).format('DD.MM.YY'),
         true
       );
+    }
+
+    if (reputation) {
+      embed.addField('Репутация', `${reputation} F`, true);
     }
 
     if (weight) {

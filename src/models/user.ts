@@ -8,6 +8,7 @@ class User extends Model {
   public birthday!: Date | null;
   public balance!: number;
   public weight!: number;
+  public reputation!: number;
 }
 
 User.init(
@@ -36,6 +37,10 @@ User.init(
       type: DOUBLE,
       defaultValue: 0.0,
     },
+    reputation: {
+      type: INTEGER,
+      defaultValue: 0,
+    }
   },
   {
     modelName: 'user',

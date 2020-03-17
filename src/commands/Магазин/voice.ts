@@ -121,7 +121,7 @@ module.exports = {
         throw new CustomError('у тебя нет канала, чтобы приглашать кого-либо в него.');
       }
 
-      if (args.length <= 1) {
+      if (message.mentions.members.size < 1) {
         throw new CustomError('необходимо указать кому хочешь дать доступ в канал.');
       }
 
@@ -150,7 +150,7 @@ module.exports = {
         throw new CustomError('у тебя нет канала, чтобы исключать кого-нибудь из него.');
       }
 
-      if (args.length <= 1) {
+      if (message.mentions.members.size < 1) {
         throw new CustomError('необходимо указать кому нужно закрыть доступ в канал!');
       }
 
