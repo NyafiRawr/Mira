@@ -69,7 +69,7 @@ module.exports = {
         price
       );
 
-      const voiceName = args[1] || message.member.displayName;
+      const voiceName = args.slice(1).join(' ') || message.member.displayName;
       const newTempVoice = (await message.guild.createChannel(voiceName, {
         type: 'voice',
         permissionOverwrites: [
