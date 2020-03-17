@@ -29,10 +29,14 @@ module.exports = {
 
     if (args.length === 0) {
       embed
-        .setTitle('Доступные команды')
+        .setTitle('Все команды')
         .setDescription(
-          `**${this.aliases[0]} create** [своё название голосового чата]`
+          `**Управление**`
+          + `\n**${this.aliases[0]} create** [своё название голосового чата]`
           + `\n**${this.aliases[0]} invite/kick** <@>, @...`
+          + `\n\n**Настройка**`
+          + `\n**${this.aliases[0]} cat** <id> - установить категорию размещения`
+          + `\n**${this.aliases[0]} price** <цена> - изменить цену за канал`
           + `\n\n**Цена:** ${price}:cookie:`
         );
       return message.channel.send(embed);
