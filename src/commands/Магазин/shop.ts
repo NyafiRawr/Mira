@@ -3,7 +3,6 @@ import CustomError from '../../utils/customError';
 import * as shop from '../../modules/shop';
 import * as economy from '../../modules/economy';
 import * as tools from '../../utils/tools';
-import * as cooldowns from '../../utils/cooldowns';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -13,7 +12,7 @@ module.exports = {
   guild: true,
   hide: false,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  cooldown: 30,
+  cooldown: 1,
   cooldownMessage: [
     'ты наверное самая быстрая рука на диком западе? Я не успеваю убрать и снова выставить товары! (leftTime)',
   ],
@@ -21,7 +20,7 @@ module.exports = {
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed()
       .setAuthor(this.description, message.guild.splashURL || message.guild.iconURL)
-      .setTitle(`Купить/продать: ${this.name} <номер>. Можно иметь только одну роль за раз!`)
+      .setDescription(`Купить/продать: ${this.name} <номер>. Можно иметь только одну роль!`)
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
@@ -31,13 +30,11 @@ module.exports = {
     // Добавление / удаление
     if (args[0] === 'add' || args[0] === 'rem') {
       if (!message.member.hasPermissions(this.permisions[0])) {
-        await cooldowns.reset(message.guild.id, message.author.id, this.name);
         throw new CustomError('нужно иметь право управлять ролями.');
       }
 
       const role = message.mentions.roles.first();
       if (!role) {
-        await cooldowns.reset(message.guild.id, message.author.id, this.name);
         throw new CustomError('обязательно нужно указать роль.');
       }
 
@@ -46,13 +43,11 @@ module.exports = {
         // Цена
         const cost = args.length === 3 ? parseInt(args[2], 10) : 0;
         if (isNaN(cost) || cost < 0) {
-          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           throw new CustomError('неправильно указана цена.');
         }
         // Вместимость витрины
         const shopList = await shop.getAll(message.guild.id);
         if (shopList.length >= 25) { // Максимум дискорда: 25
-          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           throw new CustomError('на витрину больше не влезает :(');
         }
         // Добавление и отчёт
@@ -60,7 +55,6 @@ module.exports = {
         embed.setDescription(
           `Роль **${role}** выставлена за **${cost}**:cookie:`
         );
-        await cooldowns.reset(message.guild.id, message.author.id, this.name);
         return message.channel.send(embed);
       }
 
@@ -68,14 +62,12 @@ module.exports = {
       if (args[0] === 'rem') {
         await shop.remove(message.guild.id, role.id);
         embed.setDescription(`Роль **${role}** удалена из магазина (если она там была)`);
-        await cooldowns.reset(message.guild.id, message.author.id, this.name);
         return message.channel.send(embed);
       }
     } else { // Если не удаление и не добавление
       const shopRoles = await shop.getAll(message.guild.id);
 
       if (shopRoles.length < 1) {
-        await cooldowns.reset(message.guild.id, message.author.id, this.name);
         throw new CustomError('в магазине ничего нет!');
       }
 
@@ -100,7 +92,6 @@ module.exports = {
         const num = parseInt(args[0], 10);
 
         if (isNaN(num)) {
-          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           throw new CustomError('номер указан с ошибкой, попробуй ещё раз.');
         }
 
@@ -113,7 +104,6 @@ module.exports = {
 
         if (roleAct.position >= message.guild.me.highestRole.position) {
           await shop.remove(message.guild.id, shopRoles[index].roleId);
-          await cooldowns.reset(message.guild.id, message.author.id, this.name);
           throw new CustomError(
             'не могу выдать/снять роль, которая выше или равна моей наивысшей, роль удалена из магазина!'
           );
@@ -125,10 +115,9 @@ module.exports = {
           message.reply('так как у тебя уже есть эта роль, то она была продана!');
         } else {
           await economy.pay(message.guild.id, message.author.id, shopRoles[index].cost);
-          await message.member.addRole(roleAct);
 
           // Можно иметь только одну роль из списка
-          shopRoles.forEach(async (shopRole: any, i: number) => {
+          shopRoles.forEach(async (shopRole: any) => {
             const roleName = message.guild.roles.get(shopRole.roleId);
             if (!roleName) {
               await shop.remove(message.guild.id, shopRole.roleId);
@@ -139,10 +128,10 @@ module.exports = {
             }
           });
 
-          message.reply(`${message.author}, роль **${roleAct.name}** на тебе!`);
-        }
+          await message.member.addRole(roleAct);
 
-        return cooldowns.reset(message.guild.id, message.author.id, this.name);
+          message.reply(`роль **${roleAct.name}** на тебе!`);
+        }
       }
     }
   },
