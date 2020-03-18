@@ -17,7 +17,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   cooldown: 30,
   cooldownMessage: [
-    'ты наверное самая быстрая рука на диком западе? Я не успеваю убрать и снова выставить товары!',
+    'ты наверное самая быстрая рука на диком западе? Я не успеваю убрать и снова выставить товары! (leftTime)',
   ],
   permisions: ['MANAGE_ROLES'],
   async execute(message: Discord.Message, args: string[]) {
@@ -144,5 +144,7 @@ module.exports = {
       await cooldowns.reset(message.guild.id, message.author.id, this.name);
       return message.channel.send(embed);
     }
+
+    throw new CustomError('ошибка в параметрах!');
   },
 };
