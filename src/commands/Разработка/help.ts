@@ -10,7 +10,7 @@ module.exports = {
   aliases: ['commands'],
   usage: '[hide или имя команды]',
   guild: false,
-  hide: false,
+  hide: true,
   cooldown: 3,
   cooldownMessage: undefined,
   permissions: undefined,
@@ -31,8 +31,7 @@ module.exports = {
               .filter(
                 cmd =>
                   cmd.hide !== true &&
-                  cmd.group === g &&
-                  cmd.permissions === undefined
+                  cmd.group === g
               )
               .map(
                 command =>
@@ -52,6 +51,11 @@ module.exports = {
         `${config.bot.prefix}**${this.name}** [имя команды]`,
         false
       );
+      embed.addField(
+        'Скрытые команды',
+        `${config.bot.prefix}**${this.name}** hide`,
+        false
+      );
     } else if (args[0] === 'hide') {
       embed.setDescription(
         'Параметры обёрнутые в <> - обязательны, а в [] - нет'
@@ -65,8 +69,7 @@ module.exports = {
               .filter(
                 cmd =>
                   cmd.hide === true &&
-                  cmd.group === g &&
-                  cmd.permissions === undefined
+                  cmd.group === g
               )
               .map(
                 command =>

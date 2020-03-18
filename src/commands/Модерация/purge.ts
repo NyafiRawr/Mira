@@ -7,7 +7,7 @@ module.exports = {
   aliases: ['remove', 'clear', 'prune', 'clean', 'delete'],
   usage: '[@писатель] <кол-во>',
   guild: true,
-  hide: false,
+  hide: true,
   cooldown: 1.5,
   cooldownMessage: undefined,
   permissions: ['MANAGE_MESSAGES'],
