@@ -9,6 +9,7 @@ class User extends Model {
   public balance!: number;
   public weight!: number;
   public reputation!: number;
+  public voiceTime!: number;
 }
 
 User.init(
@@ -38,6 +39,10 @@ User.init(
       defaultValue: 0.0,
     },
     reputation: {
+      type: INTEGER,
+      defaultValue: 0,
+    },
+    voiceTime: {
       type: INTEGER,
       defaultValue: 0,
     }

@@ -15,6 +15,7 @@ client
   .on('guildMemberAdd', handler.onGuildMemberAdd)
   .on('messageReactionAdd', handler.onMessageReactionAdd)
   .on('messageReactionRemove', handler.onMessageReactionRemove)
+  .on('voiceStateUpdate', handler.onVoiceStateUpdate)
   .on('message', handler.onMessage)
   .on('raw', handler.onRaw);
 

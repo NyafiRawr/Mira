@@ -143,7 +143,7 @@ module.exports = {
       });
 
       await message.reply(
-        `**${message.mentions.members.array().join(', ')}** добавлен(ы) в **${tempVoice}**. **Вход: ${invite.url}**`
+        `**${message.mentions.members.array().join(', ')}** теперь в **${tempVoice}**. **Вход: <${invite.url}>**`
       );
 
       return;
@@ -170,7 +170,7 @@ module.exports = {
         }
       }
 
-      await message.reply(`**${message.mentions.members.array().join(', ')}** исключен(ы) из **${tempVoice}**`);
+      await message.reply(`**${message.mentions.members.array().join(', ')}** больше нет в **${tempVoice}**`);
 
       return;
     }

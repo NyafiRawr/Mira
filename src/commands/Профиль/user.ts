@@ -51,6 +51,7 @@ module.exports = {
     let birthday;
     let weight;
     let reputation;
+    let voiceTime;
 
     if (member) {
       lastEntry = member.joinedAt;
@@ -63,6 +64,7 @@ module.exports = {
       birthday = dbUser.birthday;
       weight = dbUser.weight;
       reputation = dbUser.reputation;
+      voiceTime = dbUser.voiceTime;
     }
 
     if (firstEntry) {
@@ -95,6 +97,10 @@ module.exports = {
 
     if (weight) {
       embed.addField('Вес', `${weight} кг`, true);
+    }
+
+    if (voiceTime) {
+      embed.addField('Время в голосе', `${tools.convertSecondsToTime(voiceTime)}`, true);
     }
 
     embed.setColor(tools.randomHexColor());
