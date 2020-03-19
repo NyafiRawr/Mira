@@ -32,7 +32,9 @@ module.exports = {
       if (!message.member.hasPermissions(this.permisions[0])) {
         throw new CustomError('нужно иметь право управлять ролями.');
       }
-
+      if (!message.guild.me.hasPermissions(this.permisions[0])) {
+        throw new CustomError('у меня нет права управлять ролями.');
+      }
       const role = message.mentions.roles.first();
       if (!role) {
         throw new CustomError('обязательно нужно указать роль.');
