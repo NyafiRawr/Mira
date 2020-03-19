@@ -37,7 +37,8 @@ module.exports = {
           const parsed = parseInt(num, 10);
           if (isNaN(parsed)) throw new CustomError('необходимо указать номер!');
           const n = parsed - 1;
-          if (n < 0 || n > rrOnServer.length) throw new CustomError('выход за пределы списка!');
+          if (n < 0 || n > rrOnServer.length)
+            throw new CustomError('выход за пределы списка!');
           await ReactionRoles.remove(
             rrOnServer[n].serverId,
             rrOnServer[n].channelId,
@@ -48,11 +49,16 @@ module.exports = {
             embed: {
               title: `${this.description} - удалено!`,
               description:
-                `${n + 1}. <#${rrOnServer[n].channelId}> [№${rrOnServer[n].messageId}]`
-                + `(https://discordapp.com/channels/${rrOnServer[n].serverId}/${rrOnServer[n].channelId}`
-                + `/${rrOnServer[n].messageId}):\n` +
-                `<@&${rrOnServer[n].roleId}> - ${isNaN(parseInt(rrOnServer[n].emoji, 10))
-                  ? rrOnServer[n].emoji : message.guild.roles.get(rrOnServer[n].emoji)?.name}`,
+                `${n + 1}. <#${rrOnServer[n].channelId}> [№${
+                  rrOnServer[n].messageId
+                }]` +
+                `(https://discordapp.com/channels/${rrOnServer[n].serverId}/${rrOnServer[n].channelId}` +
+                `/${rrOnServer[n].messageId}):\n` +
+                `<@&${rrOnServer[n].roleId}> - ${
+                  isNaN(parseInt(rrOnServer[n].emoji, 10))
+                    ? rrOnServer[n].emoji
+                    : message.guild.roles.get(rrOnServer[n].emoji)?.name
+                }`,
               color: oneColor,
             },
           });
@@ -73,14 +79,14 @@ module.exports = {
           embed: {
             description: (
               `${i + 1}. <#${rrOnServer[i].channelId}> [№${
-              rrOnServer[i].messageId
+                rrOnServer[i].messageId
               }](https://discordapp.com/channels/${rrOnServer[i].serverId}/${
-              rrOnServer[i].channelId
+                rrOnServer[i].channelId
               }/${rrOnServer[i].messageId}):\n` +
               `<@&${rrOnServer[i].roleId}> - ${
-              isNaN(parseInt(rrOnServer[i].emoji, 10))
-                ? rrOnServer[i].emoji
-                : message.guild.roles.get(rrOnServer[i].emoji)?.name
+                isNaN(parseInt(rrOnServer[i].emoji, 10))
+                  ? rrOnServer[i].emoji
+                  : message.guild.roles.get(rrOnServer[i].emoji)?.name
               }`
             ).slice(0, 1300),
             color: oneColor,
@@ -108,7 +114,9 @@ module.exports = {
 
     const messageId = args[1]; // ID сообщения для ловли
 
-    const messageFetch = await channel.fetchMessage(messageId).catch(() => null);
+    const messageFetch = await channel
+      .fetchMessage(messageId)
+      .catch(() => null);
     if (!messageFetch) {
       throw new CustomError(
         `сообщение \`${messageId}\` не найдено в канале ${channel}!`
@@ -131,7 +139,9 @@ module.exports = {
       }
 
       await messageFetch!.react(reaction).catch(() => {
-        throw new CustomError('мне нужно право ставить реакции в указанном канале!');
+        throw new CustomError(
+          'мне нужно право ставить реакции в указанном канале!'
+        );
       });
 
       await ReactionRoles.set(
@@ -146,8 +156,9 @@ module.exports = {
     message.reply({
       embed: {
         title: this.description,
-        description: `У сообщения [№${messageId}](${messageFetch.url}):\n`
-          + compliance.join('\n').slice(0, 1300),
+        description:
+          `У сообщения [№${messageId}](${messageFetch.url}):\n` +
+          compliance.join('\n').slice(0, 1300),
         color: parseInt(randomHexColor().slice(1), 10),
       },
     });

@@ -22,10 +22,20 @@ module.exports = {
       throw new CustomError('самому себе нельзя нажать F ;(');
     }
 
-    const dbUser = await users.get(message.guild.id, message.mentions.members.first().id);
+    const dbUser = await users.get(
+      message.guild.id,
+      message.mentions.members.first().id
+    );
     const rep = dbUser?.reputation || 0;
-    await users.set(message.guild.id, message.mentions.members.first().id, { reputation: rep + 1 });
+    await users.set(message.guild.id, message.mentions.members.first().id, {
+      reputation: rep + 1,
+    });
 
-    message.channel.send(`${message.author} жмёт F для ${message.mentions.members.first()}! (единиц уважения: ${rep + 1})`);
+    message.channel.send(
+      `${
+        message.author
+      } жмёт F для ${message.mentions.members.first()}! (единиц уважения: ${rep +
+        1})`
+    );
   },
 };

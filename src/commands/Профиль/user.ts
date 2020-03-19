@@ -100,7 +100,11 @@ module.exports = {
     }
 
     if (voiceTime) {
-      embed.addField('Время в голосе', `${tools.convertSecondsToTime(voiceTime)}`, true);
+      embed.addField(
+        'Время в голосе',
+        `${tools.convertSecondsToTime(voiceTime)}`,
+        true
+      );
     }
 
     embed.setColor(tools.randomHexColor());

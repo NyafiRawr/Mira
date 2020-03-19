@@ -1,9 +1,7 @@
 import Voice from '../models/voice';
 import * as Keyv from 'keyv';
 
-export const getSettings = async (
-  serverId: string
-): Promise<Voice | null> =>
+export const getSettings = async (serverId: string): Promise<Voice | null> =>
   Voice.findOne({
     where: { serverId },
   });
@@ -26,11 +24,9 @@ export const setSettings = async (
   });
 };
 
-export const removeSettings = async (
-  serverId: string
-) =>
+export const removeSettings = async (serverId: string) =>
   Voice.destroy({
-    where: { serverId }
+    where: { serverId },
   });
 
 const voices = new Keyv({ namespace: 'voice' });
@@ -40,10 +36,8 @@ export const getVoiceId = async (
   userId: string
 ): Promise<string | null> => voices.get(`${serverId}_${userId}`);
 
-export const deleteVoiceId = async (
-  serverId: string,
-  userId: string
-) => voices.delete(`${serverId}_${userId}`);
+export const deleteVoiceId = async (serverId: string, userId: string) =>
+  voices.delete(`${serverId}_${userId}`);
 
 export const setVoiceId = async (
   serverId: string,

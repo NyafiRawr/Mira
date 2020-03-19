@@ -28,11 +28,7 @@ module.exports = {
         const catList = [
           ...new Set(
             commands
-              .filter(
-                cmd =>
-                  cmd.hide !== true &&
-                  cmd.group === g
-              )
+              .filter(cmd => cmd.hide !== true && cmd.group === g)
               .map(
                 command =>
                   `${config.bot.prefix}**${command.name}** ${command.usage ||
@@ -66,11 +62,7 @@ module.exports = {
         const catList = [
           ...new Set(
             commands
-              .filter(
-                cmd =>
-                  cmd.hide === true &&
-                  cmd.group === g
-              )
+              .filter(cmd => cmd.hide === true && cmd.group === g)
               .map(
                 command =>
                   `${config.bot.prefix}**${command.name}** ${command.usage ||

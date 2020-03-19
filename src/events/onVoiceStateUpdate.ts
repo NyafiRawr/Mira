@@ -19,6 +19,8 @@ export default async (oldMember: GuildMember, newMember: GuildMember) => {
     }
     const seconds = (Date.now() - entryVoiceDate) / 1000;
     const user = await users.get(oldMember.guild.id, oldMember.id);
-    await users.set(oldMember.guild.id, oldMember.id, { voiceTime: user?.voiceTime || 0 + seconds });
+    await users.set(oldMember.guild.id, oldMember.id, {
+      voiceTime: user?.voiceTime || 0 + seconds,
+    });
   }
 };

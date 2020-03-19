@@ -48,11 +48,11 @@ module.exports = {
         .catch((error: any) => {
           message.reply(
             `сообщение для редакта не найдено!` +
-            `\nКанал: ${targetChannel}\nID: ${targetMessageId}` +
-            `\nНовый текст: \`\`\`fix\n${targetText.substr(
-              0,
-              1424
-            )}\`\`\` ${error}`
+              `\nКанал: ${targetChannel}\nID: ${targetMessageId}` +
+              `\nНовый текст: \`\`\`fix\n${targetText.substr(
+                0,
+                1424
+              )}\`\`\` ${error}`
           );
         });
     } else if (message.mentions.channels.size > 0) {

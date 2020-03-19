@@ -45,7 +45,7 @@ User.init(
     voiceTime: {
       type: INTEGER,
       defaultValue: 0,
-    }
+    },
   },
   {
     modelName: 'user',

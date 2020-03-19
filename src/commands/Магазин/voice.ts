@@ -31,29 +31,38 @@ module.exports = {
       embed
         .setTitle('Все команды')
         .setDescription(
-          `**Управление**`
-          + `\n**${this.aliases[0]} create** [своё название голосового чата]`
-          + `\n**${this.aliases[0]} invite/kick** <@>, @...`
-          + `\n\n**Настройка**`
-          + `\n**${this.aliases[0]} cat** <id> - установить категорию размещения`
-          + `\n**${this.aliases[0]} price** <цена> - изменить цену за канал`
-          + `\n\n**Цена:** ${price}:cookie:`
+          `**Управление**` +
+            `\n**${this.aliases[0]} create** [своё название голосового чата]` +
+            `\n**${this.aliases[0]} invite/kick** <@>, @...` +
+            `\n\n**Настройка**` +
+            `\n**${this.aliases[0]} cat** <id> - установить категорию размещения` +
+            `\n**${this.aliases[0]} price** <цена> - изменить цену за канал` +
+            `\n\n**Цена:** ${price}:cookie:`
         );
       return message.channel.send(embed);
     }
 
     let tempVoice;
-    const idVoice = await voices.getVoiceId(message.guild.id, message.author.id);
+    const idVoice = await voices.getVoiceId(
+      message.guild.id,
+      message.author.id
+    );
     if (!!idVoice) {
       tempVoice = message.guild.channels.get(idVoice);
       if (!tempVoice) {
         await voices.deleteVoiceId(message.guild.id, message.author.id);
-        throw new CustomError('ошибка, у тебя должен быть голосовой канал, но он не найден, запись о существовании удалена, попробуй снова!');
+        throw new CustomError(
+          'ошибка, у тебя должен быть голосовой канал, но он не найден, запись о существовании удалена, попробуй снова!'
+        );
       }
     }
 
     if (args[0] === 'create') {
-      if (settings === null || !settings.categoryId || !message.guild.channels.get(settings.categoryId)) {
+      if (
+        settings === null ||
+        !settings.categoryId ||
+        !message.guild.channels.get(settings.categoryId)
+      ) {
         throw new CustomError(
           `категория для размещения не найдена, попроси админов сделать это командой \`${this.aliases[0]} cat <id-категории>\`!`
         );
@@ -63,11 +72,7 @@ module.exports = {
         throw new CustomError('у тебя уже есть канал!');
       }
 
-      await economy.pay(
-        message.guild.id,
-        message.author.id,
-        price
-      );
+      await economy.pay(message.guild.id, message.author.id, price);
 
       const voiceName = args.slice(1).join(' ') || message.member.displayName;
       const newTempVoice = (await message.guild.createChannel(voiceName, {
@@ -92,11 +97,18 @@ module.exports = {
         parent: settings.categoryId,
       })) as Discord.VoiceChannel;
 
-      const invite = await newTempVoice.createInvite({
-        maxAge: 10 * 60,
-        temporary: true,
-      }, `Приглашение в **${newTempVoice}**`);
-      await voices.setVoiceId(message.guild.id, message.author.id, newTempVoice.id);
+      const invite = await newTempVoice.createInvite(
+        {
+          maxAge: 10 * 60,
+          temporary: true,
+        },
+        `Приглашение в **${newTempVoice}**`
+      );
+      await voices.setVoiceId(
+        message.guild.id,
+        message.author.id,
+        newTempVoice.id
+      );
       await message.reply(
         `канал __**${newTempVoice}**__ создан! ${invite.url}`
       );
@@ -105,7 +117,9 @@ module.exports = {
         voices.deleteVoiceId(message.guild.id, message.author.id);
         newTempVoice
           .delete()
-          .then(() => message.reply(`пустующий канал __${newTempVoice}__ удалён!`))
+          .then(() =>
+            message.reply(`пустующий канал __${newTempVoice}__ удалён!`)
+          )
           .catch();
       };
 
@@ -122,11 +136,15 @@ module.exports = {
 
     if (args[0] === 'invite') {
       if (!tempVoice) {
-        throw new CustomError('у тебя нет канала, чтобы приглашать кого-либо в него.');
+        throw new CustomError(
+          'у тебя нет канала, чтобы приглашать кого-либо в него.'
+        );
       }
 
       if (message.mentions.members.size < 1) {
-        throw new CustomError('необходимо указать кому хочешь дать доступ в канал.');
+        throw new CustomError(
+          'необходимо указать кому хочешь дать доступ в канал.'
+        );
       }
 
       for await (const target of message.mentions.members.array()) {
@@ -139,11 +157,13 @@ module.exports = {
       }
 
       const invite = await tempVoice.createInvite({
-        maxAge: 10 * 60
+        maxAge: 10 * 60,
       });
 
       await message.reply(
-        `**${message.mentions.members.array().join(', ')}** теперь в **${tempVoice}**. **Вход: <${invite.url}>**`
+        `**${message.mentions.members
+          .array()
+          .join(', ')}** теперь в **${tempVoice}**. **Вход: <${invite.url}>**`
       );
 
       return;
@@ -151,11 +171,15 @@ module.exports = {
 
     if (args[0] === 'kick') {
       if (!tempVoice) {
-        throw new CustomError('у тебя нет канала, чтобы исключать кого-нибудь из него.');
+        throw new CustomError(
+          'у тебя нет канала, чтобы исключать кого-нибудь из него.'
+        );
       }
 
       if (message.mentions.members.size < 1) {
-        throw new CustomError('необходимо указать кому нужно закрыть доступ в канал!');
+        throw new CustomError(
+          'необходимо указать кому нужно закрыть доступ в канал!'
+        );
       }
 
       for await (const target of message.mentions.members.array()) {
@@ -170,33 +194,47 @@ module.exports = {
         }
       }
 
-      await message.reply(`**${message.mentions.members.array().join(', ')}** больше нет в **${tempVoice}**`);
+      await message.reply(
+        `**${message.mentions.members
+          .array()
+          .join(', ')}** больше нет в **${tempVoice}**`
+      );
 
       return;
     }
 
     if (args[0] === 'cat') {
       if (!message.member.hasPermissions(this.permisions[0])) {
-        throw new CustomError('нужно иметь право администрировать сервер, чтобы менять категорию создания каналов.');
+        throw new CustomError(
+          'нужно иметь право администрировать сервер, чтобы менять категорию создания каналов.'
+        );
       }
 
       if (args.length <= 1) {
-        throw new CustomError('необходимо указать ID категория для размещения!');
+        throw new CustomError(
+          'необходимо указать ID категория для размещения!'
+        );
       }
 
       const newCategoryId = args[1];
       const newCategory = message.guild.channels.get(newCategoryId);
       if (!newCategory) {
-        throw new CustomError('неправильный идентификатор, категория не найден!');
+        throw new CustomError(
+          'неправильный идентификатор, категория не найден!'
+        );
       }
       await voices.setSettings(message.guild.id, { categoryId: newCategoryId });
 
-      return message.reply(`установленная категория размещения каналов: ${newCategory}`);
+      return message.reply(
+        `установленная категория размещения каналов: ${newCategory}`
+      );
     }
 
     if (args[0] === 'price') {
       if (!message.member.hasPermissions(this.permisions[0])) {
-        throw new CustomError('нужно иметь право администрировать сервер, чтобы менять цену канала.');
+        throw new CustomError(
+          'нужно иметь право администрировать сервер, чтобы менять цену канала.'
+        );
       }
 
       if (args.length <= 1) {

@@ -19,8 +19,13 @@ module.exports = {
   permisions: ['MANAGE_ROLES'],
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed()
-      .setAuthor(this.description, message.guild.splashURL || message.guild.iconURL)
-      .setDescription(`Купить/продать: ${this.name} <номер>. Можно иметь только одну роль!`)
+      .setAuthor(
+        this.description,
+        message.guild.splashURL || message.guild.iconURL
+      )
+      .setDescription(
+        `Купить/продать: ${this.name} <номер>. Можно иметь только одну роль!`
+      )
       .setColor(tools.randomHexColor())
       .setFooter(
         tools.embedFooter(message, this.name),
@@ -49,7 +54,8 @@ module.exports = {
         }
         // Вместимость витрины
         const shopList = await shop.getAll(message.guild.id);
-        if (shopList.length >= 25) { // Максимум дискорда: 25
+        if (shopList.length >= 25) {
+          // Максимум дискорда: 25
           throw new CustomError('на витрину больше не влезает :(');
         }
         // Добавление и отчёт
@@ -63,34 +69,45 @@ module.exports = {
       // Удаление
       if (args[0] === 'rem') {
         await shop.remove(message.guild.id, role.id);
-        embed.setDescription(`Роль **${role}** удалена из магазина (если она там была)`);
+        embed.setDescription(
+          `Роль **${role}** удалена из магазина (если она там была)`
+        );
         return message.channel.send(embed);
       }
-    } else { // Если не удаление и не добавление
+    } else {
+      // Если не удаление и не добавление
       const shopRoles = await shop.getAll(message.guild.id);
 
       if (shopRoles.length < 1) {
         throw new CustomError('в магазине ничего нет!');
       }
 
-      if (args.length === 0) { // Показать витрину
+      if (args.length === 0) {
+        // Показать витрину
         shopRoles.forEach(async (shopRole: any, i: number) => {
           const roleName = message.guild.roles.get(shopRole.roleId);
           if (!roleName) {
             await shop.remove(message.guild.id, shopRole.roleId);
           } else {
             if (message.member.roles.has(shopRole.roleId)) {
-              embed.addField(`**№${i + 1}: ${shopRole.cost}**:cookie:`,
-                `~~**${roleName}**~~`, true);
+              embed.addField(
+                `**№${i + 1}: ${shopRole.cost}**:cookie:`,
+                `~~**${roleName}**~~`,
+                true
+              );
             } else {
-              embed.addField(`**№${i + 1}: ${shopRole.cost}**:cookie:`,
-                `**${roleName}**`, true);
+              embed.addField(
+                `**№${i + 1}: ${shopRole.cost}**:cookie:`,
+                `**${roleName}**`,
+                true
+              );
             }
           }
         });
 
         await message.channel.send(embed);
-      } else { // Купить роль по номеру
+      } else {
+        // Купить роль по номеру
         const num = parseInt(args[0], 10);
 
         if (isNaN(num)) {
@@ -102,7 +119,9 @@ module.exports = {
           throw new CustomError('такого номера нет.');
         }
 
-        const roleAct = message.guild.roles.get(shopRoles[index].roleId) as Discord.Role;
+        const roleAct = message.guild.roles.get(
+          shopRoles[index].roleId
+        ) as Discord.Role;
 
         if (roleAct.position >= message.guild.me.highestRole.position) {
           await shop.remove(message.guild.id, shopRoles[index].roleId);
@@ -112,11 +131,21 @@ module.exports = {
         }
 
         if (message.member.roles.has(shopRoles[index].roleId)) {
-          await economy.set(message.guild.id, message.author.id, shopRoles[index].cost);
+          await economy.set(
+            message.guild.id,
+            message.author.id,
+            shopRoles[index].cost
+          );
           await message.member.removeRole(roleAct);
-          message.reply('так как у тебя уже есть эта роль, то она была продана!');
+          message.reply(
+            'так как у тебя уже есть эта роль, то она была продана!'
+          );
         } else {
-          await economy.pay(message.guild.id, message.author.id, shopRoles[index].cost);
+          await economy.pay(
+            message.guild.id,
+            message.author.id,
+            shopRoles[index].cost
+          );
 
           // Можно иметь только одну роль из списка
           shopRoles.forEach(async (shopRole: any) => {
@@ -125,7 +154,11 @@ module.exports = {
               await shop.remove(message.guild.id, shopRole.roleId);
             }
             if (message.member.roles.has(shopRole.roleId)) {
-              await economy.set(message.guild.id, message.author.id, shopRole.cost);
+              await economy.set(
+                message.guild.id,
+                message.author.id,
+                shopRole.cost
+              );
               await message.member.removeRole(shopRole.roleId);
             }
           });
