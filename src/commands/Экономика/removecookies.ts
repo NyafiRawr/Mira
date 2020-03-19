@@ -7,7 +7,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Забрать печенье',
   aliases: ['rco'],
-  usage: '<@у кого> <сколько>',
+  usage: '<@у кого, @, ...> <сколько>',
   guild: true,
   hide: false,
   cooldown: 0.5,
@@ -19,11 +19,13 @@ module.exports = {
       throw new CustomError('недостаточно привилегий!');
     }
 
-    if (!(message.mentions.users.size && args[0].length)) {
+    if (!message.mentions.members.size) {
       throw new CustomError('вы никого не упомянули.');
     }
 
-    let amount = parseInt(args[1], 10);
+    const victims = new Set(message.mentions.members.map(member => member));
+
+    let amount = parseInt(args[message.mentions.members.size], 10);
     if (!amount) {
       throw new CustomError(
         'вы не указали количество печенья, которое нужно забрать.'
@@ -38,14 +40,14 @@ module.exports = {
       amount = 1000000000000;
     }
 
-    const victim = message.mentions.users.first();
-
-    await economy.set(message.guild.id, victim.id, -amount);
+    victims.forEach(member =>
+      economy.set(message.guild.id, member.id, -amount)
+    );
 
     message.reply(
-      `у пользователя ${victim} конфисковано ${tools.separateThousandth(
-        amount.toString()
-      )}:cookie:`
+      `вы забрали у ${Array.from(victims).join(
+        ', '
+      )} -${tools.separateThousandth(amount.toString())}:cookie:`
     );
   },
 };

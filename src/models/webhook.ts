@@ -1,33 +1,32 @@
 import { Model, STRING } from 'sequelize';
 import { sequelize } from '../db';
 
-class Vars extends Model {
+class Webhook extends Model {
   public serverId!: string;
-
-  public name!: string;
-  public value!: string;
+  public id!: string;
+  public token!: number;
 }
 
-Vars.init(
+Webhook.init(
   {
     serverId: {
       type: STRING,
       primaryKey: true,
     },
-    name: {
+    id: {
       type: STRING,
       primaryKey: true,
     },
-    value: {
+    token: {
       type: STRING,
     },
   },
   {
-    modelName: 'vars',
+    modelName: 'webhook',
     sequelize,
   }
 );
 
-export default Vars;
+export default Webhook;
 
-Vars.sync();
+Webhook.sync();

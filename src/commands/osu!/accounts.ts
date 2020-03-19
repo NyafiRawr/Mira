@@ -29,43 +29,45 @@ module.exports = {
     }
 
     for (const account of accounts) {
-      for (const mode of account.modes.split(',')) {
-        const user = await osu.getUser(
-          account.gameServer,
-          account.nickname,
-          parseInt(mode, 10)
-        );
-        if (user != null) {
-          const topScores =
-            parseInt(user.count_rank_ss, 10) +
-              parseInt(user.count_rank_s, 10) +
-              parseInt(user.count_rank_ssh, 10) ||
-            0 + parseInt(user.count_rank_sh, 10) ||
-            0 + parseInt(user.count_rank_a, 10);
-          embed
-            .addField(
+      const user = await osu.getUser(
+        account.gameServer,
+        account.nickname,
+        parseInt(account.modeFavorite, 10)
+      );
+      if (user != null) {
+        const topScores =
+          parseInt(user.count_rank_ss, 10) +
+          parseInt(user.count_rank_s, 10) +
+          parseInt(user.count_rank_ssh, 10) +
+          (0 + parseInt(user.count_rank_sh, 10)) +
+          (0 + parseInt(user.count_rank_a, 10));
+        embed
+          .addField(
+            (account.gameServerFavorite ? '__' : '') +
               `**${account.gameServer[0].toUpperCase() +
-                account.gameServer.slice(1)}**`,
-              `PP: ${tools.separateThousandth(
-                user.pp_raw
-              )}\nМесто: #${tools.separateThousandth(user.pp_rank)}`,
-              true
-            )
-            .addField(
-              `**${tools.getDataValueOnKey('osu!/modes', mode).name}**`,
-              `Уровень: ${Math.floor(
-                user.level
-              )}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`,
-              true
-            )
-            .addField(
-              `Ник: **${user.username}**`,
-              `Игр: ${tools.separateThousandth(
-                user.playcount
-              )}\nТоп-скоры: ${tools.separateThousandth(`${topScores}`)}`,
-              true
-            );
-        }
+                account.gameServer.slice(1)}**` +
+              (account.gameServerFavorite ? '__' : ''),
+            `PP: ${tools.separateThousandth(
+              user.pp_raw
+            )}\nМесто: #${tools.separateThousandth(user.pp_rank)}`,
+            true
+          )
+          .addField(
+            `**${
+              tools.getDataValueOnKey('osu!/modes', account.modeFavorite).name
+            }**`,
+            `Уровень: ${Math.floor(
+              user.level
+            )}\nТочность: ${tools.roundDecimalPlaces(user.accuracy)}%`,
+            true
+          )
+          .addField(
+            `Ник: **${user.username}**`,
+            `Игр: ${tools.separateThousandth(
+              user.playcount
+            )}\nТоп-скоры: ${tools.separateThousandth(`${topScores}`)}`,
+            true
+          );
       }
     }
 

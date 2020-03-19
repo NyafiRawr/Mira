@@ -5,7 +5,7 @@ import { client, commands } from '../client';
 import config from '../config';
 import CustomError from '../utils/customError';
 import { randomInteger } from '../utils/tools';
-import * as cooldowns from '../utils/kv';
+import * as cooldowns from '../utils/cooldowns';
 
 export default async (message: Message) => {
   if (message.author.bot) {

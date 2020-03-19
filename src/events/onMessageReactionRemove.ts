@@ -1,22 +1,26 @@
 import { GuildMember, MessageReaction } from 'discord.js';
-import * as emotes from '../utils/emojis';
-
+import * as ReactionRoles from '../modules/reactionroles';
+import CustomError from '../utils/customError';
+// Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
-  const emoteName =
+  const emoji =
     reaction.emoji.id != null ? reaction.emoji.id : reaction.emoji.name;
 
-  const emoteDB = await emotes.get(
+  const response = await ReactionRoles.get(
+    reaction.message.guild.id,
     reaction.message.channel.id,
     reaction.message.id,
-    emoteName
+    emoji
   );
 
-  if (emoteDB == null) {
-    return;
-  }
-
-  const customer = await reaction.message.guild.fetchMember(user.id);
-  if (customer) {
-    customer.removeRole(emoteDB.roleId);
+  if (response !== null) {
+    const role = reaction.message.guild.roles.get(response.roleId);
+    if (role!.position >= reaction.message.guild.me.highestRole.position) {
+      throw new CustomError('не могу снять роль, которая выше или равна моей наивысшей!');
+    }
+    const member = await reaction.message.guild.fetchMember(user.id);
+    if (member) {
+      member.removeRole(response.roleId);
+    }
   }
 };

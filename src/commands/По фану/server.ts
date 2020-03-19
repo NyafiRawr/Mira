@@ -15,7 +15,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message: Discord.Message) {
     const botCount = message.guild.members.filter(b => b.user.bot).size;
-    const verificationLevel = tools.getData('verificationLevel')[
+    const verificationLevel = tools.getData('verificationLevels')[
       message.guild.verificationLevel
     ];
 

@@ -100,7 +100,6 @@ module.exports = {
         scores.push('... больше не влезло :(');
         break;
       }
-
       scores.push(score);
     }
     embed.setDescription(scores.join('\n\n'));
