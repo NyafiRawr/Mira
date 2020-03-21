@@ -18,8 +18,16 @@ Stream.init(
       type: BOOLEAN,
       defaultValue: false,
     },
-    roleId: STRING,
-    games: STRING,
+    roleId: {
+      type: STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    games: {
+      type: STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
   },
   {
     modelName: 'stream',

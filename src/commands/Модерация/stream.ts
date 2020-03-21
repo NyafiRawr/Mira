@@ -49,7 +49,8 @@ module.exports = {
       });
     } else if (message.mentions.roles.size > 0) {
       await streams.set(message.guild.id, { roleId: message.mentions.roles.first().id });
-      message.reply(`выдаваемая стримерам роль: ${message.mentions.roles.first()}`);
+      message.reply(`выдаваемая стримерам роль: ${message.mentions.roles.first()}`
+      + `\nВажно: не могу выдать/снять роль, которая выше или равна моей наивысшей!`);
     } else if (args[0] === 'on' || args[0] === 'off') {
       await streams.set(message.guild.id, { state: args[0] === 'on' ? true : false });
       message.reply(`состояние выдачи: ${args[0] === 'on' ? 'выдаётся' : 'не выдаётся'}`);
