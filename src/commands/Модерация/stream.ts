@@ -35,7 +35,7 @@ module.exports = {
             },
             {
               name: 'Состояние',
-              value: !!stream?.state ? 'Выдаётся' : ' Не выдаётся',
+              value: !!stream?.state && !!stream?.roleId && !!stream?.games ? 'Выдаётся' : ' Не выдаётся',
               inline: true
             },
             {
@@ -53,7 +53,8 @@ module.exports = {
       + `\nВажно: не могу выдать/снять роль, которая выше или равна моей наивысшей!`);
     } else if (args[0] === 'on' || args[0] === 'off') {
       await streams.set(message.guild.id, { state: args[0] === 'on' ? true : false });
-      message.reply(`состояние выдачи: ${args[0] === 'on' ? 'выдаётся' : 'не выдаётся'}`);
+      message.reply(`состояние выдачи: ${args[0] === 'on' ? 'выдаётся' : 'не выдаётся'}`
+      + `\nВажно: если поля роль или игры пустые выдача не будет осуществляться!`);
     } else if ((args[0] === 'add' || args[0] === 'rem') && args.length > 1) {
       const input = args.slice(1).join(' ').split(', ');
       let newGames: string[] = [];
