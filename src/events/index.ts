@@ -7,6 +7,7 @@ import onGuildMemberAdd from './onGuildMemberAdd';
 import onMessageReactionAdd from './onMessageReactionAdd';
 import onMessageReactionRemove from './onMessageReactionRemove';
 import onVoiceStateUpdate from './onVoiceStateUpdate';
+import onPresenceUpdate from './onPresenceUpdate';
 import onMessage from './onMessage';
 import onRaw from './onRaw';
 
@@ -20,6 +21,7 @@ export default {
   onMessageReactionAdd,
   onMessageReactionRemove,
   onVoiceStateUpdate,
+  onPresenceUpdate,
   onMessage,
   onRaw,
 };
