@@ -69,7 +69,7 @@ module.exports = {
         newGames = oldGames.filter((game) => !input.includes(game));
       }
       await streams.set(message.guild.id, { games: newGames.join(', ') });
-      message.reply(`отслеживаемые игры: ${!!newGames ? newGames : 'Нет'}`);
+      message.reply(`отслеживаемые игры: ${!!newGames ? newGames.join(', ') : 'Нет'}`);
     } else {
       throw new CustomError(`неправильно указаны параметры: \`${this.usage}\``);
     }
