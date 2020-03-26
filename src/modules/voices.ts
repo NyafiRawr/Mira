@@ -10,12 +10,12 @@ export const setSettings = async (
   serverId: string,
   fields: { [key: string]: any }
 ): Promise<Voice> => {
-  const voiceFind = await Voice.findOne({
+  const find = await Voice.findOne({
     where: { serverId },
   });
 
-  if (voiceFind !== null) {
-    return voiceFind.update(fields);
+  if (find !== null) {
+    return find.update(fields);
   }
 
   return Voice.create({
