@@ -5,7 +5,7 @@ import * as users from '../../modules/users';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Press F to pay respect',
-  aliases: ['respect', 'reputation', 'like'],
+  aliases: ['respect', 'reputation', 'like', 'F'],
   usage: ['<@>'],
   guild: true,
   hide: false,
