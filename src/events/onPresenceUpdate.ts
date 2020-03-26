@@ -1,16 +1,5 @@
 import { GuildMember } from 'discord.js';
 import * as streams from '../modules/streams';
-import { client } from '../client';
-
-client.guilds.forEach(async (guild) => {
-  const stream = await streams.get(guild.id);
-  if (!!stream?.roleId) {
-    const role = guild.roles.get(stream.roleId);
-    if (!!role) {
-      role.members.map(member => member.removeRole(stream.roleId).catch());
-    }
-  }
-});
 
 const onAir = new Map();
 
