@@ -1,6 +1,49 @@
 import * as Discord from 'discord.js';
-
 import * as tools from '../../utils/tools';
+import * as moment from 'moment';
+
+const toDateLife = (value: string) => {
+  const date = new Date(value);
+  const difference = new Date(Date.now() - date.getTime());
+
+  const year = moment(difference).year(difference.getFullYear() - 1970).year();
+  const month = moment(difference).month();
+  const day = moment(difference).day();
+
+  let dateDifference = ' - ';
+  if (year !== 0) {
+    dateDifference += `${year} `;
+    if (year === 1) {
+      dateDifference += `год`;
+    } else if (year > 1 && year < 5) {
+      dateDifference += `года`;
+    } else {
+      dateDifference += `лет`;
+    }
+  }
+  if (month !== 0) {
+    dateDifference += ` ${month} `;
+    if (month === 1) {
+      dateDifference += `месяц`;
+    } else if (month > 1 && month < 5) {
+      dateDifference += `месяца`;
+    } else {
+      dateDifference += `месяцев`;
+    }
+  }
+  if (day !== 0) {
+    dateDifference += ` ${day} `;
+    if (day % 10 === 1) {
+      dateDifference += `день`;
+    } else if (day % 10 > 1 && day % 10 < 5) {
+      dateDifference += `дня`;
+    } else {
+      dateDifference += `дней`;
+    }
+  }
+
+  return dateDifference;
+};
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -21,9 +64,9 @@ module.exports = {
 
     const embed = new Discord.RichEmbed()
       .setAuthor(
-        `${message.guild.name} (${tools.toDate(
-          message.guild.createdAt.toISOString()
-        )})`,
+        `${message.guild.name} (${tools.toDate(message.guild.createdAt.toISOString())}`
+        + toDateLife(message.guild.createdAt.toISOString())
+        + ')',
         message.guild.iconURL
       )
 
