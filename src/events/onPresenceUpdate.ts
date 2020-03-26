@@ -1,7 +1,18 @@
 import { GuildMember } from 'discord.js';
 import * as streams from '../modules/streams';
+import { client } from '../client';
 
-const onAir = new Map(); // TODO: если обрыв связи, то стримеры застрянут в эфире до повторного выключения стрима
+client.guilds.forEach(async (guild) => {
+  const stream = await streams.get(guild.id);
+  if (!!stream?.roleId) {
+    const role = guild.roles.get(stream.roleId);
+    if (!!role) {
+      role.members.map(member => member.removeRole(stream.roleId));
+    }
+  }
+});
+
+const onAir = new Map();
 
 // Если юзер начал стрим проверяем настройки стрима на сервере и поднимаем вверх, перестал - отпускаем
 export default async (oldMember: GuildMember, newMember: GuildMember) => {
