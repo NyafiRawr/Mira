@@ -7,7 +7,7 @@ client.guilds.forEach(async (guild) => {
   if (!!stream?.roleId) {
     const role = guild.roles.get(stream.roleId);
     if (!!role) {
-      role.members.map(member => member.removeRole(stream.roleId));
+      role.members.map(member => member.removeRole(stream.roleId).catch());
     }
   }
 });
