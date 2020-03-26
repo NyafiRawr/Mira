@@ -16,6 +16,7 @@ client
   .on('messageReactionAdd', handler.onMessageReactionAdd)
   .on('messageReactionRemove', handler.onMessageReactionRemove)
   .on('voiceStateUpdate', handler.onVoiceStateUpdate)
+  .on('presenceUpdate', handler.onPresenceUpdate)
   .on('message', handler.onMessage)
   .on('raw', handler.onRaw);
 
