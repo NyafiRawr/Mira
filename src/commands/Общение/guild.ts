@@ -1,14 +1,14 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
-import * as voices from '../../modules/voices';
+import * as guilds from '../../modules/guilds';
 import * as tools from '../../utils/tools';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Свой временный голосовой канал',
-  aliases: ['v'],
-  usage: '[create <название> / invite/kick <@упоминание, @...>] ',
+  description: 'Гильдии (свой канал и голосовой чат)',
+  aliases: ['g'],
+  usage: undefined,
   guild: true,
   hide: false,
   cooldown: 1,
@@ -24,230 +24,70 @@ module.exports = {
         message.author.displayAvatarURL
       );
 
-    const settings = await voices.getSettings(message.guild.id);
-    const price = settings?.price || 0;
+    const price = 150000; // TODO: vars?
 
     if (args.length === 0) {
       embed
-        .setTitle('Все команды')
         .setDescription(
-          `**Управление**` +
-            `\n**${this.aliases[0]} create** [своё название голосового чата]` +
-            `\n**${this.aliases[0]} invite/kick** <@>, @...` +
-            `\n\n**Настройка**` +
-            `\n**${this.aliases[0]} cat** <id> - установить категорию размещения` +
-            `\n**${this.aliases[0]} price** <цена> - изменить цену за канал` +
-            `\n\n**Цена:** ${price}:cookie:`
+          `**${this.aliases[0]} create** <название> - создать за ${tools.separateThousandth(price)}:cookie:` +
+          `\n**${this.aliases[0]} add/rem** <@>, @... - пригласить/исключить` +
+          `\n**${this.aliases[0]} leave** - выйти` +
+          `\n**${this.aliases[0]} desc** <описание> - добавить описание` +
+          `\n**${this.aliases[0]} info** [имя гильдии] - информация о гильдии` +
+          `\n**${this.aliases[0]} list** - список гильдий` +
+          `\n**${this.aliases[0]} master** <@> - передать гильдмастера` +
+          `\n**${this.aliases[0]} dissolve** - распустить гильдию (печенье будет возвращено)` +
+          `\n*Можно состоять только в одной гильдии*`
         );
       return message.channel.send(embed);
     }
 
-    let tempVoice;
-    const idVoice = await voices.getVoiceId(
-      message.guild.id,
-      message.author.id
-    );
-    if (!!idVoice) {
-      tempVoice = message.guild.channels.get(idVoice);
-      if (!tempVoice) {
-        await voices.deleteVoiceId(message.guild.id, message.author.id);
-        throw new CustomError(
-          'ошибка, у тебя должен быть голосовой канал, но он не найден, запись о существовании удалена, попробуй снова!'
-        );
-      }
-    }
+    const serverGuilds = await guilds.gets(message.guild.id);
+    const myGuild = await guilds.get(message.guild.id, message.author.id);
+    const guildmember = !!myGuild ? true : false;
+    const ownerGuild = await guilds.owner(message.guild.id, message.author.id);
+    const guildmaster = !!ownerGuild ? true : false;
 
     if (args[0] === 'create') {
-      if (
-        settings === null ||
-        !settings.categoryId ||
-        !message.guild.channels.get(settings.categoryId)
-      ) {
-        throw new CustomError(
-          `категория для размещения не найдена, попроси админов сделать это командой \`${this.aliases[0]} cat <id-категории>\`!`
-        );
+      if (guildmember || guildmaster) {
+        throw new CustomError('сначала нужно покинуть текущую гильдию!');
       }
 
-      if (!!tempVoice) {
-        throw new CustomError('у тебя уже есть канал!');
+      const name = args.slice(1).join(' ');
+      if (!serverGuilds!.filter(guild => guild.name === name)) {
+        throw new CustomError('такое название уже есть!');
       }
 
       await economy.pay(message.guild.id, message.author.id, price);
 
-      const voiceName = args.slice(1).join(' ') || message.member.displayName;
-      const newTempVoice = (await message.guild.createChannel(voiceName, {
-        type: 'voice',
-        permissionOverwrites: [
-          {
-            id: message.member.id,
-            allow: [
-              'VIEW_CHANNEL',
-              'CONNECT',
-              'SPEAK',
-              'USE_VAD',
-              'MUTE_MEMBERS',
-              'DEAFEN_MEMBERS',
-            ],
-          },
-          {
-            id: message.guild.defaultRole,
-            deny: ['VIEW_CHANNEL'],
-          },
-        ],
-        parent: settings.categoryId,
-      })) as Discord.VoiceChannel;
-
-      const invite = await newTempVoice.createInvite(
-        {
-          maxAge: 10 * 60,
-          temporary: true,
-        },
-        `Приглашение в **${newTempVoice}**`
-      );
-      await voices.setVoiceId(
-        message.guild.id,
-        message.author.id,
-        newTempVoice.id
-      );
-      await message.reply(
-        `канал __**${newTempVoice}**__ создан! ${invite.url}`
-      );
-
-      const deleteChannel = () => {
-        voices.deleteVoiceId(message.guild.id, message.author.id);
-        newTempVoice
-          .delete()
-          .then(() =>
-            message.reply(`пустующий канал __${newTempVoice}__ удалён!`)
-          )
-          .catch();
-      };
-
-      return setTimeout(() => {
-        const watcher = setInterval(
-          () =>
-            newTempVoice.members.size === 0 &&
-            deleteChannel() &&
-            clearInterval(watcher),
-          2e4
+      embed
+        .setDescription(
+          `Поздравляю, ты стал гильдмастером **${name}**!`
         );
-      }, 1e4);
+
+      return message.channel.send(embed);
     }
 
-    if (args[0] === 'invite') {
-      if (!tempVoice) {
-        throw new CustomError(
-          'у тебя нет канала, чтобы приглашать кого-либо в него.'
-        );
-      }
-
-      if (message.mentions.members.size < 1) {
-        throw new CustomError(
-          'необходимо указать кому хочешь дать доступ в канал.'
-        );
-      }
-
-      for await (const target of message.mentions.members.array()) {
-        tempVoice.overwritePermissions(target.id, {
-          VIEW_CHANNEL: true,
-          CONNECT: true,
-          SPEAK: true,
-          USE_VAD: true,
-        });
-      }
-
-      const invite = await tempVoice.createInvite({
-        maxAge: 10 * 60,
-      });
-
-      await message.reply(
-        `**${message.mentions.members
-          .array()
-          .join(', ')}** теперь в **${tempVoice}**. **Вход: <${invite.url}>**`
-      );
-
-      return;
+    if (!serverGuilds) {
+      throw new CustomError('на сервере нет гильдий, но ты здесь и мы можем это исправить!');
     }
 
-    if (args[0] === 'kick') {
-      if (!tempVoice) {
-        throw new CustomError(
-          'у тебя нет канала, чтобы исключать кого-нибудь из него.'
-        );
-      }
-
-      if (message.mentions.members.size < 1) {
-        throw new CustomError(
-          'необходимо указать кому нужно закрыть доступ в канал!'
-        );
-      }
-
-      for await (const target of message.mentions.members.array()) {
-        tempVoice.replacePermissionOverwrites({
-          overwrites: tempVoice.permissionOverwrites.filter(
-            perm => perm.id !== target.id
-          ),
-        });
-
-        if (target.voiceChannel === tempVoice) {
-          target.setVoiceChannel(null);
-        }
-      }
-
-      await message.reply(
-        `**${message.mentions.members
-          .array()
-          .join(', ')}** больше нет в **${tempVoice}**`
-      );
-
-      return;
-    }
-
-    if (args[0] === 'cat') {
-      if (!message.member.hasPermissions(this.permisions[0])) {
-        throw new CustomError(
-          'нужно иметь право администрировать сервер, чтобы менять категорию создания каналов.'
-        );
-      }
-
-      if (args.length <= 1) {
-        throw new CustomError(
-          'необходимо указать ID категория для размещения!'
-        );
-      }
-
-      const newCategoryId = args[1];
-      const newCategory = message.guild.channels.get(newCategoryId);
-      if (!newCategory) {
-        throw new CustomError(
-          'неправильный идентификатор, категория не найден!'
-        );
-      }
-      await voices.setSettings(message.guild.id, { categoryId: newCategoryId });
-
-      return message.reply(
-        `установленная категория размещения каналов: ${newCategory}`
-      );
-    }
-
-    if (args[0] === 'price') {
-      if (!message.member.hasPermissions(this.permisions[0])) {
-        throw new CustomError(
-          'нужно иметь право администрировать сервер, чтобы менять цену канала.'
-        );
-      }
-
-      if (args.length <= 1) {
-        throw new CustomError('необходимо указать новую цену канала!');
-      }
-
-      const newPrice = parseInt(args[1], 10);
-      if (isNaN(newPrice) || newPrice < 0) {
-        throw new CustomError('неправильно указана цена.');
-      }
-      await voices.setSettings(message.guild.id, { price: newPrice });
-
-      return message.reply(`новая цена за канал: ${newPrice}:cookie:`);
+    if (args[0] === 'add' || args[0] === 'rem') {
+      message.mentions.members.size
+    } else if (args[0] === 'leave') {
+      // гильдмастер?
+    } else if (args[0] === 'desc') {
+      // гильдмастер?
+    } else if (args[0] === 'info') {
+      // она есть?
+    } else if (args[0] === 'list') {
+      // они вообще есть?
+    } else if (args[0] === 'master') {
+      // этот челиги не гм?
+    } else if (args[0] === 'dissolve') {
+      // гильдмастер?
+    } else {
+      throw new CustomError(`такой команды нет!\n\`${message.content}\``);
     }
   },
 };
