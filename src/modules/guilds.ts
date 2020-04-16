@@ -1,4 +1,5 @@
 import Guild from '../models/guild';
+import Member from '../models/member';
 
 export const gets = async (
   serverId: string
@@ -21,14 +22,14 @@ export const owner = async (
 export const member = async (
   serverId: string,
   ownerId: string
-): Promise<Guild | null> => Guild.findOne({
+): Promise<Guild | null> => Member.findOne({
   where: {
-    serverId,
-    ownerId
+    idGuild,
+    idUser: ownerId
   },
 });
 
-export const create = async (
+export const set = async (
   serverId: string,
   ownerId: string,
   fields: { [key: string]: any }

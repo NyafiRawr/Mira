@@ -117,7 +117,7 @@ module.exports = {
         parent: category,
       })) as Discord.VoiceChannel;
 
-      await guilds.create(message.guild.id, message.author.id, {
+      await guilds.set(message.guild.id, message.author.id, {
         name,
         description: 'Моя гильдия', // Описание по умолчанию
         chatId: guildChat.id,
@@ -138,20 +138,34 @@ module.exports = {
 
     if (args[0] === 'add' || args[0] === 'rem') {
       message.mentions.members.size
+      оба канала
+      мемберсы
     } else if (args[0] === 'leave') {
-      // гильдмастер?
-    } else if (args[0] === 'desc') {
-      // гильдмастер?
+      if (guildmaster)
+        throw new CustomError('нельзя покинуть гильдию, потому что ты гильдмастер!');
     } else if (args[0] === 'info') {
-      // она есть?
+      const name = args.slice(1).join(' ');
+      поиск по имени
     } else if (args[0] === 'list') {
-      // они вообще есть?
+      serverGuilds
+    }
+
+    if (!guildmaster)
+      throw new CustomError('ты не гильдмастер!');
+
+    if (args[0] === 'desc') {
+      const description = args.slice(1).join(' ');
+      await guilds.set(message.guild.id, message.author.id, {
+        description
+      });
+      return message.reply(`описание гильдии изменено на:\n${description}`);
     } else if (args[0] === 'master') {
-      // этот челиги не гм?
+      // HOW?
+      return message.reply(`управление гильдией передано ${message.mentions.members.first()}`);
     } else if (args[0] === 'dissolve') {
-      // гильдмастер?
-    } else {
-      throw new CustomError(`такой команды нет!\n\`${message.content}\``);
+      // TODO: дать возможность админу удалять ги
+      await guilds.remove(message.guild.id, message.author.id);
+      return message.reply(`гильдия распущена!`); // TODO: сообщить членам?
     }
   },
 };
