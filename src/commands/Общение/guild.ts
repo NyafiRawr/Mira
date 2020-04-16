@@ -1,19 +1,21 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
+import * as vars from '../../modules/vars';
 import * as guilds from '../../modules/guilds';
 import * as tools from '../../utils/tools';
+import { strict } from 'assert';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Гильдии (свой канал и голосовой чат)',
+  description: 'Гильдии (свой чат и голосовой канал)',
   aliases: ['g'],
   usage: undefined,
   guild: true,
   hide: false,
   cooldown: 1,
   cooldownMessage: undefined,
-  permisions: ['ADMINISTRATOR'],
+  permisions: ['ADMINISTRATOR', 'MANAGE_CHANNELS'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
     const embed = new Discord.RichEmbed()
@@ -24,7 +26,7 @@ module.exports = {
         message.author.displayAvatarURL
       );
 
-    const price = 150000; // TODO: vars?
+    const price = await vars.get(message.guild.id, this.name + '_' + 'price', 150000); // Цена по умолчанию
 
     if (args.length === 0) {
       embed
@@ -43,22 +45,84 @@ module.exports = {
     }
 
     const serverGuilds = await guilds.gets(message.guild.id);
-    const myGuild = await guilds.get(message.guild.id, message.author.id);
-    const guildmember = !!myGuild ? true : false;
+
     const ownerGuild = await guilds.owner(message.guild.id, message.author.id);
     const guildmaster = !!ownerGuild ? true : false;
 
+    const myGuild = await guilds.member(message.guild.id, message.author.id);
+    const guildmember = !!myGuild ? true : false;
+
     if (args[0] === 'create') {
-      if (guildmember || guildmaster) {
+      if (guildmember || guildmaster)
         throw new CustomError('сначала нужно покинуть текущую гильдию!');
-      }
 
       const name = args.slice(1).join(' ');
-      if (!serverGuilds!.filter(guild => guild.name === name)) {
+      if (!serverGuilds!.filter(guild => guild.name === name))
         throw new CustomError('такое название уже есть!');
+
+      const category = await vars.get(message.guild.id, this.name + '_' + 'category', null); // Категория по умолчанию
+      if (!category)
+        throw new CustomError(
+          `не установлена категория для создания каналов гильдий! Попросите администратора использовать команду: \`${this.aliases[0]} cat <id>\``
+        );
+
+      if (!message.member.hasPermissions(this.permisions[1])) {
+        throw new CustomError(
+          'мне нужно право управлять каналами, чтобы создать каналы гильдии!'
+        );
       }
 
       await economy.pay(message.guild.id, message.author.id, price);
+
+      const guildChat = (await message.guild.createChannel(name, {
+        type: 'text',
+        permissionOverwrites: [
+          {
+            id: message.member.id,
+            allow: [
+              'VIEW_CHANNEL',
+              'SEND_MESSAGES',
+              'MANAGE_MESSAGES',
+              'MANAGE_CHANNELS'
+            ],
+          },
+          {
+            id: message.guild.defaultRole,
+            deny: ['VIEW_CHANNEL'],
+          },
+        ],
+        parent: category,
+      })) as Discord.VoiceChannel;
+
+      const guildVoice = (await message.guild.createChannel(name, {
+        type: 'voice',
+        permissionOverwrites: [
+          {
+            id: message.member.id,
+            allow: [
+              'VIEW_CHANNEL',
+              'CONNECT',
+              'SPEAK',
+              'USE_VAD',
+              'MUTE_MEMBERS',
+              'DEAFEN_MEMBERS',
+              'MANAGE_CHANNELS'
+            ],
+          },
+          {
+            id: message.guild.defaultRole,
+            deny: ['VIEW_CHANNEL'],
+          },
+        ],
+        parent: category,
+      })) as Discord.VoiceChannel;
+
+      await guilds.create(message.guild.id, message.author.id, {
+        name,
+        description: 'Моя гильдия', // Описание по умолчанию
+        chatId: guildChat.id,
+        voiceId: guildVoice.id
+      });
 
       embed
         .setDescription(

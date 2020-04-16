@@ -18,7 +18,7 @@ export const owner = async (
   },
 });
 
-export const get = async (
+export const member = async (
   serverId: string,
   ownerId: string
 ): Promise<Guild | null> => Guild.findOne({
@@ -28,7 +28,7 @@ export const get = async (
   },
 });
 
-export const set = async (
+export const create = async (
   serverId: string,
   ownerId: string,
   fields: { [key: string]: any }
