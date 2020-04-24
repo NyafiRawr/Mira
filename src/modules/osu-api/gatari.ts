@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as tools from '../../utils/tools';
-import CustomError from '../../utils/customError';
+import CustomError from '../../utils/customerror';
 
 const responseFail = (error: string) => {
   return `ошибка в обмене информацией: \`${error}\``;

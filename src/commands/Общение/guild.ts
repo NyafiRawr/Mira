@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
-import CustomError from '../../utils/customError';
+import CustomError from '../../utils/customerror';
 import * as economy from '../../modules/economy';
 import * as vars from '../../modules/vars';
 import * as guilds from '../../modules/guilds';
 import * as tools from '../../utils/tools';
-import { strict } from 'assert';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -44,12 +43,12 @@ module.exports = {
       return message.channel.send(embed);
     }
 
-    const serverGuilds = await guilds.gets(message.guild.id);
+    const serverGuilds = await guilds.getServerGuilds(message.guild.id);
 
-    const ownerGuild = await guilds.owner(message.guild.id, message.author.id);
+    const ownerGuild = await guilds.getOwnerGuild(message.guild.id, message.author.id);
     const guildmaster = !!ownerGuild ? true : false;
 
-    const myGuild = await guilds.member(message.guild.id, message.author.id);
+    const myGuild = await guilds.getMembers(message.guild.id, message.author.id);
     const guildmember = !!myGuild ? true : false;
 
     if (args[0] === 'create') {
@@ -137,9 +136,10 @@ module.exports = {
     }
 
     if (args[0] === 'add' || args[0] === 'rem') {
-      message.mentions.members.size
-      оба канала
-      мемберсы
+      if (!message.mentions.members.size)
+      throw new CustomError('нельзя добавить пустоту');
+      await guilds.addMember(message.guild.id, message.author.id, message.mentions.members.first());
+      chat voice
     } else if (args[0] === 'leave') {
       if (guildmaster)
         throw new CustomError('нельзя покинуть гильдию, потому что ты гильдмастер!');

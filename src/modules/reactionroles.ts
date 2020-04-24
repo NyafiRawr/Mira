@@ -1,5 +1,5 @@
 import ReactionRole from '../models/reactionrole';
-import CustomError from '../utils/customError';
+import CustomError from '../utils/customerror';
 
 export const get = async (
   serverId: string,

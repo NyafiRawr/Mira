@@ -1,5 +1,5 @@
 import User from '../models/user';
-import CustomError from '../utils/customError';
+import CustomError from '../utils/customerror';
 import { sequelize } from '../db';
 import * as users from './users';
 import { roundDecimalPlaces } from '../utils/tools';

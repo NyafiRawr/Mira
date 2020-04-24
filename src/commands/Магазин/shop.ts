@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import CustomError from '../../utils/customError';
+import CustomError from '../../utils/customerror';
 import * as shop from '../../modules/shop';
 import * as economy from '../../modules/economy';
 import * as tools from '../../utils/tools';

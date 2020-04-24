@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as osu from '../../modules/osu';
 import * as tools from '../../utils/tools';
-import CustomError from '../../utils/customError';
+import CustomError from '../../utils/customerror';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],

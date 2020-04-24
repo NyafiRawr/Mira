@@ -1,6 +1,6 @@
 import { GuildMember, MessageReaction } from 'discord.js';
 import * as ReactionRoles from '../modules/reactionroles';
-import CustomError from '../utils/customError';
+import CustomError from '../utils/customerror';
 // Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
   const emoji =

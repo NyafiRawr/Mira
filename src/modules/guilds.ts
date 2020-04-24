@@ -1,33 +1,54 @@
 import Guild from '../models/guild';
-import Member from '../models/member';
+import GuildMember from '../models/guildmember';
 
-export const gets = async (
+export const getAllGuildsServer = async (
   serverId: string
-): Promise<Guild[] | null> => Guild.findAll({
-  where: {
-    serverId
-  },
-});
+): Promise<Guild[] | null> =>
+  Guild.findAll({
+    where: {
+      serverId
+    },
+  });
 
-export const owner = async (
+export const getGuildOwner = async (
   serverId: string,
   ownerId: string
-): Promise<Guild | null> => Guild.findOne({
-  where: {
-    serverId,
-    ownerId
-  },
-});
+): Promise<Guild | null> =>
+  Guild.findOne({
+    where: {
+      serverId,
+      ownerId
+    },
+  });
 
-export const member = async (
+export const getGuildMember = async (
   serverId: string,
-  ownerId: string
-): Promise<Guild | null> => Member.findOne({
-  where: {
-    idGuild,
-    idUser: ownerId
-  },
-});
+  userId: string
+): Promise<Guild | null> => {
+  const relation = await GuildMember.findOne({
+    where: {
+      serverId,
+      userId
+    },
+  });
+  return Guild.findOne({
+    where: {
+      serverId,
+      id: relation!.guildId
+    },
+  });
+};
+
+export const getMembersGuild = async (
+  serverId: string,
+  guildId: string
+): Promise<GuildMember[] | null> =>
+  GuildMember.findAll({
+    where: {
+      serverId,
+      guildId
+    },
+  });
 
 export const set = async (
   serverId: string,
@@ -35,10 +56,13 @@ export const set = async (
   fields: { [key: string]: any }
 ): Promise<Guild> => {
   const find = await Guild.findOne({
-    where: { serverId, ownerId },
+    where: {
+      serverId,
+      ownerId
+    },
   });
 
-  if (find !== null) {
+  if (!!find) {
     return find.update(fields);
   }
 
@@ -54,5 +78,8 @@ export const remove = async (
   ownerId: string
 ) =>
   Guild.destroy({
-    where: { serverId, ownerId },
+    where: {
+      serverId,
+      ownerId
+    },
   });

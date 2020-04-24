@@ -1,9 +1,9 @@
-import CustomError from '../../utils/customError';
+import CustomError from '../../utils/customerror';
 import * as Discord from 'discord.js';
 import * as tools from '../../utils/tools';
 import * as menu from '../../utils/menu';
 import * as players from '../../modules/players';
-import * as emojiCharacters from '../../utils/emojiCharacters';
+import * as emojiCharacters from '../../utils/emojicharacters';
 import * as cooldowns from '../../utils/cooldowns';
 
 const servers = tools.getData('osu!/servers');
