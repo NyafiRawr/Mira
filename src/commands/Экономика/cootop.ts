@@ -9,7 +9,7 @@ const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые богачи',
-  aliases: ['cootop'],
+  aliases: ['top'],
   usage: undefined,
   guild: true,
   hide: false,

@@ -9,7 +9,7 @@ const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые жирдяи',
-  aliases: ['fat', 'fattop'],
+  aliases: ['fats', 'fat', 'fatstop', 'topfats'],
   usage: undefined,
   guild: true,
   hide: false,

@@ -7,7 +7,7 @@ import * as economy from '../../modules/economy';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Поделиться печеньем',
-  aliases: ['share', 'give', 'pay'],
+  aliases: undefined,
   usage: '<@кому> <сколько>',
   guild: true,
   hide: false,
@@ -16,7 +16,6 @@ module.exports = {
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
-    // TODO: pay or gift or give?
     if (!(message.mentions.users.size && args[0].length)) {
       throw new CustomError('вы никого не упомянули.');
     }

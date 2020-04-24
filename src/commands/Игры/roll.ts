@@ -5,7 +5,7 @@ import CustomError from '../../utils/customerror';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Бросить кости',
-  aliases: ['кости'],
+  aliases: undefined,
   usage: '[максимальное число]',
   guild: true,
   cooldown: undefined,

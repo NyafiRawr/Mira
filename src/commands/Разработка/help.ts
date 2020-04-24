@@ -31,7 +31,7 @@ module.exports = {
               .filter(cmd => cmd.hide !== true && cmd.group === g)
               .map(
                 command =>
-                  `${config.bot.prefix}**${command.aliases![0] || command.name}** ${command.usage ||
+                  `${config.bot.prefix}**${!!command.aliases ? command.aliases[0] : command.name}** ${command.usage ||
                     ''} - ${command.description}`
               )
           ),
@@ -49,7 +49,7 @@ module.exports = {
       );
       embed.addField(
         'Скрытые команды',
-        `${config.bot.prefix}**${this.name}** hide`,
+        `${config.bot.prefix}**${this.name} hide**`,
         false
       );
     } else if (args[0] === 'hide') {
@@ -65,7 +65,7 @@ module.exports = {
               .filter(cmd => cmd.hide === true && cmd.group === g)
               .map(
                 command =>
-                  `${config.bot.prefix}**${command.name}** ${command.usage ||
+                  `${config.bot.prefix}**${!!command.aliases ? command.aliases[0] : command.name}** ${command.usage ||
                     ''} - ${command.description}`
               )
           ),

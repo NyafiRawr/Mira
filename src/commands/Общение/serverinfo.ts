@@ -48,7 +48,7 @@ const toDateLife = (value: string) => {
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Информация о сервере',
-  aliases: ['aboutserver', 'serverinfo'],
+  aliases: ['server', 'aboutserver'],
   usage: undefined,
   guild: true,
   hide: false,

@@ -4,7 +4,7 @@ import { randomBoolean } from '../../utils/tools';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Подбросить монетку',
-  aliases: ['монетка'],
+  aliases: undefined,
   usage: undefined,
   guild: true,
   cooldown: undefined,
