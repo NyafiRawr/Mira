@@ -27,7 +27,7 @@ module.exports = {
 
     const price = await vars.get(message.guild.id, this.name + '_' + 'price', 150000); // Цена по умолчанию
 
-    if (args.length === 0) {
+    if (!args.length) {
       embed
         .setDescription(
           `**${this.aliases[0]} create** <название> - создать за ${tools.separateThousandth(price)}:cookie:` +
@@ -38,25 +38,32 @@ module.exports = {
           `\n**${this.aliases[0]} list** - список гильдий` +
           `\n**${this.aliases[0]} master** <@> - передать гильдмастера` +
           `\n**${this.aliases[0]} dissolve** - распустить гильдию (печенье будет возвращено)` +
-          `\n*Можно состоять только в одной гильдии*`
+          `\n*Важно: можно состоять только в одной гильдии*`
         );
       return message.channel.send(embed);
     }
 
-    const serverGuilds = await guilds.getServerGuilds(message.guild.id);
+    if (args[0] === 'cat') {
+      const categoryId = args[1];
+      if (!categoryId)
+        throw new CustomError(`необходимо указать ID категории при вызове команды: \`${this.aliases[0]} cat <id>\``);
+      await vars.set(message.guild.id, this.name + '_' + 'category', categoryId);
+    }
 
-    const ownerGuild = await guilds.getOwnerGuild(message.guild.id, message.author.id);
+    const serverGuilds = await guilds.getAllGuildsServer(message.guild.id);
+
+    const ownerGuild = await guilds.getGuildOwner(message.guild.id, message.author.id);
     const guildmaster = !!ownerGuild ? true : false;
 
-    const myGuild = await guilds.getMembers(message.guild.id, message.author.id);
-    const guildmember = !!myGuild ? true : false;
+    const memberGuild = await guilds.getGuildMember(message.guild.id, message.author.id);
+    const guildmember = !!memberGuild ? true : false;
 
     if (args[0] === 'create') {
       if (guildmember || guildmaster)
         throw new CustomError('сначала нужно покинуть текущую гильдию!');
 
       const name = args.slice(1).join(' ');
-      if (!serverGuilds!.filter(guild => guild.name === name))
+      if (!!serverGuilds!.filter(guild => guild.name === name))
         throw new CustomError('такое название уже есть!');
 
       const category = await vars.get(message.guild.id, this.name + '_' + 'category', null); // Категория по умолчанию
@@ -125,7 +132,7 @@ module.exports = {
 
       embed
         .setDescription(
-          `Поздравляю, ты стал гильдмастером **${name}**!`
+          `Поздравляю, гильдия **${name}** создана!`
         );
 
       return message.channel.send(embed);
@@ -137,7 +144,7 @@ module.exports = {
 
     if (args[0] === 'add' || args[0] === 'rem') {
       if (!message.mentions.members.size)
-      throw new CustomError('нельзя добавить пустоту');
+        throw new CustomError('нельзя добавить пустоту');
       await guilds.addMember(message.guild.id, message.author.id, message.mentions.members.first());
       chat voice
     } else if (args[0] === 'leave') {

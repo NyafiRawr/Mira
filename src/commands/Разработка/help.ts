@@ -31,7 +31,7 @@ module.exports = {
               .filter(cmd => cmd.hide !== true && cmd.group === g)
               .map(
                 command =>
-                  `${config.bot.prefix}**${command.name}** ${command.usage ||
+                  `${config.bot.prefix}**${command.aliases![0] || command.name}** ${command.usage ||
                     ''} - ${command.description}`
               )
           ),
