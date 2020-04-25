@@ -31,13 +31,14 @@ module.exports = {
       embed
         .setDescription(
           `**${this.aliases[0]} create** <название> - создать за ${tools.separateThousandth(price)}:cookie:` +
-          `\n**${this.aliases[0]} add/rem** <@>, @... - пригласить/исключить` +
+          `\n**${this.aliases[0]} invite/kick** <@>, @... - пригласить/исключить` +
           `\n**${this.aliases[0]} leave** - выйти` +
           `\n**${this.aliases[0]} desc** <описание> - добавить описание` +
           `\n**${this.aliases[0]} info** [имя гильдии] - информация о гильдии` +
           `\n**${this.aliases[0]} list** - список гильдий` +
           `\n**${this.aliases[0]} master** <@> - передать гильдмастера` +
           `\n**${this.aliases[0]} dissolve** - распустить гильдию (печенье будет возвращено)` +
+          `\n**${this.aliases[0]} cat** <id> - указать категорию для войса и чата гильдий (для админов)` +
           `\n*Важно: можно состоять только в одной гильдии*`
         );
       return message.channel.send(embed);
@@ -63,6 +64,8 @@ module.exports = {
         throw new CustomError('сначала нужно покинуть текущую гильдию!');
 
       const name = args.slice(1).join(' ');
+      if (!name)
+        throw new CustomError('необходимо указать название!');
       if (!!serverGuilds!.filter(guild => guild.name === name))
         throw new CustomError('такое название уже есть!');
 
@@ -142,58 +145,66 @@ module.exports = {
       throw new CustomError('на сервере нет гильдий, но ты здесь и мы можем это исправить!');
     }
 
-    if (args[0] === 'leave') {
-      if (guildmaster)
-        throw new CustomError('нельзя покинуть гильдию, потому что ты гильдмастер!');
-        === remove
-    } else if (args[0] === 'info') {
+    if (args[0] === 'info') {
       const name = args.slice(1).join(' ');
-      поиск по имени
+      return поиск по имени // новая функция в guilds?
     } else if (args[0] === 'list') {
-      serverGuilds
+      embed
+        .setDescription(
+          '**Список гильдий на сервере**\n'
+          + serverGuilds.forEach(guild => `__${guild.name}__ <@${guild.ownerId}>\n`)
+        );
+      return message.channel.send(embed); // TODO: лимиты эмбедов throwнуть
     }
 
     if (!guildmaster)
       throw new CustomError('ты не гильдмастер!');
 
-    if (args[0] === 'add' || args[0] === 'rem') {
+    if (!!message.mentions.members.filter(member => member.id === message.author.id))
+      throw new CustomError('операции над самим собой недоступны.');
+
+    if (['invite', 'kick'].includes(args[0])) { // TODO: добавить одобрение invite
       if (!message.mentions.members.size)
-        throw new CustomError('нельзя добавить пустоту');
+        throw new CustomError('необходимо упомянуть необходимых людей при вызове команды.');
+
       const guildVoice = message.guild.channels.get(ownerGuild!.voiceId);
       const guildChat = message.guild.channels.get(ownerGuild!.chatId);
-      if (args[0] === 'add')
-        await guilds.addMember(message.guild.id, message.mentions.members.first().id, ownerGuild!.id);
-      if (args[0] === 'rem')
-        await guilds.removeMember(message.guild.id, message.mentions.members.first().id, ownerGuild!.id);
+
+      const access = args[0] === 'add' ? true : false;
       for await (const target of message.mentions.members.array()) {
-        guildVoice.overwritePermissions(target.id, args[0] === 'add' ? {
-          VIEW_CHANNEL: true,
-          CONNECT: true,
-          SPEAK: true,
-          USE_VAD: true,
-        } : {
-            VIEW_CHANNEL: false,
-            CONNECT: false,
-            SPEAK: false,
-            USE_VAD: false,
-          });
-        guildChat.overwritePermissions(target.id, {
-          VIEW_CHANNEL: args[0] === 'add' ? true : false,
+        if (access)
+          await guilds.addMember(message.guild.id, target.id, ownerGuild!.id);
+        else
+          await guilds.removeMember(message.guild.id, target.id, ownerGuild!.id);
+        guildVoice!.overwritePermissions(target.id, {
+          VIEW_CHANNEL: access,
+          CONNECT: access,
+          SPEAK: access,
+          USE_VAD: access,
+        });
+        guildChat!.overwritePermissions(target.id, {
+          VIEW_CHANNEL: access,
         });
       }
+      return message.reply(access ?
+        (`в гильдию добавлен(ы) `) : (`из гильдии исключен(ы) `) + message.mentions.members.array());
     } else if (args[0] === 'desc') {
       const description = args.slice(1).join(' ');
       await guilds.set(message.guild.id, message.author.id, {
         description
       });
-      return message.reply(`описание гильдии изменено на:\n${description}`);
+      return message.reply(`описание гильдии изменено на: ${description}`);
     } else if (args[0] === 'master') {
-      // HOW?
-      return message.reply(`управление гильдией передано ${message.mentions.members.first()}`);
+      if (!message.mentions.members.size)
+        throw new CustomError('необходимо упомянуть нового гильдмастера.');
+      await guilds.set(message.guild.id, message.author.id, { ownerId: message.mentions.members.first().id });
+      return message.reply(`управление гильдией передано ${message.mentions.members.first()}! Используй команду \`g info\` чтобы узнать о ней.`);
     } else if (args[0] === 'dissolve') {
-      // TODO: дать возможность админу удалять ги
-      await guilds.remove(message.guild.id, message.author.id);
-      return message.reply(`гильдия распущена!`); // TODO: сообщить членам?
+      if (admin && writeguildname) guildfordelete = name;
+      else
+        await guilds.remove(message.guild.id, message.author.id);
+      return message.reply(`гильдия ${guild.name} распущена!`);
+      // TODO: сообщить членам о роспуске? например в лс "гильдия на сервере распущена"
     }
   },
 };
