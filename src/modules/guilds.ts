@@ -39,6 +39,30 @@ export const getGuildMember = async (
   });
 };
 
+export const addMember = async (
+  serverId: string,
+  userId: string,
+  guildId: string
+): Promise<Guild | null> =>
+  Guild.create({
+    serverId,
+    userId,
+    guildId
+  });
+
+export const removeMember = async (
+  serverId: string,
+  userId: string,
+  guildId: string
+) =>
+  Guild.destroy({
+    where: {
+      serverId,
+      userId,
+      guildId
+    },
+  });
+
 export const getMembersGuild = async (
   serverId: string,
   guildId: string

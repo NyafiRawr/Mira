@@ -142,14 +142,10 @@ module.exports = {
       throw new CustomError('на сервере нет гильдий, но ты здесь и мы можем это исправить!');
     }
 
-    if (args[0] === 'add' || args[0] === 'rem') {
-      if (!message.mentions.members.size)
-        throw new CustomError('нельзя добавить пустоту');
-      await guilds.addMember(message.guild.id, message.author.id, message.mentions.members.first());
-      chat voice
-    } else if (args[0] === 'leave') {
+    if (args[0] === 'leave') {
       if (guildmaster)
         throw new CustomError('нельзя покинуть гильдию, потому что ты гильдмастер!');
+        === remove
     } else if (args[0] === 'info') {
       const name = args.slice(1).join(' ');
       поиск по имени
@@ -160,7 +156,32 @@ module.exports = {
     if (!guildmaster)
       throw new CustomError('ты не гильдмастер!');
 
-    if (args[0] === 'desc') {
+    if (args[0] === 'add' || args[0] === 'rem') {
+      if (!message.mentions.members.size)
+        throw new CustomError('нельзя добавить пустоту');
+      const guildVoice = message.guild.channels.get(ownerGuild!.voiceId);
+      const guildChat = message.guild.channels.get(ownerGuild!.chatId);
+      if (args[0] === 'add')
+        await guilds.addMember(message.guild.id, message.mentions.members.first().id, ownerGuild!.id);
+      if (args[0] === 'rem')
+        await guilds.removeMember(message.guild.id, message.mentions.members.first().id, ownerGuild!.id);
+      for await (const target of message.mentions.members.array()) {
+        guildVoice.overwritePermissions(target.id, args[0] === 'add' ? {
+          VIEW_CHANNEL: true,
+          CONNECT: true,
+          SPEAK: true,
+          USE_VAD: true,
+        } : {
+            VIEW_CHANNEL: false,
+            CONNECT: false,
+            SPEAK: false,
+            USE_VAD: false,
+          });
+        guildChat.overwritePermissions(target.id, {
+          VIEW_CHANNEL: args[0] === 'add' ? true : false,
+        });
+      }
+    } else if (args[0] === 'desc') {
       const description = args.slice(1).join(' ');
       await guilds.set(message.guild.id, message.author.id, {
         description
