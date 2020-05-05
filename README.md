@@ -2,6 +2,7 @@
 
 [![Discord](https://img.shields.io/discord/370977534176919552)](https://discord.gg/hCe883B)
 
+![Default workflow](https://github.com/NyafiRawr/Mira/workflows/Default%20workflow/badge.svg)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/NyafiRawr/Mira) [![GitHub closed pull requests](https://img.shields.io/github/issues-pr/NyafiRawr/Mira)](https://github.com/NyafiRawr/Mira/pulls)
 
 

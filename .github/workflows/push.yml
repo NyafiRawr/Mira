@@ -1,6 +1,6 @@
-name: Node CI
+name: Default workflow
 
-on: [pull_request]
+on: [push]
 
 jobs:
   build:
