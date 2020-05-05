@@ -3,11 +3,11 @@ import config from '../../config';
 import * as tools from '../../utils/tools';
 
 // tslint:disable-next-line: no-var-requires
-const packageFile = require('../../../package.json');
+const packageJson = require('../../../package.json');
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: `Информация о ${tools.toTitle(packageFile.name)}`,
+  description: `Информация о ${tools.toTitle(packageJson.name)}`,
   aliases: ['info', 'version', 'developer'],
   usage: undefined,
   guild: false,
@@ -19,6 +19,7 @@ module.exports = {
   execute(message: Discord.Message) {
     let totalSeconds = message.client.uptime / 1000;
     const days = Math.floor(totalSeconds / 86400);
+    totalSeconds %= 86400;
     const hours = Math.floor(totalSeconds / 3600);
     totalSeconds %= 3600;
     const minutes = Math.floor(totalSeconds / 60);
@@ -28,20 +29,19 @@ module.exports = {
     const embed = new Discord.RichEmbed()
       .setAuthor('Информация обо мне', 'https://i.imgur.com/wSTFkRM.png')
       .setTitle(
-        `Основа: Discord.JS (NodeJS ${
-          process.version
-        } и TS v${packageFile.dependencies.typescript.slice(1)})`
+        `GitHub`
       )
-      .setURL('https://discord.js.org')
+      // Discord.JS (NodeJS ${process.version} и TS v${packageJson.dependencies.typescript.slice(1)})
+      .setURL(`https://github.com/${packageJson.author.name}/${packageJson.name}`)
 
       .setDescription(
-        `Разработчики:\n - ${packageFile.author.name}\n` +
-          packageFile.contributors
-            .map((contr: string) => ` - ${contr}`)
-            .join('\n')
+        `Разработчики:\n - ${packageJson.author.name}\n` +
+        packageJson.contributors
+          .map((contr: string) => ` - ${contr}`)
+          .join('\n')
       )
 
-      .addField('Версия', packageFile.version, true)
+      .addField('Версия', packageJson.version, true)
       .addField('Время работы', uptime, true)
       .addField('Хостинг', 'FirstByte.ru', true)
       .addField('Префикс', config.bot.prefix, true)

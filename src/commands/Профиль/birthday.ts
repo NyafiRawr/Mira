@@ -7,7 +7,7 @@ import * as users from '../../modules/users';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Установить дату рождения',
-  aliases: ['birth'],
+  aliases: ['myday', 'birth'],
   usage: '<24.06.1997>',
   guild: false,
   hide: false,

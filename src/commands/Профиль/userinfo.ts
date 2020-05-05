@@ -7,7 +7,7 @@ import moment = require('moment');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Информация о участнике',
-  aliases: ['userinfo', 'member', 'stats'],
+  aliases: ['user', 'member', 'stats'],
   usage: '[@упоминание]',
   guild: true,
   hide: false,
