@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as tools from '../../utils/tools';
-import CustomError from '../../utils/customerror';
+import CustomError from '../../utils/customError';
 
 // tslint:disable-next-line: no-var-requires
 const packageJson = require('../../../package.json');

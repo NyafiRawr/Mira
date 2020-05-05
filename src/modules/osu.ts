@@ -1,4 +1,4 @@
-import CustomError from '../utils/customerror';
+import CustomError from '../utils/customError';
 import * as Discord from 'discord.js';
 import * as players from './players';
 import * as tools from '../utils/tools';

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import CustomError from '../../utils/customerror';
+import CustomError from '../../utils/customError';
 import * as economy from '../../modules/economy';
 import * as vars from '../../modules/vars';
 import * as guilds from '../../modules/guilds';
@@ -189,8 +189,9 @@ module.exports = {
       if (access) {
         message.channel.send(`${target} гильдмастер ${message.author} предлагает вступить в свою гильдию, если хочешь напиши: \`да\`, иначе что угодно`);
         const answer = await menu.waitMessage(message.channel, target.id);
-        if (answer === 'да') await guilds.addMember(message.guild.id, target.id, masterGuild.id);
-        else return message.reply(`приглашение для ${target} отклонено.`);
+        if (answer === 'да') {
+          await guilds.addMember(message.guild.id, target.id, masterGuild.id);
+        } else return message.reply(`приглашение для ${target} отклонено.`);
       } else await guilds.removeMember(message.guild.id, target.id, masterGuild.id);
       await message.guild.channels.get(masterGuild.voiceId)?.overwritePermissions(target.id, {
         VIEW_CHANNEL: access,

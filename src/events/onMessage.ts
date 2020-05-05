@@ -3,7 +3,7 @@ import { Message, TextChannel } from 'discord.js';
 import { log } from '../logger';
 import { client, commands } from '../client';
 import config from '../config';
-import CustomError from '../utils/customerror';
+import CustomError from '../utils/customError';
 import { randomInteger } from '../utils/tools';
 import * as cooldowns from '../utils/cooldowns';
 

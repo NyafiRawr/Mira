@@ -1,6 +1,6 @@
-import * as emojiCharacters from './emojicharacters';
+import * as emojiCharacters from './emojiCharacters';
 import * as Discord from 'discord.js';
-import CustomError from './customerror';
+import CustomError from './customError';
 
 const clearFail = (error: string) => {
   throw new CustomError(`ошибка очистки реакций: \`${error}\``);

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as moment from 'moment';
-import CustomError from '../../utils/customerror';
+import CustomError from '../../utils/customError';
 import * as tools from '../../utils/tools';
 import * as users from '../../modules/users';
 

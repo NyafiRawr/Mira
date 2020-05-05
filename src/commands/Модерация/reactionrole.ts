@@ -1,5 +1,5 @@
-import CustomError from '../../utils/customerror';
-import * as ReactionRoles from '../../modules/reactionroles';
+import CustomError from '../../utils/customError';
+import * as ReactionRoles from '../../modules/reactionRoles';
 import { randomHexColor } from '../../utils/tools';
 import * as Discord from 'discord.js';
 
