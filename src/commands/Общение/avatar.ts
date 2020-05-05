@@ -5,7 +5,7 @@ import * as tools from '../../utils/tools';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Показать аватар участника',
-  aliases: ['avatar', 'ava'],
+  aliases: ['ava', 'img'],
   usage: '[@ или ник или имя]',
   guild: true,
   hide: false,

@@ -1,6 +1,6 @@
 import { client } from '../client';
 import { log } from '../logger';
-import * as streams from '../modules/streams';
+import * as vars from '../modules/vars';
 
 /**
  * Обработчик для события onReady
@@ -17,11 +17,11 @@ export default async () => {
 
   // Сервера доступны начиная отсюда производим очистку роли стримера
   client.guilds.forEach(async (guild) => {
-    const stream = await streams.get(guild.id);
-    if (!!stream?.roleId) {
-      const role = guild.roles.get(stream.roleId);
+    const roleId = await vars.get(guild.id, 'stream_roleId');
+    if (!!roleId) {
+      const role = guild.roles.get(roleId);
       if (!!role) {
-        role.members.map(member => member.removeRole(stream.roleId).catch());
+        role.members.map(member => member.removeRole(roleId).catch());
       }
     }
   });

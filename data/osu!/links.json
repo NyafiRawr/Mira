@@ -23,8 +23,8 @@
 	},
 	"akatsuki": {
 		"avatar": "https://a.osu.akatsuki.pw/ID",
-		"user": "https://osu.akatsuki.pw/u/ID",
-		"beatmap": "https://osu.akatsuki.pw/b/ID",
+		"user": "https://akatsuki.pw/u/ID",
+		"beatmap": "https://akatsuki.pw/b/ID",
 		"beatmapset_cover": "https://assets.osu.akatsuki.pw/beatmaps/ID/covers/cover.jpg",
 		"flag": "https://osu.ppy.sh/images/flags/RU.png"
 	},

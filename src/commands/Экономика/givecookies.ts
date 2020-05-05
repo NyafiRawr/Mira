@@ -9,7 +9,7 @@ module.exports = {
   aliases: ['gco'],
   usage: '<@кому, @, ...> <сколько>',
   guild: true,
-  hide: false,
+  hide: true,
   cooldown: 0.5,
   cooldownMessage: undefined,
   permissions: ['ADMINISTRATOR'],

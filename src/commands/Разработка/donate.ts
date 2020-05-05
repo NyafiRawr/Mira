@@ -14,13 +14,13 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message: Discord.Message) {
     const embed = new Discord.RichEmbed()
-      .setAuthor('Спасибо за интерес к разработке!')
+      .setAuthor('Спасибо за поддержку!')
       .setDescription(
         '[Яндекс.Доширак: 410014841265118](https://money.yandex.ru/to/410014841265118)' +
-          '\n[Фрукт QIWI, на никнейм: NyafiRawr](https://qiwi.com/payment/form/99999)' +
+          '\n[QIWI Копилка](https://qiwi.me/81e51b22-d3bf-4ec4-b72f-5d4f537abc1b)' +
           '\n[WebMoney WMR: R119858043867](https://www.webmoney.ru/rus/inout/topup.shtml#bank-card_method)' +
           '\n[PayPal: NyafiRawr](http://paypal.me/NyafiRawr)' +
-          '\n\nИ поддержите словом: рассказав об ошибках или о том, что понравилось!'
+          '\n\nНе забудь указать свой никнейм с сервера!'
       )
       .setColor('#6DC066')
       .setImage(
