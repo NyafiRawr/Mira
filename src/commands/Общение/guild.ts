@@ -32,6 +32,7 @@ module.exports = {
       embed
         .setDescription(
           `**${this.aliases[0]} create** <название> - создать за ${tools.separateThousandth(price)}:cookie:` +
+          '\nВажно: пересоздайте гильдию если случайно удалили её каналы.' +
           `\n**${this.aliases[0]} invite/kick** <@> - пригласить/исключить` +
           `\n**${this.aliases[0]} leave** - выйти` +
           `\n**${this.aliases[0]} desc** <описание> - добавить описание` +
