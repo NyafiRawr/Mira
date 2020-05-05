@@ -6,7 +6,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Бросить кости',
   aliases: undefined,
-  usage: '[максимальное число]',
+  usage: '[максимальное число]', // TODO: '[максимальное число]/[начало-конец]'
   guild: true,
   cooldown: undefined,
   cooldownMessage: undefined,
@@ -17,13 +17,11 @@ module.exports = {
 
     if (args[0]) {
       limit = parseInt(args[0], 10);
-      throw new CustomError(
-        Number.isNaN(limit) ? 'только целые числа.' : 'а где неопределенность?'
-      );
+      if (!Number.isInteger(limit)) throw new CustomError('только целые числа.');
     }
 
     message.reply(
-      `вы бросаете кости и выпадает **${randomInteger(0, limit)} из ${limit}!**`
+      `вы бросаете кости и выпадает **||${randomInteger(0, limit)}|| из ${limit}!**`
     );
   },
 };

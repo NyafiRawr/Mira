@@ -86,7 +86,7 @@ module.exports = {
         `Роли (${message.guild.roles.size - 1})`,
         message.guild.roles
           .map(r => r.toString().trim())
-          .slice(1, 24)
+          .slice(1, 24) // 1 - потому что 0 роль это @everyone. 24 примерный предел вместимый в эмбед в сумме с остальным
           .join(' ') || 'Нет',
         false
       )
