@@ -43,24 +43,24 @@
     "keyv": "^4.0.0",
     "moment": "^2.24.0",
     "mysql2": "^2.0.2",
-    "pino": "^5.17.0",
-    "sequelize": "^5.21.5",
+    "pino": "^6.1.1",
+    "sequelize": "^5.21.6",
     "sqlite3": "^4.1.1",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.30",
-    "@types/validator": "^12.0.1",
+    "@types/validator": "^13.0.0",
     "@types/keyv": "^3.1.1",
-    "@types/node": "^13.9.3",
+    "@types/node": "^13.13.2",
     "@types/pino": "^5.17.0",
     "prettier": "^1.19.1",
-    "pino-pretty": "^3.6.1",
+    "pino-pretty": "^4.0.0",
     "pino-tee": "^0.3.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^8.8.1",
+    "ts-node": "^8.9.0",
     "ts-node-dev": "^1.0.0-pre.44",
-    "tslint": "^6.1.0",
+    "tslint": "^6.1.1",
     "tslint-config-prettier": "^1.18.0"
   }
 }
