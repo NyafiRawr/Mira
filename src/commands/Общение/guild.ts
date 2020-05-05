@@ -91,7 +91,7 @@ module.exports = {
       if (!!memberGuild || !!masterGuild)
         throw new CustomError('сначала нужно покинуть текущую гильдию!');
 
-      if (!message.guild.members.get(message.author.id)?.hasPermissions(this.permissions[1])) {
+      if (!message.guild.members.get(message.client.user.id)?.hasPermissions(this.permissions[1])) {
         throw new CustomError(
           'мне нужно право управлять каналами, чтобы создать каналы гильдии!'
         );
