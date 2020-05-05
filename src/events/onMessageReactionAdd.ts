@@ -1,5 +1,5 @@
 import { GuildMember, MessageReaction, Message } from 'discord.js';
-import * as ReactionRoles from '../modules/reactionroles';
+import * as ReactionRoles from '../modules/reactionsRoles';
 import CustomError from '../utils/customError';
 // Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
