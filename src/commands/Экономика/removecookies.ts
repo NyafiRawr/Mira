@@ -9,7 +9,7 @@ module.exports = {
   aliases: ['rco'],
   usage: '<@у кого, @, ...> <сколько>',
   guild: true,
-  hide: false,
+  hide: true,
   cooldown: 0.5,
   cooldownMessage: undefined,
   permissions: ['ADMINISTRATOR'],

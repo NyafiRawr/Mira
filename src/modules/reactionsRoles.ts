@@ -1,4 +1,4 @@
-import ReactionRole from '../models/reactionrole';
+import ReactionRole from '../models/reactionsRole';
 import CustomError from '../utils/customError';
 
 export const get = async (

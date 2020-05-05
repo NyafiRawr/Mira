@@ -7,7 +7,7 @@ import * as economy from '../../modules/economy';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Ежедневное печенье!',
-  aliases: ['timely', 'цщкл'],
+  aliases: ['work', 'цщкл'],
   usage: undefined,
   guild: true,
   hide: false,
