@@ -10,8 +10,14 @@ class GuildMember extends Model {
 GuildMember.init(
   {
     serverId: STRING,
-    userId: STRING,
-    guildId: STRING
+    userId: {
+      type: STRING,
+      primaryKey: true
+    },
+    guildId: {
+      type: STRING,
+      primaryKey: true
+    },
   },
   {
     modelName: 'guildmember',

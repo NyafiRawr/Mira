@@ -9,7 +9,7 @@ export const get = async <T = any>(
     where: { name, serverId },
   });
 
-  return (JSON.parse(res?.value || 'false') as any) || define;
+  return res?.value as any || define;
 };
 
 export const set = async (
@@ -21,25 +21,15 @@ export const set = async (
     where: { name, serverId },
   });
 
-  if (variable != null) {
-    return variable.update({
-      name,
-      value: JSON.stringify(value),
-    });
+  if (variable !== null) {
+    return variable.update({ name, value });
   }
 
-  return Var.create({
-    serverId,
-    name,
-    value: JSON.stringify(value),
-  });
+  return Var.create({ serverId, name, value });
 };
 
 export const remove = async (serverId: string, name: string) =>
   Var.destroy({
-    where: {
-      serverId,
-      name,
-    },
+    where: { serverId, name },
     truncate: true,
   });

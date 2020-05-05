@@ -43,31 +43,20 @@ export const getGuildMember = async (
       userId
     },
   });
-  return Guild.findOne({
+  return !!relation ? Guild.findOne({
     where: {
       serverId,
-      id: relation!.guildId
+      id: relation.guildId
     },
-  });
+  }) : null;
 };
-
-export const getAmountMembers = async (
-  serverId: string,
-  guildId: string
-): Promise<Guild | null> =>
-  Guild.findOne({
-    where: {
-      serverId,
-      id: guildId
-    },
-  });
 
 export const addMember = async (
   serverId: string,
   userId: string,
   guildId: string
-): Promise<Guild | null> =>
-  Guild.create({
+): Promise<GuildMember | null> =>
+  GuildMember.create({
     serverId,
     userId,
     guildId
@@ -78,7 +67,7 @@ export const removeMember = async (
   userId: string,
   guildId: string
 ) =>
-  Guild.destroy({
+  GuildMember.destroy({
     where: {
       serverId,
       userId,
@@ -122,21 +111,37 @@ export const set = async (
 
 export const remove = async (
   serverId: string,
-  ownerId: string
-) =>
+  ownerId: string,
+  message: Discord.Message | undefined = undefined
+) => {
+  if (!!message) {
+    const guild = await getGuildOwner(serverId, ownerId);
+    if (!!guild) {
+      await message.guild.channels.get(guild.chatId)?.delete();
+      await message.guild.channels.get(guild.voiceId)?.delete();
+      GuildMember.destroy({
+        where: {
+          serverId,
+          guildId: guild.id
+        },
+      });
+    }
+  }
+
   Guild.destroy({
     where: {
       serverId,
       ownerId
     },
   });
+};
 
 // Создание / проверка и воссоздание чатов
 export const recreateChats = async (
   message: Discord.Message,
   guildName: string,
   categoryId: string,
-  onwerId: string
+  ownerId: string
 ): Promise<any> => {
   let guildChat;
   let guildVoice;
@@ -150,7 +155,16 @@ export const recreateChats = async (
       type: 'text',
       permissionOverwrites: [
         {
-          id: onwerId,
+          id: ownerId,
+          allow: [
+            'VIEW_CHANNEL',
+            'SEND_MESSAGES',
+            'MANAGE_MESSAGES',
+            'MANAGE_CHANNELS'
+          ],
+        },
+        {
+          id: message.client.user.id,
           allow: [
             'VIEW_CHANNEL',
             'SEND_MESSAGES',
@@ -166,6 +180,7 @@ export const recreateChats = async (
       parent: categoryId,
     })) as Discord.TextChannel;
     if (!!selectGuild && !!members) {
+      await set(message.guild.id, ownerId, { chatId: guildChat.id });
       for await (const member of members) {
         guildChat.overwritePermissions(member.userId, {
           VIEW_CHANNEL: true,
@@ -179,7 +194,19 @@ export const recreateChats = async (
       type: 'voice',
       permissionOverwrites: [
         {
-          id: onwerId,
+          id: ownerId,
+          allow: [
+            'VIEW_CHANNEL',
+            'CONNECT',
+            'SPEAK',
+            'USE_VAD',
+            'MUTE_MEMBERS',
+            'DEAFEN_MEMBERS',
+            'MANAGE_CHANNELS'
+          ],
+        },
+        {
+          id: message.client.user.id,
           allow: [
             'VIEW_CHANNEL',
             'CONNECT',
@@ -197,7 +224,8 @@ export const recreateChats = async (
       ],
       parent: categoryId,
     })) as Discord.VoiceChannel;
-    if (!!selectGuild && !!members)
+    if (!!selectGuild && !!members) {
+      await set(message.guild.id, ownerId, { voiceId: guildVoice.id });
       for await (const member of members) {
         guildVoice.overwritePermissions(member.userId, {
           VIEW_CHANNEL: true,
@@ -206,6 +234,7 @@ export const recreateChats = async (
           USE_VAD: true,
         });
       }
+    }
   }
 
   return { guildChat, guildVoice };
