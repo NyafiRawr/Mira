@@ -91,7 +91,7 @@ module.exports = {
       if (!!memberGuild || !!masterGuild)
         throw new CustomError('сначала нужно покинуть текущую гильдию!');
 
-      if (!message.member.hasPermissions(this.permissions[1])) {
+      if (!message.guild.members.get(message.author.id)?.hasPermissions(this.permissions[1])) {
         throw new CustomError(
           'мне нужно право управлять каналами, чтобы создать каналы гильдии!'
         );
@@ -159,7 +159,8 @@ module.exports = {
         await guilds.remove(message.guild.id, message.author.id, message);
       }
 
-      return message.reply(`гильдия гильдмастера ${message.mentions.members.first() || message.author}, если она существовала, распущена!`);
+      message.reply(`гильдия гильдмастера ${message.mentions.members.first() || message.author}, если она существовала, распущена!`);
+      return economy.set(message.guild.id, message.mentions.members.first().id || message.author.id, price);
       // TODO: сообщить членам о роспуске? например в лс "гильдия на сервере распущена"
     }
 

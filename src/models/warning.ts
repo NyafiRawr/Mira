@@ -16,7 +16,10 @@ Warning.init(
       type: DATE,
       defaultValue: NOW,
     },
-    reason: STRING
+    reason: {
+      type: STRING,
+      defaultValue: 'Нет',
+    },
   },
   {
     modelName: 'warning',
