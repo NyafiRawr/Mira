@@ -18,10 +18,6 @@ module.exports = {
       throw new CustomError('нужно право управлять сообщениями!');
     }
 
-    if (!message.guild.members.get(message.client.user.id)!.hasPermission(this.permissions[0])) {
-      throw new CustomError('у меня нет права управлять сообщениями!');
-    }
-
     const victim = message.mentions.members.first();
     if (!victim)
       throw new CustomError(
@@ -35,7 +31,7 @@ module.exports = {
     return message.channel.send({
       'embed': {
         'author': {
-          'name': `${victim} получает предупреждение`,
+          'name': `${victim.user.username + '#' + victim.user.discriminator} получает предупреждение`,
           'icon_url': victim.user.avatarURL
         },
         'description': `**Причина:** ${reason}`,
