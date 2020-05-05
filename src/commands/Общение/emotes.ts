@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as fs from 'fs';
 import Axios from 'axios';
 
 import config from '../../config';
@@ -20,7 +19,7 @@ Object.keys(gifs).forEach(category => {
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Список эмоций',
-  aliases: ['emotions', 'emote'].concat(cats),
+  aliases: ['ems', 'emotions'].concat(cats),
   usage: undefined,
   guild: true,
   hide: false,

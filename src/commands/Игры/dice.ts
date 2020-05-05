@@ -4,7 +4,7 @@ import { randomInteger } from '../../utils/tools';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Бросить кубик',
-  aliases: ['кубик'],
+  aliases: undefined,
   usage: undefined,
   guild: true,
   cooldown: undefined,
