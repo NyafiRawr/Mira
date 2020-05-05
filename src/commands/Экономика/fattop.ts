@@ -8,8 +8,8 @@ const rangs = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Печеньковые богачи',
-  aliases: ['cootop'],
+  description: 'Печеньковые жирдяи',
+  aliases: ['fats', 'fat', 'fatstop', 'topfats'],
   usage: undefined,
   guild: true,
   hide: false,
@@ -28,10 +28,10 @@ module.exports = {
     const onlyLiveHumans = new Array();
     base.forEach((user: any) => {
       const member = message.guild.members.get(user.id);
-      if (!!member && !member.user.bot && user.balance > 0) {
+      if (!!member && !member.user.bot && user.weight > 0) {
         onlyLiveHumans.push({
           id: user.id,
-          balance: user.balance,
+          weight: user.weight,
         });
       }
     });
@@ -42,7 +42,7 @@ module.exports = {
     for (let i = 0; i < maxTopSize; i += 1) {
       // tslint:disable-next-line: prefer-for-of
       for (let j = i + 1; j < onlyLiveHumans.length; j += 1) {
-        if (onlyLiveHumans[i].balance < onlyLiveHumans[j].balance) {
+        if (onlyLiveHumans[i].weight < onlyLiveHumans[j].weight) {
           const temp = onlyLiveHumans[i];
           onlyLiveHumans[i] = onlyLiveHumans[j];
           onlyLiveHumans[j] = temp;
@@ -57,11 +57,11 @@ module.exports = {
         msg.push(
           `  **${rangs[msg.length]}. ${
             !member || !member.nickname ? member.user.username : member.nickname
-          }** ${tools.separateThousandth(user.balance)}:cookie:`
+          }** ${tools.separateThousandth(user.weight)} кг`
         );
       }
     });
 
-    message.reply(`**печеньковые богачи:**\n${msg.join('\n')}`);
+    message.reply(`**печеньковые жирдяи:**\n${msg.join('\n')}`);
   },
 };
