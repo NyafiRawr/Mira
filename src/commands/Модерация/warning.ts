@@ -24,8 +24,8 @@ module.exports = {
         'пожалуйста, укажите кому нужно сделать предупреждение при вызове команды!'
       );
 
-    let reason = args.slice(1).join(' ');
-    if (!reason.trim().length) reason = 'Не указана';
+    let reason = args.slice(1).join(' ').trim();
+    if (!reason.length) reason = 'Не указана';
 
     await warns.set(message.guild.id, victim.id, reason);
     return message.channel.send({
