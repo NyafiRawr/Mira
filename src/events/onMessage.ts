@@ -20,14 +20,9 @@ export default async (message: Message) => {
     content = itSelf ? `${config.bot.prefix}about` : content;
   }
 
-  let prefixHave = false;
-  for (const prefix of config.bot.prefixs) {
-    if (content.startsWith(prefix)) {
-      prefixHave = true;
-      break;
-    }
-  }
-  if (!prefixHave) return;
+  if (
+    !config.bot.prefixs.filter((prefix) => content.startsWith(prefix)).length
+  ) return;
 
   const args = content.slice(config.bot.prefix.length).split(/ +/);
 
