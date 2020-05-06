@@ -4,7 +4,7 @@ import * as warns from '../../modules/warnings';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Присвоить роль заблокированного или настроить наказания',
+  description: 'Присвоить роль заблокированного',
   aliases: undefined,
   usage: '@кому [длина мута в формате ЧЧ:ММ:СС] / <@роль означающая мут>',
   guild: true,
@@ -23,6 +23,7 @@ module.exports = {
         throw new CustomError('нужно быть администратором!');
       }
       await warns.setRoleMute(message.guild.id, message.mentions.roles.first().id);
+      return message.reply(`роль ${message.mentions.roles.first()} установлена как блокировочная.`);
     }
 
     const victim = message.mentions.members.first();
