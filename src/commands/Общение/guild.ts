@@ -160,7 +160,9 @@ module.exports = {
       }
 
       message.reply(`гильдия гильдмастера ${message.mentions.members.first() || message.author}, если она существовала, распущена!`);
-      return economy.set(message.guild.id, message.mentions.members.first().id || message.author.id, price);
+      return economy.set(message.guild.id,
+        !!message.mentions.members.size ? message.mentions.members.first().id : message.author.id,
+        price);
       // TODO: сообщить членам о роспуске? например в лс "гильдия на сервере распущена"
     }
 
