@@ -30,8 +30,7 @@ module.exports = {
         await warns.editBadWords(message.guild.id, list, false);
       }
 
-      const badWords = await warns.getBadWords(message.guild.id);
-      return message.reply(`новый список запрещенных слов: ${badWords?.join(', ') || 'пуст'}`);
+      return message.reply(`слово для запрета добавлено в серверный список.`);
     }
 
     else if (['allow', 'deny'].includes(args[0])) {
