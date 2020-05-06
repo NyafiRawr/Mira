@@ -29,9 +29,7 @@ export default async (message: Message) => {
   const commandName = args.shift()!.toLowerCase();
   const command = commands.get(commandName);
 
-  if (!command) {
-    return;
-  }
+  if (!command) return;
 
   const channel = message.guild.channels.find('id', message.channel.id);
   if (
@@ -46,7 +44,7 @@ export default async (message: Message) => {
   }
 
   if (message.channel.type === 'text') {
-    await message.delete();
+    await message.delete().catch();
   } else if (command.guild) {
     return message.reply(`команда \`${command.name}\` недоступна в ЛС!`);
   }
@@ -79,10 +77,10 @@ export default async (message: Message) => {
     return message.reply(reply);
   }
 
-  log.debug('Выполнение команды', message.content);
   try {
     await command.execute(message, args, cooldowns.reset);
   } catch (err) {
+    log.debug('Выполнение команды', message.content);
     log.debug(err, message.content);
 
     if (err instanceof CustomError) {
