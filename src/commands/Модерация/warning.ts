@@ -11,7 +11,7 @@ module.exports = {
   hide: true,
   cooldown: 0.5,
   cooldownMessage: undefined,
-  permissions: ['MANAGE_MESSAGES'],
+  permissions: ['MANAGE_MESSAGES', 'ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
     if (!message.member.hasPermission(this.permissions[0])) {
@@ -19,6 +19,9 @@ module.exports = {
     }
 
     if (args[0] === 'set') {
+      if (!message.member.hasPermission(this.permissions[1])) {
+        throw new CustomError('нужно быть администратором!');
+      }
       const count = parseInt(args[1], 10);
       if (!count) throw new CustomError('нужно указать количество предупреждений.');
       const time = args[2];
