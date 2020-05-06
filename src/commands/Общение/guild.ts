@@ -83,9 +83,9 @@ module.exports = {
       }
       else {
         const existGuilds = serverGuilds!.filter(guild => guild.name === name);
-        if (!!existGuilds.length) {
+        if (!!existGuilds.length)
           throw new CustomError('такое название уже есть!');
-        }
+
       }
 
       if (!!memberGuild || !!masterGuild)
@@ -172,6 +172,23 @@ module.exports = {
         description
       });
       return message.reply(`описание гильдии изменено на: ${description}`);
+    }
+
+    if (args[0] === 'rename') {
+      const newName = args.slice(1).join(' ');
+
+      const existGuilds = serverGuilds!.filter(guild => guild.name === newName);
+      if (!!existGuilds.length)
+        throw new CustomError('такое название уже есть!');
+
+      await guilds.set(message.guild.id, message.author.id, {
+        name: newName
+      });
+
+      await message.guild.channels.get(masterGuild.chatId)?.setName(newName);
+      await message.guild.channels.get(masterGuild.voiceId)?.setName(newName);
+
+      return message.reply(`имя гильдии изменено на: ${newName}`);
     }
 
     if (message.mentions.members.first().id === message.author.id)
