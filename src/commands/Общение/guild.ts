@@ -205,7 +205,7 @@ module.exports = {
       });
 
       return message.reply(access ?
-        (`в гильдии новичок ${target}!`) : (`из гильдии исключен ${target}.`));
+        (`в гильдии новичок ${target}!`) : (`из гильдии исключен ${target}, если он там был.`));
     } else if (args[0] === 'master') {
       if (!message.mentions.members.size)
         throw new CustomError('необходимо упомянуть нового гильдмастера.');
