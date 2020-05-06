@@ -44,7 +44,9 @@ module.exports = {
       .addField('Версия', packageJson.version, true)
       .addField('Время работы', uptime, true)
       .addField('Хостинг', 'FirstByte.ru', true)
-      .addField('Префикс', config.bot.prefix, true)
+      .addField('Префиксы',
+        Array.isArray(config.bot.prefixs) ? config.bot.prefixs.join(', ') : config.bot.prefixs
+        , true)
       .addField('Сервера', message.client.guilds.size, true)
       .addField('Пользователи', message.client.users.size, true)
 
