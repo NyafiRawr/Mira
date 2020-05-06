@@ -33,7 +33,7 @@ module.exports = {
           parseInt(minutes, 10) * 60 * 1000 +
           parseInt(seconds, 10) * 1000;
         await warns.setPunch(message.guild.id, count, ms);
-        return message.reply(`установлена блокировка на ${time} за получение ${count} предупреждений.`);
+        return message.reply(`установлена блокировка на ${time} за получение ${count} предупреждений в течение 3 дней.`);
       }
     } else {
       const victim = message.mentions.members.first();

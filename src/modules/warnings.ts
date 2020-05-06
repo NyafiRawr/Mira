@@ -51,6 +51,7 @@ export const get = async (
 });
 
 import { client } from '../client';
+import { convertSecondsToTime } from '../utils/tools';
 
 export const punch = async (
   serverId: string,
@@ -63,7 +64,7 @@ export const punch = async (
     const victim = server!.members.get(victimId);
     if (!!victim) {
       await victim.addRole(roleMuteId).catch();
-      await victim.send(`Ты получил блокировку на сервере ${server!.name} на ${ms} мс`).catch();
+      await victim.send(`Ты получил блокировку на сервере ${server!.name} на ${convertSecondsToTime(ms / 1000)}`).catch();
       setTimeout(async () => victim.removeRole(roleMuteId)
         .catch(async (err) => victim.send(`Ошибка в снятии роли-блокировки на сервере ${server!.name}: ${err}`))
         .catch(), ms);
@@ -85,7 +86,7 @@ export const set = async (
   });
   const arrayWarns = await get(serverId, victimId);
   const ms = await getPunch(serverId, arrayWarns.length);
-  if (!!ms) {
+  if (!!ms) { // TODO: делать что-нибудь если arrayWarns.length > n
     await punch(serverId, victimId, ms);
   }
 };
