@@ -28,14 +28,6 @@ module.exports = {
     if (!reason.length) reason = 'Не указана';
 
     await warns.set(message.guild.id, victim.id, reason);
-    return message.channel.send({
-      'embed': {
-        'author': {
-          'name': `${victim.user.username + '#' + victim.user.discriminator} получает предупреждение`,
-          'icon_url': victim.user.avatarURL
-        },
-        'description': `**Причина:** ${reason}`,
-      }
-    });
+    return message.channel.send(warns.msg(victim, reason));
   },
 };

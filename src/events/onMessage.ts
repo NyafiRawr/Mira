@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { Message } from 'discord.js';
 
 import { log } from '../logger';
 import { client, commands } from '../client';
@@ -8,9 +8,7 @@ import { randomInteger } from '../utils/tools';
 import * as cooldowns from '../utils/cooldowns';
 
 export default async (message: Message) => {
-  if (message.author.bot) {
-    return;
-  }
+  if (message.author.bot) return;
 
   let { content } = message;
 
