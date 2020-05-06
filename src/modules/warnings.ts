@@ -44,7 +44,7 @@ export const get = async (
   where: {
     serverId,
     userId: victimId,
-    start_datetime: {
+    date: {
       [Op.gte]: moment().subtract(3, 'days').toDate() // TODO: разрешить выбрать сроки
     }
   }
@@ -63,8 +63,9 @@ export const punch = async (
     const victim = server!.members.get(victimId);
     if (!!victim) {
       await victim.addRole(roleMuteId).catch();
+      await victim.send(`Ты получил блокировку на сервере ${server!.name} на ${ms} мс`).catch();
       setTimeout(async () => victim.removeRole(roleMuteId)
-        .catch((err) => victim.send(`Ошибка в снятии роли-блокировки на сервере ${server!.name}: ${err}`))
+        .catch(async (err) => victim.send(`Ошибка в снятии роли-блокировки на сервере ${server!.name}: ${err}`))
         .catch(), ms);
     }
   }
@@ -86,7 +87,6 @@ export const set = async (
   const ms = await getPunch(serverId, arrayWarns.length);
   if (!!ms) {
     await punch(serverId, victimId, ms);
-    // TODO: сказать в лс о муте
   }
 };
 
