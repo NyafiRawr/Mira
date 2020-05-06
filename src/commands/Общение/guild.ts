@@ -35,7 +35,7 @@ module.exports = {
           `\n**${this.aliases[0]} info** [имя гильдии] - информация о гильдии` +
           `\n**${this.aliases[0]} leave** - покинуть гильдию\n` +
           `\n **${this.aliases[0]} create** [название] - создать за ${tools.separateThousandth(price)}:cookie:` +
-          '\n*Важно: пересоздайте гильдию если случайно удалили её каналы*' +
+          '\n*Важно: используйте create, если случайно удалили каналы гильдии*' +
           `\n**${this.aliases[0]} invite/kick** <@> - пригласить/исключить` +
           `\n**${this.aliases[0]} desc** <описание> - изменить описание` +
           `\n**${this.aliases[0]} master** <@> - передать гильдмастера` +

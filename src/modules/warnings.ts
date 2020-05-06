@@ -1,16 +1,94 @@
 import Warning from '../models/warning';
 import * as Discord from 'discord.js';
 import * as vars from '../modules/vars';
+import moment = require('moment');
+import { Op } from 'sequelize';
+
+// НАКАЗАНИЯ
+
+const getKeyPunch = (n: number) => `warning_punch_${n}`;
+
+export const getPunch = async (
+  serverId: string,
+  countWarns: number
+): Promise<number | undefined> => vars.get(serverId, getKeyPunch(countWarns));
+
+export const setPunch = async (
+  serverId: string,
+  countWarns: number,
+  timeMuteMs: number = 0
+) => {
+  if (timeMuteMs !== 0)
+    await vars.set(serverId, getKeyPunch(countWarns), timeMuteMs);
+  else
+    await vars.remove(serverId, getKeyPunch(countWarns));
+};
+
+// БЛОКИРОВОЧНАЯ РОЛЬ
+
+const keyRoleMute = `mute_role`;
+
+export const getRoleMute = async (
+  serverId: string
+): Promise<string | undefined> => vars.get(serverId, keyRoleMute);
+
+export const setRoleMute = async (
+  serverId: string,
+  roleId: string
+) => vars.set(serverId, keyRoleMute, roleId);
+
+export const get = async (
+  serverId: string,
+  victimId: string
+) => Warning.findAll({
+  where: {
+    serverId,
+    userId: victimId,
+    start_datetime: {
+      [Op.gte]: moment().subtract(3, 'days').toDate() // TODO: разрешить выбрать сроки
+    }
+  }
+});
+
+import { client } from '../client';
+
+export const punch = async (
+  serverId: string,
+  victimId: string,
+  ms: number
+) => {
+  const roleMuteId = await getRoleMute(serverId);
+  if (!!roleMuteId) {
+    const server = client.guilds.get(serverId);
+    const victim = server!.members.get(victimId);
+    if (!!victim) {
+      await victim.addRole(roleMuteId).catch();
+      setTimeout(async () => victim.removeRole(roleMuteId)
+        .catch((err) => victim.send(`Ошибка в снятии роли-блокировки на сервере ${server!.name}: ${err}`))
+        .catch(), ms);
+    }
+  }
+};
+
+// ВЫДАЧА ВАРНОВ И МУТА ПО НАКОПЛЕНИЮ
 
 export const set = async (
   serverId: string,
   victimId: string,
   reason: string
-) => Warning.create({
-  serverId,
-  userId: victimId,
-  reason
-}); // TODO: тут учёт количества полученных варнов и выдача наказаний
+) => {
+  await Warning.create({
+    serverId,
+    userId: victimId,
+    reason
+  });
+  const arrayWarns = await get(serverId, victimId);
+  const ms = await getPunch(serverId, arrayWarns.length);
+  if (!!ms) {
+    await punch(serverId, victimId, ms);
+    // TODO: сказать в лс о муте
+  }
+};
 
 export const msg = (
   victim: Discord.GuildMember,
@@ -25,7 +103,8 @@ export const msg = (
   }
 });
 
-// Bad words auto-mod
+// ФИЛЬТР ПЛОХИХ СЛОВ
+
 const keyBadWords = 'warning_badwords';
 
 export const getBadWords = async (
@@ -48,6 +127,8 @@ export const editBadWords = async (
     else await vars.set(serverId, keyBadWords, different.join(' '));
   }
 };
+
+// РАЗРЕШЕННЫЕ ПЛОХИЕ КАНАЛЫ
 
 const keyBadChannels = 'warning_badchannels_ids';
 

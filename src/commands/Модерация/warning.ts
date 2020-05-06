@@ -4,9 +4,9 @@ import * as warns from '../../modules/warnings';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Сделать предупреждение, чтобы не нарушал правил',
+  description: 'Предупреждение',
   aliases: ['warn'],
-  usage: '@кому [почему]', // TODO: накопление варнов, автомут ориентир на дату, роль мута
+  usage: '@кому [почему] / set <кол-во варнов> [длина мута в формате ЧЧ:ММ:СС]',
   guild: true,
   hide: true,
   cooldown: 0.5,
@@ -18,16 +18,35 @@ module.exports = {
       throw new CustomError('нужно иметь право управлять сообщениями!');
     }
 
-    const victim = message.mentions.members.first();
-    if (!victim)
-      throw new CustomError(
-        'пожалуйста, укажите кому нужно сделать предупреждение при вызове команды!'
-      );
+    if (args[0] === 'set') {
+      const count = parseInt(args[1], 10);
+      if (!count) throw new CustomError('нужно указать количество предупреждений.');
+      const time = args[2];
+      if (!time) {
+        await warns.setPunch(message.guild.id, count);
+        return message.reply(`удалена блокировка за получение ${count} предупреждений.`);
+      } else {
+        const [hours, minutes, seconds] = time.split(':');
+        if (!seconds || !minutes || !hours)
+          throw new CustomError('необходимо указать время в формате 00:00:00 (часы:минуты:секунды)');
+        const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
+          parseInt(minutes, 10) * 60 * 1000 +
+          parseInt(seconds, 10) * 1000;
+        await warns.setPunch(message.guild.id, count, ms);
+        return message.reply(`установлена блокировка на ${time} за получение ${count} предупреждений.`);
+      }
+    } else {
+      const victim = message.mentions.members.first();
+      if (!victim)
+        throw new CustomError(
+          'укажи кому нужно сделать предупреждение при вызове команды!'
+        );
 
-    let reason = args.slice(1).join(' ').trim();
-    if (!reason.length) reason = 'Не указана';
+      let reason = args.slice(1).join(' ').trim();
+      if (!reason.length) reason = 'Не указана';
 
-    await warns.set(message.guild.id, victim.id, reason);
-    return message.channel.send(warns.msg(victim, reason));
+      await warns.set(message.guild.id, victim.id, reason);
+      return message.channel.send(warns.msg(victim, reason));
+    }
   },
 };
