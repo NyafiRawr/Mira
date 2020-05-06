@@ -6,12 +6,14 @@ import config from '../config';
 import CustomError from '../utils/customError';
 import { randomInteger } from '../utils/tools';
 import * as cooldowns from '../utils/cooldowns';
+import * as warns from '../modules/warnings';
 
 export default async (message: Message) => {
   if (message.author.bot) return;
 
   let { content } = message;
 
+  // Mention me?
   if (
     message.mentions.users.size === 1 &&
     message.content.split(/\s+/).length === 1
@@ -20,9 +22,24 @@ export default async (message: Message) => {
     content = itSelf ? `${config.bot.prefix}about` : content;
   }
 
-  if (
+  if ( // Check prefix
     !config.bot.prefixs.filter((prefix) => content.startsWith(prefix)).length
-  ) return;
+  ) { // Bad-words checking
+    const badChannelsIds = await warns.getBadChannelsIds(message.guild.id);
+    if (!badChannelsIds.includes(message.channel.id)) {
+      const badWords = await warns.getBadWords(message.guild.id);
+      for (const word of badWords) {
+        if (content.indexOf(word) + 1) {
+          await message.delete().catch();
+          const reason = 'Использование запрещенных слов';
+          await warns.set(message.guild.id, message.member.id, reason)
+          await message.channel.send(warns.msg(message.member, reason));
+          break;
+        }
+      }
+    }
+    return;
+  }
 
   const args = content.slice(config.bot.prefix.length).split(/ +/);
 

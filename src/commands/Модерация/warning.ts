@@ -6,7 +6,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Сделать предупреждение, чтобы не нарушал правил',
   aliases: ['warn'],
-  usage: '@кому [почему]',
+  usage: '@кому [почему]', // TODO: накопление варнов
   guild: true,
   hide: true,
   cooldown: 0.5,
@@ -15,7 +15,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
     if (!message.member.hasPermission(this.permissions[0])) {
-      throw new CustomError('нужно право управлять сообщениями!');
+      throw new CustomError('нужно иметь право управлять сообщениями!');
     }
 
     const victim = message.mentions.members.first();
