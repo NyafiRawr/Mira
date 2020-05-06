@@ -6,7 +6,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Развод',
   aliases: ['unmarry'],
-  usage: '@с_кем',
+  usage: undefined,
   guild: true,
   hide: false,
   cooldown: 3000,
