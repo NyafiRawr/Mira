@@ -6,7 +6,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Сделать предупреждение, чтобы не нарушал правил',
   aliases: ['warn'],
-  usage: '@кому [почему]', // TODO: накопление варнов
+  usage: '@кому [почему]', // TODO: накопление варнов, автомут ориентир на дату, роль мута
   guild: true,
   hide: true,
   cooldown: 0.5,

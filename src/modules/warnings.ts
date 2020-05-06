@@ -10,7 +10,7 @@ export const set = async (
   serverId,
   userId: victimId,
   reason
-});
+}); // TODO: тут учёт количества полученных варнов и выдача наказаний
 
 export const msg = (
   victim: Discord.GuildMember,
