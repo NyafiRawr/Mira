@@ -28,12 +28,13 @@ export default async (message: Message) => {
     const badChannelsIds = await warns.getBadChannelsIds(message.guild.id);
     if (!badChannelsIds.includes(message.channel.id)) {
       const badWords = await warns.getBadWords(message.guild.id);
+      const arrayContent = content.split(' ');
       for (const word of badWords) {
-        if (content.indexOf(word) + 1) {
+        if (arrayContent.includes(word)) {
           await message.delete().catch();
           const reason = 'Использование запрещенных слов';
-          await warns.set(message.guild.id, message.member.id, reason)
-          await message.channel.send(warns.msg(message.member, reason));
+          await warns.set(message.guild.id, message.member.id, reason);
+          await message.channel.send(warns.msg(message.member, reason)).catch();
           break;
         }
       }
