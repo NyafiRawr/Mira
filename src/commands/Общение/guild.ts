@@ -78,14 +78,17 @@ module.exports = {
       const name = args.slice(1).join(' ');
       if (!name) {
         const haveGuild = masterGuild?.name || memberGuild?.name;
-        if (!!haveGuild) await guilds.recreateChats(message, haveGuild, category, message.author.id);
-        return message.reply('каналы гильдии проверены.');
+        if (!!haveGuild) {
+          await guilds.recreateChats(message, haveGuild, category, message.author.id);
+          return message.reply('каналы гильдии проверены.');
+        } else {
+          throw new CustomError('не указано имя гильдии.');
+        }
       }
       else {
         const existGuilds = serverGuilds!.filter(guild => guild.name === name);
         if (!!existGuilds.length)
           throw new CustomError('такое название уже есть!');
-
       }
 
       if (!!memberGuild || !!masterGuild)
@@ -178,7 +181,7 @@ module.exports = {
 
     if (args[0] === 'rename') {
       const newName = args.slice(1).join(' ');
-
+      if (!newName.trim().length) throw new CustomError('не указано новое имя.');
       const existGuilds = serverGuilds!.filter(guild => guild.name === newName);
       if (!!existGuilds.length)
         throw new CustomError('такое название уже есть!');
