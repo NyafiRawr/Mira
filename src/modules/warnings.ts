@@ -64,7 +64,7 @@ export const punch = async (
     const victim = server!.members.get(victimId);
     if (!!victim) {
       await victim.addRole(roleMuteId).catch();
-      await victim.send(`Ты получил блокировку на сервере ${server!.name} на ${convertSecondsToTime(ms / 1000)}`).catch();
+      await victim.send(`Ты получил автоблокировку на сервере **${server!.name}** на **${convertSecondsToTime(ms / 1000)}**`).catch();
       setTimeout(async () => victim.removeRole(roleMuteId)
         .catch(async (err) => victim.send(`Ошибка в снятии роли-блокировки на сервере ${server!.name}: ${err}`))
         .catch(), ms);
