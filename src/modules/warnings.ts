@@ -30,22 +30,27 @@ export const checkPunch = async (
   victimId: string
 ) => {
   const punches = await Punch.findAll({ where: { serverId } });
-  if (!punches) {
-    /*const warns = Warning.findAll({
-      where: {
-        serverId,
-        userId: victimId,
-        date: {
-          [Op.gte]: moment().subtract(3, 'days').toDate()
-        }
-      }
-    });
+  if (!!punches) {
+    // Сортировка: 1 - варны, так как можно получить кучу за один день 2 - дни
+    punches
+      .sort((a, b) => b.termDays - a.termDays)
+      .sort((a, b) => a.countWarns - b.countWarns);
 
-    await mutes.punch(serverId, victimId, punch.timeMuteMs, `Получено ${countWarns} предупреждений`);*/
+    for await (const punch of punches) {
+      const warnsTerm = await Warning.findAll({
+        where: {
+          serverId,
+          userId: victimId,
+          date: {
+            [Op.gte]: moment().subtract(punch.termDays, 'days').toDate()
+          },
+        }
+      });
+      if (warnsTerm.length >= punch.countWarns)
+        await mutes.punch(serverId, victimId, punch.timeMuteMs, `Получено ${warnsTerm.length} предупреждений`);
+    }
   }
 };
-
-// TODO: назначать последнее наказание если countWarns > n
 
 // ВЫДАЧА ВАРНОВ И МУТА ПО НАКОПЛЕНИЮ
 
