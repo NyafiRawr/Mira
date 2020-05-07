@@ -1,13 +1,12 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../utils/customError';
-import * as warns from '../../modules/warnings';
-import { convertSecondsToTime } from '../../utils/tools';
+import * as mutes from '../../modules/mutes';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Присвоить роль заблокированного',
   aliases: undefined,
-  usage: '@кому [длина мута в формате ЧЧ:ММ:СС] / <@роль означающая мут>',
+  usage: '@кому [длина мута в формате ЧЧ:ММ:СС] [причина] / <@роль означающая мут>',
   guild: true,
   hide: true,
   cooldown: 0.5,
@@ -19,11 +18,14 @@ module.exports = {
       throw new CustomError('нужно иметь право управлять сообщениями!');
     }
 
+    // Установка блокировочной роли
     if (!!message.mentions.roles.size) {
       if (!message.member.hasPermission(this.permissions[1])) {
         throw new CustomError('нужно быть администратором!');
       }
-      await warns.setRoleMute(message.guild.id, message.mentions.roles.first().id);
+
+      await mutes.setRoleMute(message.guild.id, message.mentions.roles.first().id);
+
       return message.reply(`роль ${message.mentions.roles.first()} установлена как блокировочная.`);
     }
 
@@ -33,28 +35,21 @@ module.exports = {
         'укажи кого нужно заблокировать при вызове команды!'
       );
 
-    const roleMuteId = await warns.getRoleMute(message.guild.id);
-    if (!!roleMuteId) {
-      await victim.addRole(roleMuteId)
-        .catch((err) => { throw new CustomError(`ошибка в присвоении роли <@&${roleMuteId}>: ${err}`); });
+    const time = args[1];
+    const [hours, minutes, seconds] = time.split(':');
+    if (!time || !seconds || !minutes || !hours)
+      throw new CustomError(
+        'необходимо указать время в формате 00:00:00 (часы:минуты:секунды)!'
+      );
 
-      let ms;
-      let time = args[1];
-      if (!!time) {
-        const [hours, minutes, seconds] = time.split(':');
-        if (!seconds || !minutes || !hours)
-          throw new CustomError('необходимо указать время в формате 00:00:00 (часы:минуты:секунды)');
-        ms = parseInt(hours, 10) * 60 * 60 * 1000 +
-          parseInt(minutes, 10) * 60 * 1000 +
-          parseInt(seconds, 10) * 1000;
-        setTimeout(async () => victim.removeRole(roleMuteId)
-          .catch((err) => message.reply(`ошибка в снятии роли-блокировки <@&${roleMuteId}>: ${err}`)), ms);
-      }
-      time = !!ms ? convertSecondsToTime(ms / 1000) : '∞';
-      await victim.send(`Ты получил блокировку на сервере **${message.guild.name}** на **${time}**`).catch();
-      return message.channel.send(`**${victim}** получает блокировку на **${time}**`);
-    } else {
-      return message.reply('сначала необходимо установить роль для блокировок (только админ может сделать это).');
-    }
+    const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
+      parseInt(minutes, 10) * 60 * 1000 +
+      parseInt(seconds, 10) * 1000;
+
+    const reason = args[2];
+
+    await mutes.punch(message.guild.id, victim.id, ms, reason || 'Мут выдан вручную, без указания причины');
+
+    return message.channel.send(mutes.msg(victim, ms, reason || 'Не указана'));
   },
 };

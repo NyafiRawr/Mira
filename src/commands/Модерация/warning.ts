@@ -22,21 +22,28 @@ module.exports = {
       if (!message.member.hasPermission(this.permissions[1])) {
         throw new CustomError('нужно быть администратором!');
       }
+
       const count = parseInt(args[1], 10);
       if (!count) throw new CustomError('нужно указать количество предупреждений.');
+
       const time = args[2];
       if (!time) {
         await warns.setPunch(message.guild.id, count);
         return message.reply(`удалена блокировка за получение ${count} предупреждений.`);
-      } else {
+      }
+
+      else {
         const [hours, minutes, seconds] = time.split(':');
         if (!seconds || !minutes || !hours)
           throw new CustomError('необходимо указать время в формате 00:00:00 (часы:минуты:секунды)');
+
         const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
           parseInt(minutes, 10) * 60 * 1000 +
           parseInt(seconds, 10) * 1000;
+
         await warns.setPunch(message.guild.id, count, ms);
-        return message.reply(`установлена блокировка на ${time} за получение ${count} предупреждений в течение 3 дней.`);
+
+        return message.reply(`установлена блокировка на ${time} за получение ${count} предупреждений __в течение 3 дней__.`);
       }
     } else {
       const victim = message.mentions.members.first();

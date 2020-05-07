@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import * as vars from '../modules/vars';
 import moment = require('moment');
 import { Op } from 'sequelize';
+import * as mutes from '../modules/mutes';
 
 // НАКАЗАНИЯ
 
@@ -24,20 +25,7 @@ export const setPunch = async (
     await vars.remove(serverId, getKeyPunch(countWarns));
 };
 
-// БЛОКИРОВОЧНАЯ РОЛЬ
-
-const keyRoleMute = `mute_role`;
-
-export const getRoleMute = async (
-  serverId: string
-): Promise<string | undefined> => vars.get(serverId, keyRoleMute);
-
-export const setRoleMute = async (
-  serverId: string,
-  roleId: string
-) => vars.set(serverId, keyRoleMute, roleId);
-
-export const get = async (
+export const getAll = async (
   serverId: string,
   victimId: string
 ) => Warning.findAll({
@@ -49,28 +37,6 @@ export const get = async (
     }
   }
 });
-
-import { client } from '../client';
-import { convertSecondsToTime } from '../utils/tools';
-
-export const punch = async (
-  serverId: string,
-  victimId: string,
-  ms: number
-) => {
-  const roleMuteId = await getRoleMute(serverId);
-  if (!!roleMuteId) {
-    const server = client.guilds.get(serverId);
-    const victim = server!.members.get(victimId);
-    if (!!victim) {
-      await victim.addRole(roleMuteId).catch();
-      await victim.send(`Ты получил автоблокировку на сервере **${server!.name}** на **${convertSecondsToTime(ms / 1000)}**`).catch();
-      setTimeout(async () => victim.removeRole(roleMuteId)
-        .catch(async (err) => victim.send(`Ошибка в снятии роли-блокировки на сервере ${server!.name}: ${err}`))
-        .catch(), ms);
-    }
-  }
-};
 
 // ВЫДАЧА ВАРНОВ И МУТА ПО НАКОПЛЕНИЮ
 
@@ -84,10 +50,10 @@ export const set = async (
     userId: victimId,
     reason
   });
-  const arrayWarns = await get(serverId, victimId);
+  const arrayWarns = await getAll(serverId, victimId); // TODO: term? ^^^
   const ms = await getPunch(serverId, arrayWarns.length);
   if (!!ms) { // TODO: делать что-нибудь если arrayWarns.length > n
-    await punch(serverId, victimId, ms);
+    await mutes.punch(serverId, victimId, ms, `Получено ${arrayWarns.length} предупреждений`);
   }
 };
 
