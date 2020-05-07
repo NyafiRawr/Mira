@@ -1,12 +1,13 @@
 import * as Discord from 'discord.js';
 import CustomError from '../../utils/customError';
 import * as warns from '../../modules/warnings';
+import { convertSecondsToTime } from '../../utils/tools';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Предупреждение',
   aliases: ['warn'],
-  usage: '@кому [почему] / set <кол-во варнов> [длина мута в формате ЧЧ:ММ:СС]',
+  usage: '@кому [почему] / set <кол-во варнов> [за сколько дней] [длина мута в формате ЧЧ:ММ:СС]',
   guild: true,
   hide: true,
   cooldown: 0.5,
@@ -26,25 +27,30 @@ module.exports = {
       const count = parseInt(args[1], 10);
       if (!count) throw new CustomError('нужно указать количество предупреждений.');
 
-      const time = args[2];
-      if (!time) {
+      const days = args[2];
+      if (!days) {
         await warns.setPunch(message.guild.id, count);
-        return message.reply(`удалена блокировка за получение ${count} предупреждений.`);
+        return message.reply(`удалена блокировка за получение ${count} предупреждений, если она была.`);
       }
+      const termDays = parseInt(days, 10);
+      if (!Number.isInteger(termDays))
+        throw new CustomError(
+          'необходимо указать количество дней в течение, которых должны быть получено это количество предупреждений.'
+        );
 
-      else {
-        const [hours, minutes, seconds] = time.split(':');
-        if (!seconds || !minutes || !hours)
-          throw new CustomError('необходимо указать время в формате 00:00:00 (часы:минуты:секунды)');
+      const [hours, minutes, seconds] = args[3].split(':');
+      if (!seconds || !minutes || !hours)
+        throw new CustomError('необходимо указать время в формате **00:00:00** (часы:минуты:секунды)');
 
-        const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
-          parseInt(minutes, 10) * 60 * 1000 +
-          parseInt(seconds, 10) * 1000;
+      const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
+        parseInt(minutes, 10) * 60 * 1000 +
+        parseInt(seconds, 10) * 1000;
 
-        await warns.setPunch(message.guild.id, count, ms);
+      await warns.setPunch(message.guild.id, count, termDays, ms);
 
-        return message.reply(`установлена блокировка на ${time} за получение ${count} предупреждений __в течение 3 дней__.`);
-      }
+      return message.reply(
+        `установлена блокировка на срок **${convertSecondsToTime(ms / 1000)}** за получение **${count} предупреждений** в течение **${days} дней**.`
+      );
     } else {
       const victim = message.mentions.members.first();
       if (!victim)

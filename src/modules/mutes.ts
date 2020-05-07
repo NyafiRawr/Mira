@@ -14,6 +14,31 @@ export const setRoleMute = async (
   roleId: string
 ) => vars.set(serverId, keyRoleMute, roleId);
 
+import { client } from '../client';
+
+// РАЗМУТ КАЖДУЮ МИНУТУ
+
+const checkMutes = async () => { // TODO: если вышел с сервера с мутом нужно как-то наказать если зайдёт
+  const muteds = await Mute.findAll();
+  for (const muted of muteds) {
+    if (muted.dateRelease >= Date.now()) {
+      const server = client.guilds.get(muted.serverId);
+      const victim = server?.members.get(muted.userId);
+      if (!!victim) {
+        const roleMuteId = await getRoleMute(muted.serverId);
+        if (!!roleMuteId) {
+          await victim.removeRole(roleMuteId).catch(() => {
+            throw new CustomError('не удалось снять блокировочную роль.');
+          });
+        }
+      }
+      await muted.destroy();
+    }
+  }
+  setTimeout(() => checkMutes(), 60 * 1000);
+};
+checkMutes();
+
 // ВЫДАЧА МУТА
 
 import * as Discord from 'discord.js';
@@ -30,12 +55,11 @@ export const msg = (
       'icon_url': victim.user.avatarURL
     },
     'description': `**Срок:** ${convertSecondsToTime(ms / 1000)}` +
-    `**Причина:** ${reason}`,
+      `**Причина:** ${reason}`,
   }
 });
 
 import CustomError from '../utils/customError';
-import { client } from '../client';
 
 export const punch = async (
   serverId: string,

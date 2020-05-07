@@ -4,39 +4,48 @@ import * as vars from '../modules/vars';
 import moment = require('moment');
 import { Op } from 'sequelize';
 import * as mutes from '../modules/mutes';
+import Punch from '../models/punch';
 
 // НАКАЗАНИЯ
-
-const getKeyPunch = (n: number) => `warning_punch_${n}`;
-
-export const getPunch = async (
-  serverId: string,
-  countWarns: number
-): Promise<number | undefined> => vars.get(serverId, getKeyPunch(countWarns));
 
 export const setPunch = async (
   serverId: string,
   countWarns: number,
-  timeMuteMs: number = 0
+  termDays: number | undefined = 0,
+  timeMuteMs: number | undefined = 0
 ) => {
-  if (timeMuteMs !== 0)
-    await vars.set(serverId, getKeyPunch(countWarns), timeMuteMs);
+  if (!termDays && !timeMuteMs)
+    await Punch.destroy({ where: { serverId, countWarns, termDays } });
   else
-    await vars.remove(serverId, getKeyPunch(countWarns));
+    await Punch.create({
+      serverId,
+      countWarns,
+      termDays,
+      timeMuteMs
+    });
 };
 
-export const getAll = async (
+export const checkPunch = async (
   serverId: string,
   victimId: string
-) => Warning.findAll({
-  where: {
-    serverId,
-    userId: victimId,
-    date: {
-      [Op.gte]: moment().subtract(3, 'days').toDate() // TODO: разрешить выбрать сроки
-    }
+) => {
+  const punches = await Punch.findAll({ where: { serverId } });
+  if (!punches) {
+    /*const warns = Warning.findAll({
+      where: {
+        serverId,
+        userId: victimId,
+        date: {
+          [Op.gte]: moment().subtract(3, 'days').toDate()
+        }
+      }
+    });
+
+    await mutes.punch(serverId, victimId, punch.timeMuteMs, `Получено ${countWarns} предупреждений`);*/
   }
-});
+};
+
+// TODO: назначать последнее наказание если countWarns > n
 
 // ВЫДАЧА ВАРНОВ И МУТА ПО НАКОПЛЕНИЮ
 
@@ -50,11 +59,8 @@ export const set = async (
     userId: victimId,
     reason
   });
-  const arrayWarns = await getAll(serverId, victimId); // TODO: term? ^^^
-  const ms = await getPunch(serverId, arrayWarns.length);
-  if (!!ms) { // TODO: делать что-нибудь если arrayWarns.length > n
-    await mutes.punch(serverId, victimId, ms, `Получено ${arrayWarns.length} предупреждений`);
-  }
+
+  await checkPunch(serverId, victimId);
 };
 
 export const msg = (
