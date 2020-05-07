@@ -144,7 +144,9 @@ module.exports = {
           + `**Чат:** <#${guildOnName!.chatId}> | **Войс:** <#${guildOnName!.voiceId}>`
         );
       return message.channel.send(embed);
-    } else if (args[0] === 'list') {
+    }
+
+    else if (args[0] === 'list') {
       const list = serverGuilds.map(guild => `  ${guild.id}. **${guild.name}** | Владелец: <@${guild.ownerId}>\n`).slice(0, 24); // Примерная вместимость;
       embed
         .setDescription(
@@ -152,6 +154,21 @@ module.exports = {
           + (!!list.length ? list : '*Гильдий нет, ||но я тут и мы можем исправить это!||*')
         );
       return message.channel.send(embed);
+    }
+
+    else if (args[0] === 'leave') {
+      if (!memberGuild) throw new CustomError('вы должны быть членом гильдии!');
+      await guilds.removeMember(message.guild.id, message.author.id, memberGuild.id);
+      await message.guild.channels.get(memberGuild.voiceId)?.overwritePermissions(message.author.id, {
+        VIEW_CHANNEL: false,
+        CONNECT: false,
+        SPEAK: false,
+        USE_VAD: false,
+      });
+      await message.guild.channels.get(memberGuild.chatId)?.overwritePermissions(message.author.id, {
+        VIEW_CHANNEL: false,
+      });
+      return message.reply(`вы покинули ${memberGuild.name}.`);
     }
 
     if (args[0] === 'dissolve') {
