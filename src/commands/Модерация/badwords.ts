@@ -22,29 +22,18 @@ module.exports = {
       const list = args.slice(1);
       if (!list.length) throw new CustomError('необходимо указать слово(-а) для добавления/удаления из запрещенных.');
 
-      if (args[0] === 'add') {
-        await warns.editBadWords(message.guild.id, list, true);
-      }
-
-      else if (args[0] === 'rem') {
-        await warns.editBadWords(message.guild.id, list, false);
-      }
+      await warns.setBadWords(message.guild.id, list, args[0] === 'add');
 
       return message.reply(`слово для запрета добавлено в серверный список.`);
     }
 
     else if (['allow', 'deny'].includes(args[0])) {
-      if (!message.mentions.channels.size) throw new CustomError('необходимо упомянуть каналы для добавления/удаления из разрешенных.');
+      if (!message.mentions.channels.size)
+        throw new CustomError('необходимо упомянуть каналы для добавления/удаления из разрешенных.');
 
       const ids = message.mentions.channels.map((channel) => channel.id);
 
-      if (args[0] === 'allow') {
-        await warns.editBadChannelsIds(message.guild.id, ids, true);
-      }
-
-      else if (args[0] === 'deny') {
-        await warns.editBadChannelsIds(message.guild.id, ids, false);
-      }
+      await warns.setBadChannelsIds(message.guild.id, ids, args[0] === 'allow');
 
       const badChannels = await warns.getBadChannelsIds(message.guild.id);
       return message.reply(`новый список не модерируемых каналов: ${badChannels.map((channelId) => `<#${channelId}>`)?.join(', ') || 'нет'}`);

@@ -78,7 +78,7 @@ export const getBadWords = async (
   serverId: string
 ): Promise<string[]> => (await vars.get(serverId, keyBadWords))?.split(' ') || [];
 
-export const editBadWords = async (
+export const setBadWords = async (
   serverId: string,
   words: string[],
   addOrDelete: boolean = true
@@ -103,7 +103,7 @@ export const getBadChannelsIds = async (
   serverId: string
 ): Promise<string[]> => (await vars.get(serverId, keyBadChannels))?.split(' ') || [];
 
-export const editBadChannelsIds = async (
+export const setBadChannelsIds = async (
   serverId: string,
   channelIds: string[],
   addOrDelete: boolean = true
