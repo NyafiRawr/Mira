@@ -15,7 +15,7 @@ export default async (member: GuildMember) => {
       await member.send('Хорошая попытка перезайти, но ты всё ещё заблокирован.').catch();
       const roleMuteId = await mutes.getRoleMute(member.guild.id);
       if (!!roleMuteId)
-        await member.addRole(roleMuteId);
+        await member.addRole(roleMuteId).catch();
     }
   }
 };
