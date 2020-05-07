@@ -1,4 +1,4 @@
-import { Model, STRING, NUMBER } from 'sequelize';
+import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize } from '../db';
 
 class Punch extends Model {
@@ -11,9 +11,9 @@ class Punch extends Model {
 Punch.init(
   {
     serverId: STRING,
-    countWarns: NUMBER,
-    termDays: NUMBER,
-    timeMuteMs: NUMBER
+    countWarns: INTEGER,
+    termDays: INTEGER,
+    timeMuteMs: INTEGER
   },
   {
     modelName: 'punch',
