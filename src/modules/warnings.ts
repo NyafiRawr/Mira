@@ -16,13 +16,19 @@ export const setPunch = async (
 ) => {
   if (!termDays && !timeMuteMs)
     await Punch.destroy({ where: { serverId, countWarns, termDays } });
-  else
+  else {
+    const punch = await Punch.findOne({ where: { serverId, countWarns, termDays } });
+    if (!!punch)
+      return punch.update({
+        timeMuteMs
+      });
     await Punch.create({
       serverId,
       countWarns,
       termDays,
       timeMuteMs
     });
+  }
 };
 
 export const checkPunch = async (
@@ -33,8 +39,8 @@ export const checkPunch = async (
   if (!!punches) {
     // Сортировка: 1 - варны, так как можно получить кучу за один день 2 - дни
     punches
-      .sort((a, b) => b.termDays - a.termDays)
-      .sort((a, b) => a.countWarns - b.countWarns);
+      .sort((a, b) => a.termDays - b.termDays)
+      .sort((a, b) => b.countWarns - a.countWarns);
 
     for await (const punch of punches) {
       const warnsTerm = await Warning.findAll({
@@ -47,7 +53,7 @@ export const checkPunch = async (
         }
       });
       if (warnsTerm.length >= punch.countWarns)
-        await mutes.punch(serverId, victimId, punch.timeMuteMs, `Получено ${warnsTerm.length} предупреждений`);
+        return mutes.punch(serverId, victimId, punch.timeMuteMs, `Получено ${warnsTerm.length} предупреждений`);
     }
   }
 };

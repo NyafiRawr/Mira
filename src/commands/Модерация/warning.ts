@@ -40,11 +40,14 @@ module.exports = {
 
       const [hours, minutes, seconds] = args[3].split(':');
       if (!seconds || !minutes || !hours)
-        throw new CustomError('необходимо указать время в формате **00:00:00** (часы:минуты:секунды)');
+        throw new CustomError('необходимо указать время в формате **00:01:00** (часы:минуты:секунды)');
 
       const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
         parseInt(minutes, 10) * 60 * 1000 +
         parseInt(seconds, 10) * 1000;
+
+      if (ms <= 60 * 1000)
+        throw new CustomError('меньше минуты нельзя.');
 
       await warns.setPunch(message.guild.id, count, termDays, ms);
 

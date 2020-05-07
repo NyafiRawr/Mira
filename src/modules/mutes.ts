@@ -18,20 +18,28 @@ import { client } from '../client';
 
 // РАЗМУТ КАЖДУЮ МИНУТУ
 
-const checkMutes = async () => { // TODO: если вышел с сервера с мутом нужно как-то наказать если зайдёт
+import { log } from '../logger';
+
+const checkMutes = async () => {
+  log.debug('[Проверка мутов] Начинаю проверку');
   const muteds = await Mute.findAll();
   for (const muted of muteds) {
-    if (muted.dateRelease >= Date.now()) {
+    log.debug('[Проверка мутов] Обрабатываю: ', muted);
+    if (muted.dateRelease <= Date.now()) {
+      log.debug('[Проверка мутов] Отсидел');
       const server = client.guilds.get(muted.serverId);
       const victim = server?.members.get(muted.userId);
       if (!!victim) {
+        log.debug('[Проверка мутов] Найден на сервере, проверяю блок-роль');
         const roleMuteId = await getRoleMute(muted.serverId);
         if (!!roleMuteId) {
+          log.debug('[Проверка мутов] Снимаю блок-роль');
           await victim.removeRole(roleMuteId).catch(() => {
             throw new CustomError('не удалось снять блокировочную роль.');
           });
         }
       }
+      log.debug('[Проверка мутов] Удаляю инфу об отсидевшем');
       await muted.destroy();
     }
   }
@@ -80,13 +88,20 @@ export const punch = async (
         throw new CustomError('не удалось выдать блокировочную роль.');
       });
 
-      await Mute.create({
-        serverId,
-        userId: victimId,
-        dateRelease: Date.now() + ms,
-        reason
-      });
-
+      const haveMute = await Mute.findOne({ where: { serverId, userId: victimId } });
+      if (!!haveMute) {
+        await haveMute.update({
+          dateRelease: Date.now() + ms,
+          reason
+        });
+      } else {
+        await Mute.create({
+          serverId,
+          userId: victimId,
+          dateRelease: Date.now() + ms,
+          reason
+        });
+      }
       await victim.send(
         `Ты получил блокировку на сервере **${server!.name}** на срок **${convertSecondsToTime(ms / 1000)}**`
       ).catch();
