@@ -19,15 +19,14 @@ export default async (deleteMsg: Discord.Message) => {
       .addField("Содержание: ", deleteMsg.content || '*Содержание недоступно*')
       .setDescription(`***${deleteMsg.author} __удалил__ своё сообщение в ${deleteMsg.channel}*** `); // Удалил своё
 
-    const deletionLog = fetchedLogs.entries.first();
+    const fetchedLog = fetchedLogs.entries.first();
 
-    if (!!deletionLog) {
-      // Это был пользователь? Если нет, то не делать запись
-      if (deletionLog.targetType !== 'MESSAGE') return;
-      const target = deletionLog.target as Discord.User;
+    if (!!fetchedLog) {
+      if (fetchedLog.targetType !== 'MESSAGE') return;
+      const target = fetchedLog.target as Discord.User;
       // Проверяем что жертва одно и то же лицо, вдруг мы взяли не тот лог?
       if (target.id === deleteMsg.author.id) // Удалил чужое
-        embed.setDescription(`***${deletionLog.executor} __удалил__ сообщение ${deleteMsg.author} в ${deleteMsg.channel}*** `);
+        embed.setDescription(`***${fetchedLog.executor} __удалил__ сообщение ${deleteMsg.author} в ${deleteMsg.channel}*** `);
     }
 
     return channel.send(embed); // TODO: deleteMsg.attachments
