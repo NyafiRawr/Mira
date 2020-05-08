@@ -16,21 +16,20 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Discord.Message, args: string[]) {
+  execute(message: Discord.Message, args: string[]) {
     if (message.author.id !== packageJson.author.id) {
       throw new CustomError(
         `команда ${this.name} доступна только разработчику!`
       );
     }
 
-    if (args[0] === undefined) {
+    if (!args[0]) {
       throw new CustomError('не указан код для выполнения.');
     }
 
     try {
-      const code = args.join(' ');
       // tslint:disable-next-line
-      await eval(code);
+      eval(args.join(' '));
     } catch (err) {
       message.channel.send(`\`\`\`xl\n${err}\n\`\`\``);
     }
