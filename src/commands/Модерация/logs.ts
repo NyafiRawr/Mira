@@ -4,7 +4,7 @@ import * as vars from '../../modules/vars';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Логи сообщений',
+  description: 'Логи сообщений, кика и бана',
   aliases: ['log'],
   usage: 'on / off / <#канал куда их складывать>',
   guild: true,

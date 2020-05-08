@@ -62,7 +62,7 @@ export default async (message: Message) => {
   }
 
   if (message.channel.type === 'text') {
-    await message.delete().catch();
+    // await message.delete().catch(); - может быть так будет лучше?
   } else if (command.guild) {
     return message.reply(`команда \`${command.name}\` недоступна в ЛС!`);
   }
