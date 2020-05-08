@@ -22,7 +22,9 @@ export default async (guild: Discord.Guild, user: Discord.User) => {
       if (fetchedLog.targetType !== 'USER') return;
       const target = fetchedLog.target as Discord.User;
       if (target.id === user.id)
-        embed.setDescription(`***${fetchedLog.executor} __кикнул__ ${user.tag}*** `);
+        embed
+          .setDescription(`***${fetchedLog.executor} __забанил__ ${user.tag}***`)
+          .addField('Причина: ', fetchedLog.reason || '-');
     }
 
     return channel.send('@everyone', { embed });
