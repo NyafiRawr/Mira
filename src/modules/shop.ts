@@ -38,10 +38,5 @@ export const set = async (
   });
 };
 
-export const remove = async (serverId: string, roleId: string) => {
-  const role = await get(serverId, roleId);
-
-  if (role !== null) {
-    role.destroy();
-  }
-};
+export const remove = async (serverId: string, roleId: string) =>
+  Shop.destroy({ where: { serverId, roleId } });

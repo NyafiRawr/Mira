@@ -1,7 +1,6 @@
 import { Sequelize, Dialect } from 'sequelize';
 import config from './config';
 
-// eslint-disable-next-line import/prefer-default-export
 export const sequelize = (() => {
   if (config.db.dialect === 'sqlite') {
     return new Sequelize({

@@ -10,6 +10,7 @@ class User extends Model {
   public weight!: number;
   public reputation!: number;
   public voiceTime!: number;
+  public coupleId!: string | null;
 }
 
 User.init(
@@ -45,6 +46,10 @@ User.init(
     voiceTime: {
       type: INTEGER,
       defaultValue: 0,
+    },
+    coupleId: {
+      type: STRING,
+      allowNull: true,
     },
   },
   {

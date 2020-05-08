@@ -8,7 +8,7 @@ const defaultLimit = 3;
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Лучшие результаты в профиле',
-  aliases: ['ts'],
+  aliases: ['ts', 'osutop'],
   usage: '[@ или ник] [/режим] [/сервер] [/кол-во]',
   guild: true,
   cooldown: undefined,

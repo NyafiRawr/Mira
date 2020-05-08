@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { Message } from 'discord.js';
 
 import { log } from '../logger';
 import { client, commands } from '../client';
@@ -6,14 +6,14 @@ import config from '../config';
 import CustomError from '../utils/customError';
 import { randomInteger } from '../utils/tools';
 import * as cooldowns from '../utils/cooldowns';
+import * as warns from '../modules/warnings';
 
 export default async (message: Message) => {
-  if (message.author.bot) {
-    return;
-  }
+  if (message.author.bot) return;
 
   let { content } = message;
 
+  // Mention me?
   if (
     message.mentions.users.size === 1 &&
     message.content.split(/\s+/).length === 1
@@ -22,23 +22,32 @@ export default async (message: Message) => {
     content = itSelf ? `${config.bot.prefix}about` : content;
   }
 
-  let prefixHave = false;
-  for (const prefix of config.bot.prefixs) {
-    if (content.startsWith(prefix)) {
-      prefixHave = true;
-      break;
+  if ( // Check prefix
+    !config.bot.prefixs.filter((prefix) => content.startsWith(prefix)).length
+  ) { // Bad-words checking
+    const badChannelsIds = await warns.getBadChannelsIds(message.guild.id);
+    if (!badChannelsIds.includes(message.channel.id)) {
+      const badWords = await warns.getBadWords(message.guild.id);
+      const arrayContent = content.split(' ');
+      for (const word of badWords) {
+        if (arrayContent.includes(word)) {
+          await message.delete().catch();
+          const reason = 'Использование запрещенных слов';
+          await warns.set(message.guild.id, message.member.id, reason);
+          await message.channel.send(warns.msg(message.member, reason)).catch();
+          break;
+        }
+      }
     }
+    return;
   }
-  if (!prefixHave) return;
 
   const args = content.slice(config.bot.prefix.length).split(/ +/);
 
   const commandName = args.shift()!.toLowerCase();
   const command = commands.get(commandName);
 
-  if (!command) {
-    return;
-  }
+  if (!command) return;
 
   const channel = message.guild.channels.find('id', message.channel.id);
   if (
@@ -53,7 +62,7 @@ export default async (message: Message) => {
   }
 
   if (message.channel.type === 'text') {
-    await message.delete();
+    // await message.delete().catch(); - может быть так будет лучше?
   } else if (command.guild) {
     return message.reply(`команда \`${command.name}\` недоступна в ЛС!`);
   }
@@ -86,10 +95,10 @@ export default async (message: Message) => {
     return message.reply(reply);
   }
 
-  log.debug('Выполнение команды', message.content);
   try {
     await command.execute(message, args, cooldowns.reset);
   } catch (err) {
+    log.debug('Выполнение команды', message.content);
     log.debug(err, message.content);
 
     if (err instanceof CustomError) {

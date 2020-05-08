@@ -31,5 +31,5 @@ export const set = async (
 export const remove = async (serverId: string, name: string) =>
   Var.destroy({
     where: { serverId, name },
-    truncate: true,
+    truncate: false,
   });
