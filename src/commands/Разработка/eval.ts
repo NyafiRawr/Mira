@@ -30,7 +30,7 @@ module.exports = {
     try {
       const code = args.join(' ');
       // tslint:disable-next-line
-      eval(code);
+      await eval(code);
     } catch (err) {
       message.channel.send(`\`\`\`xl\n${err}\n\`\`\``);
     }
