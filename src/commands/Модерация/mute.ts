@@ -35,9 +35,8 @@ module.exports = {
         'укажи кого нужно заблокировать при вызове команды!'
       );
 
-    const time = args[1];
-    const [hours, minutes, seconds] = time.split(':');
-    if (!time || !seconds || !minutes || !hours)
+    const [hours, minutes, seconds] = args.length > 1 ? args[1].split(':') : [];
+    if (!seconds || !minutes || !hours)
       throw new CustomError(
         'необходимо указать время в формате 00:00:00 (часы:минуты:секунды)!'
       );

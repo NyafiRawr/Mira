@@ -18,28 +18,20 @@ import { client } from '../client';
 
 // РАЗМУТ КАЖДУЮ МИНУТУ
 
-import { log } from '../logger';
-
 const checkMutes = async () => {
-  log.debug('[Проверка мутов] Начинаю проверку');
   const muteds = await Mute.findAll();
   for (const muted of muteds) {
-    log.debug('[Проверка мутов] Обрабатываю: ', muted);
-    if (muted.dateRelease <= Date.now()) {
-      log.debug('[Проверка мутов] Отсидел');
+    if (Date.parse(muted.dateRelease) <= Date.now()) {
       const server = client.guilds.get(muted.serverId);
       const victim = server?.members.get(muted.userId);
       if (!!victim) {
-        log.debug('[Проверка мутов] Найден на сервере, проверяю блок-роль');
         const roleMuteId = await getRoleMute(muted.serverId);
         if (!!roleMuteId) {
-          log.debug('[Проверка мутов] Снимаю блок-роль');
           await victim.removeRole(roleMuteId).catch(() => {
             throw new CustomError('не удалось снять блокировочную роль.');
           });
         }
       }
-      log.debug('[Проверка мутов] Удаляю инфу об отсидевшем');
       await muted.destroy();
     }
   }
@@ -63,7 +55,7 @@ export const msg = (
       'icon_url': victim.user.avatarURL
     },
     'description': `**Срок:** ${convertSecondsToTime(ms / 1000)}` +
-      `**Причина:** ${reason}`,
+      `\n**Причина:** ${reason}`,
   }
 });
 

@@ -1,10 +1,10 @@
-import { Model, STRING, INTEGER } from 'sequelize';
+import { Model, STRING } from 'sequelize';
 import { sequelize } from '../db';
 
 class Mute extends Model {
   public serverId!: string;
   public userId!: string;
-  public dateRelease!: number;
+  public dateRelease!: string;
   public reason!: string;
 }
 
@@ -12,7 +12,7 @@ Mute.init(
   {
     serverId: STRING,
     userId: STRING,
-    dateRelease: INTEGER,
+    dateRelease: STRING,
     reason: STRING
   },
   {
