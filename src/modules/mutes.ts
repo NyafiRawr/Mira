@@ -29,12 +29,13 @@ const checkMutes = async () => {
         const roleMuteId = await getRoleMute(muted.serverId);
         if (!!roleMuteId) {
           await victim.removeRole(roleMuteId)
-          .then(async () => {
-            await victim.send(`Ты разблокирован на сервере **${server}**.`);
-          })
-          .catch(() => {
-            throw new CustomError('не удалось снять блокировочную роль.');
-          });
+            .then(async () => {
+              await victim.send(`Ты разблокирован на сервере **${server}**.`)
+                .catch();
+            })
+            .catch(() => {
+              throw new CustomError('не удалось снять блокировочную роль.');
+            });
         }
       }
       await muted.destroy();
