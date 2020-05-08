@@ -86,7 +86,7 @@ export const waitReactionComplete = async (
   return answers;
 };
 // Ждать сообщения в указанном канале от указанного человека и вернуть ответ (30 сек, иначе undefined. Ответ удаляется. Отмены нет)
-export const waitMessage = async (channel: any, selectorId: string) => {
+export const waitMessage = async (channel: any, selectorId: string, deleteMsg: boolean = true) => {
   const filter = (message: Discord.Message) => message.author.id === selectorId;
 
   return channel
@@ -94,9 +94,9 @@ export const waitMessage = async (channel: any, selectorId: string) => {
     .then((collected: any) => {
       channel
         .fetchMessage(collected.first())
-        .then((answer: { delete: () => any }) =>
-          answer.delete().catch(() => undefined)
-        );
+        .then((answer: { delete: () => any }) => {
+          if (deleteMsg) answer.delete().catch(() => undefined);
+        });
       return collected.first().content;
     })
     .catch(() => undefined);
