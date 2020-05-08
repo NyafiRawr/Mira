@@ -50,6 +50,7 @@ User.init(
     coupleId: {
       type: STRING,
       allowNull: true,
+      defaultValue: null
     },
   },
   {
