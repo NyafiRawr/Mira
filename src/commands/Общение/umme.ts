@@ -24,8 +24,8 @@ module.exports = {
       return message.reply('похоже, что ваша пара сбежала с сервера, вы разведены.');
     }
 
-    await users.set(message.guild.id, victim.id, { coupleId: message.author.id });
-    await users.set(message.guild.id, message.author.id, { coupleId: victim.id });
+    await users.set(message.guild.id, victim.id, { coupleId: null });
+    await users.set(message.guild.id, message.author.id, { coupleId: null });
     return message.channel.send(`**${message.author} РАЗВЕЛСЯ С ${victim}.**`);
   },
 };
