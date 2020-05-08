@@ -21,7 +21,7 @@ import { client } from '../client';
 const checkMutes = async () => {
   const muteds = await Mute.findAll();
   for (const muted of muteds) {
-    if (Date.parse(muted.dateRelease) <= Date.now()) {
+    if (muted.dateRelease.getTime() <= Date.now()) {
       const server = client.guilds.get(muted.serverId);
       const victim = server?.members.get(muted.userId);
       if (!!victim) {

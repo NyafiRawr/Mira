@@ -7,7 +7,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Предупреждение',
   aliases: ['warn'],
-  usage: '@кому [почему] / set <кол-во варнов> [за сколько дней] [длина мута в формате ЧЧ:ММ:СС]',
+  usage: '@кому [почему] / set <кол-во варнов> [за сколько дней] [длина мута в формате ЧЧ:ММ]',
   guild: true,
   hide: true,
   cooldown: 0.5,
@@ -38,13 +38,12 @@ module.exports = {
           'необходимо указать количество дней в течение, которых должны быть получено это количество предупреждений.'
         );
 
-      const [hours, minutes, seconds] = args[3].split(':');
-      if (!seconds || !minutes || !hours)
-        throw new CustomError('необходимо указать время в формате **00:01:00** (часы:минуты:секунды)');
+      const [hours, minutes] = args[3].split(':');
+      if (!minutes || !hours)
+        throw new CustomError('необходимо указать время в формате **00:01** (часы:минуты)');
 
       const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
-        parseInt(minutes, 10) * 60 * 1000 +
-        parseInt(seconds, 10) * 1000;
+        parseInt(minutes, 10) * 60 * 1000;
 
       if (ms <= 60 * 1000)
         throw new CustomError('меньше минуты нельзя.');
