@@ -21,15 +21,16 @@ import { client } from '../client';
 const checkMutes = async () => {
   const muteds = await Mute.findAll();
   for (const muted of muteds) {
-    if (muted.dateRelease.getTime() <= Date.now()) {
+    const ms = parseInt(muted.dateReleaseInMs, 10);
+    if (ms <= Date.now()) {
       const server = client.guilds.get(muted.serverId);
       const victim = server?.members.get(muted.userId);
       if (!!victim) {
         const roleMuteId = await getRoleMute(muted.serverId);
         if (!!roleMuteId) {
           await victim.removeRole(roleMuteId)
-          .then(() => {
-            victim.send(`Ты разблокирован на сервере **${server}**.`);
+          .then(async () => {
+            await victim.send(`Ты разблокирован на сервере **${server}**.`);
           })
           .catch(() => {
             throw new CustomError('не удалось снять блокировочную роль.');
@@ -87,14 +88,14 @@ export const punch = async (
       const haveMute = await Mute.findOne({ where: { serverId, userId: victimId } });
       if (!!haveMute) {
         await haveMute.update({
-          dateRelease: Date.now() + ms,
+          dateReleaseInMs: Date.now() + ms,
           reason
         });
       } else {
         await Mute.create({
           serverId,
           userId: victimId,
-          dateRelease: Date.now() + ms,
+          dateReleaseInMs: Date.now() + ms,
           reason
         });
       }
