@@ -52,6 +52,7 @@ module.exports = {
     let weight;
     let reputation;
     let voiceTime;
+    let coupleId;
 
     if (member) {
       lastEntry = member.joinedAt;
@@ -65,6 +66,7 @@ module.exports = {
       weight = dbUser.weight;
       reputation = dbUser.reputation;
       voiceTime = dbUser.voiceTime;
+      coupleId = dbUser.coupleId;
     }
 
     if (firstEntry) {
@@ -103,6 +105,14 @@ module.exports = {
       embed.addField(
         'Время в голосе',
         `${tools.convertSecondsToTime(voiceTime)}`,
+        true
+      );
+    }
+
+    if (coupleId) {
+      embed.addField(
+        'Любовь с',
+        `<@${coupleId}>`,
         true
       );
     }

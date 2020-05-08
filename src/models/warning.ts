@@ -16,11 +16,16 @@ Warning.init(
       type: DATE,
       defaultValue: NOW,
     },
-    reason: STRING
+    reason: {
+      type: STRING,
+      defaultValue: 'Нет',
+    },
   },
   {
     modelName: 'warning',
     sequelize,
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci',
   }
 );
 

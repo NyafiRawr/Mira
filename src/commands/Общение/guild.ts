@@ -35,7 +35,7 @@ module.exports = {
           `\n**${this.aliases[0]} info** [имя гильдии] - информация о гильдии` +
           `\n**${this.aliases[0]} leave** - покинуть гильдию\n` +
           `\n **${this.aliases[0]} create** [название] - создать за ${tools.separateThousandth(price)}:cookie:` +
-          '\n*Важно: пересоздайте гильдию если случайно удалили её каналы*' +
+          '\n*Важно: используйте create, если случайно удалили каналы гильдии*' +
           `\n**${this.aliases[0]} invite/kick** <@> - пригласить/исключить` +
           `\n**${this.aliases[0]} desc** <описание> - изменить описание` +
           `\n**${this.aliases[0]} master** <@> - передать гильдмастера` +
@@ -78,20 +78,23 @@ module.exports = {
       const name = args.slice(1).join(' ');
       if (!name) {
         const haveGuild = masterGuild?.name || memberGuild?.name;
-        if (!!haveGuild) await guilds.recreateChats(message, haveGuild, category, message.author.id);
-        return message.reply('каналы гильдии проверены.');
+        if (!!haveGuild) {
+          await guilds.recreateChats(message, haveGuild, category, message.author.id);
+          return message.reply('каналы гильдии проверены.');
+        } else {
+          throw new CustomError('не указано имя гильдии.');
+        }
       }
       else {
         const existGuilds = serverGuilds!.filter(guild => guild.name === name);
-        if (!!existGuilds.length) {
+        if (!!existGuilds.length)
           throw new CustomError('такое название уже есть!');
-        }
       }
 
       if (!!memberGuild || !!masterGuild)
         throw new CustomError('сначала нужно покинуть текущую гильдию!');
 
-      if (!message.member.hasPermissions(this.permissions[1])) {
+      if (!message.guild.members.get(message.client.user.id)?.hasPermissions(this.permissions[1])) {
         throw new CustomError(
           'мне нужно право управлять каналами, чтобы создать каналы гильдии!'
         );
@@ -141,7 +144,9 @@ module.exports = {
           + `**Чат:** <#${guildOnName!.chatId}> | **Войс:** <#${guildOnName!.voiceId}>`
         );
       return message.channel.send(embed);
-    } else if (args[0] === 'list') {
+    }
+
+    else if (args[0] === 'list') {
       const list = serverGuilds.map(guild => `  ${guild.id}. **${guild.name}** | Владелец: <@${guild.ownerId}>\n`).slice(0, 24); // Примерная вместимость;
       embed
         .setDescription(
@@ -149,6 +154,21 @@ module.exports = {
           + (!!list.length ? list : '*Гильдий нет, ||но я тут и мы можем исправить это!||*')
         );
       return message.channel.send(embed);
+    }
+
+    else if (args[0] === 'leave') {
+      if (!memberGuild) throw new CustomError('вы должны быть членом гильдии!');
+      await guilds.removeMember(message.guild.id, message.author.id, memberGuild.id);
+      await message.guild.channels.get(memberGuild.voiceId)?.overwritePermissions(message.author.id, {
+        VIEW_CHANNEL: false,
+        CONNECT: false,
+        SPEAK: false,
+        USE_VAD: false,
+      });
+      await message.guild.channels.get(memberGuild.chatId)?.overwritePermissions(message.author.id, {
+        VIEW_CHANNEL: false,
+      });
+      return message.reply(`вы покинули ${memberGuild.name}.`);
     }
 
     if (args[0] === 'dissolve') {
@@ -159,7 +179,10 @@ module.exports = {
         await guilds.remove(message.guild.id, message.author.id, message);
       }
 
-      return message.reply(`гильдия гильдмастера ${message.mentions.members.first() || message.author}, если она существовала, распущена!`);
+      message.reply(`гильдия гильдмастера ${message.mentions.members.first() || message.author}, если она существовала, распущена!`);
+      return economy.set(message.guild.id,
+        !!message.mentions.members.size ? message.mentions.members.first().id : message.author.id,
+        price);
       // TODO: сообщить членам о роспуске? например в лс "гильдия на сервере распущена"
     }
 
@@ -171,6 +194,23 @@ module.exports = {
         description
       });
       return message.reply(`описание гильдии изменено на: ${description}`);
+    }
+
+    if (args[0] === 'rename') {
+      const newName = args.slice(1).join(' ');
+      if (!newName.trim().length) throw new CustomError('не указано новое имя.');
+      const existGuilds = serverGuilds!.filter(guild => guild.name === newName);
+      if (!!existGuilds.length)
+        throw new CustomError('такое название уже есть!');
+
+      await guilds.set(message.guild.id, message.author.id, {
+        name: newName
+      });
+
+      await message.guild.channels.get(masterGuild.chatId)?.setName(newName);
+      await message.guild.channels.get(masterGuild.voiceId)?.setName(newName);
+
+      return message.reply(`имя гильдии изменено на: ${newName}`);
     }
 
     if (message.mentions.members.first().id === message.author.id)
@@ -204,7 +244,7 @@ module.exports = {
       });
 
       return message.reply(access ?
-        (`в гильдии новичок ${target}!`) : (`из гильдии исключен ${target}.`));
+        (`в гильдии новичок ${target}!`) : (`из гильдии исключен ${target}, если он там был.`));
     } else if (args[0] === 'master') {
       if (!message.mentions.members.size)
         throw new CustomError('необходимо упомянуть нового гильдмастера.');
