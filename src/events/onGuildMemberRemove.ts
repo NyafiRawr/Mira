@@ -12,21 +12,19 @@ export default async (member: Discord.GuildMember) => {
       type: 'MEMBER_KICK',
     });
 
-    const embed = new Discord.RichEmbed()
-      .setThumbnail(member.user.avatarURL)
-      .setDescription(`***${member.user.tag} __был кикнут__ неизвестно кем*** `);
-
     const fetchedLog = fetchedLogs.entries.first();
 
     if (!!fetchedLog) {
       if (fetchedLog.targetType !== 'USER') return;
       const target = fetchedLog.target as Discord.User;
-      if (target.id === member.id)
-        embed
+      if (target.id === member.id) {
+        const embed = new Discord.RichEmbed()
+          .setThumbnail(member.user.avatarURL)
           .setDescription(`***${fetchedLog.executor} __кикнул__ ${member.user.tag}*** `)
           .addField('Причина: ', fetchedLog.reason || '-');
-    }
 
-    return channel.send('@everyone', { embed });
+        return channel.send('@everyone', { embed });
+      }
+    }
   }
 };
