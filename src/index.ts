@@ -13,6 +13,8 @@ client
   .on('guildCreate', handler.onGuildCreate)
   .on('guildDelete', handler.onGuildDelete)
   .on('guildMemberAdd', handler.onGuildMemberAdd)
+  .on('messageUpdate', handler.onMessageUpdate)
+  .on('messageDelete', handler.onMessageDelete)
   .on('messageReactionAdd', handler.onMessageReactionAdd)
   .on('messageReactionRemove', handler.onMessageReactionRemove)
   .on('voiceStateUpdate', handler.onVoiceStateUpdate)

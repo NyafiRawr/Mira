@@ -4,6 +4,8 @@ import onDisconnect from './onDisconnect';
 import onGuildCreate from './onGuildCreate';
 import onGuildDelete from './onGuildDelete';
 import onGuildMemberAdd from './onGuildMemberAdd';
+import onMessageUpdate from './onMessageUpdate';
+import onMessageDelete from './onMessageDelete';
 import onMessageReactionAdd from './onMessageReactionAdd';
 import onMessageReactionRemove from './onMessageReactionRemove';
 import onVoiceStateUpdate from './onVoiceStateUpdate';
@@ -18,6 +20,8 @@ export default {
   onGuildCreate,
   onGuildDelete,
   onGuildMemberAdd,
+  onMessageDelete,
+  onMessageUpdate,
   onMessageReactionAdd,
   onMessageReactionRemove,
   onVoiceStateUpdate,
