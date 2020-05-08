@@ -16,7 +16,7 @@ module.exports = {
   cooldownMessage: undefined,
   permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[]) {
+  async execute(message: Discord.Message, args: string[]) {
     if (message.author.id !== packageJson.author.id) {
       throw new CustomError(
         `команда ${this.name} доступна только разработчику!`
