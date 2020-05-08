@@ -22,8 +22,8 @@ module.exports = {
     const me = await users.get(message.guild.id, message.author.id);
     if (!!me?.coupleId) throw new CustomError('гаремы не разрешены!');
 
-    message.channel.send(`**${victim} будь со мной!** - говорит ${message.author}, если согласна(-ен) напиши: \`ДА\`, иначе отвергни!`);
-    const answer = await menu.waitMessage(message.channel, victim.id);
+    await message.channel.send(`**${victim} будь со мной!** - говорит ${message.author}, если согласна(-ен) напиши: \`ДА\`, иначе отвергни!`);
+    const answer = await menu.waitMessage(message.channel, victim.id, false);
     if (!answer || answer.toLowerCase() !== 'да') {
       return message.reply(`время ответа на предложение вышло или тебя отвергли...`);
     }
