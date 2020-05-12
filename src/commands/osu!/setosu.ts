@@ -12,7 +12,7 @@ const modes = tools.getData('osu!/modes');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Привязать аккаунт osu!',
-  aliases: undefined,
+  aliases: ['osuset'],
   usage: undefined,
   guild: true,
   cooldown: 180, // Сумма всех ожиданий
