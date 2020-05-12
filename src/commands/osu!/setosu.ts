@@ -187,7 +187,8 @@ module.exports = {
           if (listServersPlayer[i].gameServerFavorite)
             nameFavServer = listServersPlayer[i].gameServer;
         }
-        embed.setDescription(favoriteServer);
+        embed.setDescription(favoriteServer +
+          'Важно: первый привязанный аккаунт автоматический становится основным.');
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(
           embedMessage,
