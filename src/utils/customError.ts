@@ -23,6 +23,6 @@ export default class CustomError extends Error {
   ): Promise<Discord.Message | Discord.Message[]> {
     return message.reply(
       this.reply || 'при вызове команды произошла сложная ошибка нужно чинить ;('
-    );
+    ).catch();
   }
 }
