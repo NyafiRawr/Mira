@@ -9,4 +9,9 @@ export const log = pino({
   level: config.logger.level
 });
 
+log.info.bind(log);
+log.warn.bind(log);
+log.error.bind(log);
+log.debug.bind(log);
+
 logThrough.pipe(process.stdout);
