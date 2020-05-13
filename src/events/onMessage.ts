@@ -99,7 +99,7 @@ export default async (message: Message) => {
     await command.execute(message, args, cooldowns.reset);
   } catch (err) {
     log.debug('Выполнение команды', message.content);
-    log.debug(err, message.content);
+    log.debug(err);
 
     if (err instanceof CustomError) {
       err.send(message);

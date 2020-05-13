@@ -1,6 +1,6 @@
 import { GuildMember, MessageReaction, Message } from 'discord.js';
 import * as ReactionRoles from '../modules/reactionsRoles';
-import CustomError from '../utils/customError';
+
 // Отличаем дефолтное или серверное эмодзи и проверяем наличие в базе
 export default async (reaction: MessageReaction, user: GuildMember) => {
   const emoji =
@@ -16,9 +16,9 @@ export default async (reaction: MessageReaction, user: GuildMember) => {
   if (response !== null) {
     const role = reaction.message.guild.roles.get(response.roleId);
     if (role!.position >= reaction.message.guild.me.highestRole.position) {
-      throw new CustomError(
-        'не могу выдать роль, которая выше или равна моей наивысшей!'
-      );
+      user.send(
+        'не могу выдать роль, которая выше или равна моей наивысшей, обратитесь к администратору!'
+      ).catch();
     }
     const member = await reaction.message.guild.fetchMember(user.id);
     if (member) {
