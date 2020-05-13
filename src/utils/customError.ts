@@ -22,7 +22,7 @@ export default class CustomError extends Error {
     message: Discord.Message
   ): Promise<Discord.Message | Discord.Message[]> {
     return message.reply(
-      this.reply || 'при вызове команды произошла ошибка ;('
-    );
+      this.reply || 'при вызове команды произошла сложная ошибка нужно чинить ;('
+    ).catch();
   }
 }

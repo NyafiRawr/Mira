@@ -13,15 +13,13 @@ module.exports = {
   permissions: ['MANAGE_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   execute(message: Discord.Message, args: string[]) {
-    const channel = message.guild.channels.find('id', message.channel.id);
+    const channel = message.guild.channels.get(message.channel.id);
 
-    if (!channel.permissionsFor(message.member)!.has(this.permissions[0])) {
+    if (!channel!.permissionsFor(message.member)!.has(this.permissions[0])) {
       throw new CustomError('у тебя нет права управлять сообщениями!');
     }
 
-    if (
-      !channel.permissionsFor(message.client.user)!.has(this.permissions[0])
-    ) {
+    if (!channel!.permissionsFor(message.client.user)!.has(this.permissions[0])) {
       throw new CustomError('у меня нет права управлять сообщениями!');
     }
 

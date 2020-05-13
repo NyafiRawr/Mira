@@ -13,6 +13,8 @@ const requireProcessEnv = (name: string) => {
   }
   return process.env[name];
 };
+// На прослушку событий дискорда недостаточно стандартного размера
+process.setMaxListeners(0);
 
 export default {
   logger: {

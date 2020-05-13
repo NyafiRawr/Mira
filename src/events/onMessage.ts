@@ -49,10 +49,10 @@ export default async (message: Message) => {
 
   if (!command) return;
 
-  const channel = message.guild.channels.find('id', message.channel.id);
+  const channel = message.guild.channels.get(message.channel.id);
   if (
     message.guild &&
-    !channel.permissionsFor(message.client.user)!.has('SEND_MESSAGES')
+    !channel!.permissionsFor(message.client.user)!.has('SEND_MESSAGES')
   ) {
     return message.author
       .send(
@@ -99,7 +99,7 @@ export default async (message: Message) => {
     await command.execute(message, args, cooldowns.reset);
   } catch (err) {
     log.debug('Выполнение команды', message.content);
-    log.debug(err, message.content);
+    log.debug(err);
 
     if (err instanceof CustomError) {
       err.send(message);

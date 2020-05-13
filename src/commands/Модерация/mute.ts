@@ -6,7 +6,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Присвоить роль заблокированного',
   aliases: undefined,
-  usage: '@кому [длина мута в формате ЧЧ:ММ:СС] [причина] / <@роль означающая мут>',
+  usage: '@кому [длина мута в формате ЧЧ:ММ] [причина] / <@роль означающая мут>',
   guild: true,
   hide: true,
   cooldown: 0.5,
@@ -35,16 +35,17 @@ module.exports = {
         'укажи кого нужно заблокировать при вызове команды!'
       );
 
-    const time = args[1];
-    const [hours, minutes, seconds] = time.split(':');
-    if (!time || !seconds || !minutes || !hours)
+    const [hours, minutes] = args.length > 1 ? args[1].split(':') : [];
+    if (!minutes || !hours)
       throw new CustomError(
-        'необходимо указать время в формате 00:00:00 (часы:минуты:секунды)!'
+        'необходимо указать время в формате 00:00 (часы:минуты)!'
       );
 
     const ms = parseInt(hours, 10) * 60 * 60 * 1000 +
-      parseInt(minutes, 10) * 60 * 1000 +
-      parseInt(seconds, 10) * 1000;
+      parseInt(minutes, 10) * 60 * 1000;
+
+    if (ms <= 60 * 1000)
+      throw new CustomError('меньше минуты нельзя.');
 
     const reason = args[2];
 

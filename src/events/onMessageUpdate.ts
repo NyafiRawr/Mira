@@ -5,8 +5,8 @@ export default async (oldMsg: Discord.Message, newMsg: Discord.Message) => {
   if (newMsg.author.bot || !newMsg.guild) return;
   const logsState = await vars.get(newMsg.guild.id, 'logs_state', undefined);
   if (logsState === 'on') {
-    const logsChannelId = await vars.get(newMsg.guild.id, 'logs_channel', undefined);
-    const channel = newMsg.guild.channels.find('id', logsChannelId) as Discord.TextChannel;
+    const logsChannelId = await vars.get(newMsg.guild.id, 'logs_channel', '');
+    const channel = newMsg.guild.channels.get(logsChannelId) as Discord.TextChannel;
     if (!channel) {
       await vars.set(newMsg.guild.id, 'logs_state', 'off');
     } else {

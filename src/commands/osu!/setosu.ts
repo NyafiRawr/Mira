@@ -12,7 +12,7 @@ const modes = tools.getData('osu!/modes');
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Привязать аккаунт osu!',
-  aliases: undefined,
+  aliases: ['osuset'],
   usage: undefined,
   guild: true,
   cooldown: 180, // Сумма всех ожиданий
@@ -187,7 +187,8 @@ module.exports = {
           if (listServersPlayer[i].gameServerFavorite)
             nameFavServer = listServersPlayer[i].gameServer;
         }
-        embed.setDescription(favoriteServer);
+        embed.setDescription(favoriteServer +
+          'Важно: первый привязанный аккаунт автоматический становится основным.');
         embedMessage = await embedMessage.edit(message.author, { embed });
         const osuServerIndex = await menu.waitReaction(
           embedMessage,

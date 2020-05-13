@@ -23,14 +23,13 @@ module.exports = {
       );
     }
 
-    if (args[0] === undefined) {
+    if (!args[0]) {
       throw new CustomError('не указан код для выполнения.');
     }
 
     try {
-      const code = args.join(' ');
       // tslint:disable-next-line
-      eval(code);
+      eval(args.join(' '));
     } catch (err) {
       message.channel.send(`\`\`\`xl\n${err}\n\`\`\``);
     }
