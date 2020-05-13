@@ -30,6 +30,7 @@ User.init(
     birthday: {
       type: DATEONLY,
       allowNull: true,
+      defaultValue: null
     },
     balance: {
       type: INTEGER,

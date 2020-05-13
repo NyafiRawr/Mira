@@ -3,6 +3,7 @@ import CustomError from '../utils/customError';
 import { sequelize } from '../db';
 import * as users from './users';
 import { roundDecimalPlaces } from '../utils/tools';
+import { log } from '../logger';
 
 /**
  * Установка пользователю печенек, при необходимости добавляет в базу пользователя
@@ -69,7 +70,7 @@ export const transaction = async (
   }
 
   await sequelize.transaction(async t => {
-    userOut.update(
+    await userOut.update(
       {
         balance: userOut.balance - currency,
       },
@@ -77,7 +78,7 @@ export const transaction = async (
     );
 
     if (userIn !== null) {
-      userIn.update(
+      await userIn.update(
         {
           balance: userIn.balance + currency,
         },
@@ -85,15 +86,17 @@ export const transaction = async (
       );
     }
 
-    User.create(
+    await User.create(
       {
         id: userInId,
         serverId,
         balance: currency,
       },
       { transaction: t }
+    ).catch((err) =>
+      log.error(err)
     );
-  });
+});
 };
 
 export const setWeight = async (
