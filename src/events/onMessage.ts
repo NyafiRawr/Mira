@@ -49,10 +49,10 @@ export default async (message: Message) => {
 
   if (!command) return;
 
-  const channel = message.guild.channels.find('id', message.channel.id);
+  const channel = message.guild.channels.get(message.channel.id);
   if (
     message.guild &&
-    !channel.permissionsFor(message.client.user)!.has('SEND_MESSAGES')
+    !channel!.permissionsFor(message.client.user)!.has('SEND_MESSAGES')
   ) {
     return message.author
       .send(

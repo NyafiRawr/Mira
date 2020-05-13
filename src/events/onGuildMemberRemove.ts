@@ -4,8 +4,8 @@ import * as vars from '../modules/vars';
 export default async (member: Discord.GuildMember) => {
   const logsState = await vars.get(member.guild.id, 'logs_state', undefined);
   if (logsState === 'on') {
-    const logsChannelId = await vars.get(member.guild.id, 'logs_channel', undefined);
-    const channel = member.guild.channels.find('id', logsChannelId) as Discord.TextChannel;
+    const logsChannelId = await vars.get(member.guild.id, 'logs_channel', '');
+    const channel = member.guild.channels.get(logsChannelId) as Discord.TextChannel;
     if (!channel) return vars.set(member.guild.id, 'logs_state', 'off');
     const fetchedLogs = await member.guild.fetchAuditLogs({
       limit: 1,

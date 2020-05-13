@@ -13,7 +13,7 @@ module.exports = {
   permissions: ['MANAGE_MESSAGES', 'SEND_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Discord.Message, args: string[]) {
-    // TODO: webhooks
+    // TODO: webhooks, ПЕРЕПИСАТЬ КОД
     /*
     message.channel.createWebhook("Example Webhook", "https://i.imgur.com/p2qNFag.png")
       .then(wb => webhooks.set(message.guild.id, wb.id, wb.token));
@@ -21,16 +21,15 @@ module.exports = {
     const mentionHook = new Discord.WebhookClient("Webhook ID", "Webhook Token");
    */
     let edit = false;
-    let targetChannel: Discord.GuildChannel;
+    let targetChannel;
     let targetMessageId = '';
     let targetText = '';
 
     let newArgs = args;
 
     targetText = newArgs.join(' ');
-    if (targetText === '') {
+    if (targetText === '')
       throw new CustomError('я скажу... а что сказать нужно было?');
-    }
 
     if (newArgs[0] === 'edit') {
       edit = true;
@@ -48,33 +47,24 @@ module.exports = {
         .catch((error: any) => {
           message.reply(
             `сообщение для редакта не найдено!` +
-              `\nКанал: ${targetChannel}\nID: ${targetMessageId}` +
-              `\nНовый текст: \`\`\`fix\n${targetText.substr(
-                0,
-                1424
-              )}\`\`\` ${error}`
+            `\nКанал: ${/*targetChannel*/ 'нет'}\nID: ${targetMessageId}` +
+            `\nНовый текст: \`\`\`fix\n${targetText.substr(
+              0,
+              1424
+            )}\`\`\` ${error}`
           );
         });
     } else if (message.mentions.channels.size > 0) {
-      targetChannel = message.guild.channels.find(
-        'id',
-        message.mentions.channels.first().id
-      );
-      if (
-        !targetChannel.permissionsFor(message.member)!.has(this.permissions)
-      ) {
-        throw new CustomError(
-          'у тебя нет прав управлять/отправлять сообщения!'
-        );
+      targetChannel = message.guild.channels.get(message.mentions.channels.first().id);
+      if (!targetChannel!.permissionsFor(message.member)!.has(this.permissions)) {
+        throw new CustomError('у тебя нет прав управлять/отправлять сообщения!');
       }
 
-      targetText = targetText.replace(`<#${targetChannel.id}>`, '');
+      targetText = targetText.replace(`<#${targetChannel!.id}>`, '');
       message.mentions.channels.first().send(targetText);
     } else {
-      targetChannel = message.guild.channels.find('id', message.channel.id);
-      if (
-        !targetChannel.permissionsFor(message.member)!.has(this.permissions)
-      ) {
+      targetChannel = message.guild.channels.get(message.channel.id);
+      if (!targetChannel!.permissionsFor(message.member)!.has(this.permissions)) {
         return message.reply('недостаточно привилегий!');
       }
 

@@ -6,8 +6,8 @@ export default async (deleteMsg: Discord.Message) => {
 
   const logsState = await vars.get(deleteMsg.guild.id, 'logs_state', undefined);
   if (logsState === 'on') {
-    const logsChannelId = await vars.get(deleteMsg.guild.id, 'logs_channel', undefined);
-    const channel = deleteMsg.guild.channels.find('id', logsChannelId) as Discord.TextChannel;
+    const logsChannelId = await vars.get(deleteMsg.guild.id, 'logs_channel', '');
+    const channel = deleteMsg.guild.channels.get(logsChannelId) as Discord.TextChannel;
     if (!channel) return vars.set(deleteMsg.guild.id, 'logs_state', 'off');
     const fetchedLogs = await deleteMsg.guild.fetchAuditLogs({
       limit: 1,
