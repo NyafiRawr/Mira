@@ -44,7 +44,7 @@
     "moment": "^2.25.3",
     "mysql2": "^2.0.2",
     "pino": "^6.2.1",
-    "sequelize": "^5.21.9",
+    "sequelize": "^5.21.10",
     "sqlite3": "^4.1.1",
     "typescript": "^3.9.2"
   },
