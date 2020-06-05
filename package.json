@@ -46,7 +46,7 @@
     "pino": "^6.3.2",
     "sequelize": "^5.21.11",
     "sqlite3": "^4.1.1",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.5"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.32",
