@@ -7,7 +7,7 @@ import * as players from '../../modules/players';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Аккаунты участника',
-  aliases: ['aсs', 'accs', 'acc', 'aks'],
+  aliases: ['acs', 'accs', 'acc', 'aks'],
   usage: '[@]',
   guild: true,
   cooldown: undefined,
