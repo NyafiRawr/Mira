@@ -24,6 +24,8 @@ export default async (message: Message) => {
 
   if ( // Check prefix
     !config.bot.prefixs.filter((prefix) => content.startsWith(prefix)).length
+    &&
+    message.guild
   ) { // Bad-words checking
     const badChannelsIds = await warns.getBadChannelsIds(message.guild.id);
     if (!badChannelsIds.includes(message.channel.id)) {

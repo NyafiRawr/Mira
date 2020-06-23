@@ -147,11 +147,12 @@ module.exports = {
     }
 
     else if (args[0] === 'list') {
-      const list = serverGuilds.map(guild => `  ${guild.id}. **${guild.name}** | Владелец: <@${guild.ownerId}>\n`).slice(0, 24); // Примерная вместимость;
+      const list = serverGuilds.map(guild =>
+        `  ${guild.id}. **${guild.name}** | Владелец: <@${guild.ownerId}>`).slice(0, 24); // Примерная вместимость
       embed
         .setDescription(
           '**Список гильдий на сервере**\n'
-          + (!!list.length ? list : '*Гильдий нет, ||но я тут и мы можем исправить это!||*')
+          + (!!list.length ? list.join('\n') : '*Гильдий нет, ||но я тут и мы можем исправить это!||*')
         );
       return message.channel.send(embed);
     }
