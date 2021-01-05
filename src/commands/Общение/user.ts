@@ -114,12 +114,12 @@ module.exports = {
           { name: 'Гильдия', value: gild?.name || 'Нет', inline: true },
           { name: 'Карма', value: `${user.reputation} F`, inline: true },
           {
-            name: 'Создан',
+            name: 'Зарегался',
             value: timeFomattedDMY(member.user.createdAt.getTime()),
             inline: true,
           },
           {
-            name: 'Первое появление',
+            name: 'Появился здесь',
             value: timeFomattedDMY(
               (user.entryFirstDate || member.joinedAt).getTime()
             ),
