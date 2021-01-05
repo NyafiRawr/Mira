@@ -2,6 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import * as economy from '../../modules/economy';
 import * as shops from '../../modules/shops';
 import config from '../../config';
+import { separateThousandth } from '../../utils';
 
 const body = {
   color: config.colors.message,
@@ -38,7 +39,7 @@ module.exports = {
             roles
               .map(
                 (role, index) =>
-                  `${index + 1}. <@&${role.roleId}> - ${role.cost}:cookie:`
+                  `${index + 1}. <@&${role.roleId}> - ${separateThousandth(role.cost.toString())}:cookie:`
               )
               .join('\n')
           )
