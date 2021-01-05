@@ -35,7 +35,7 @@ module.exports = {
     });
 
     message.reply(
-      `ты выдал ${members.array().join(', ')}` +
+      `ты изъял у ${members.array().join(', ')}` +
         ` ${separateThousandth(amount.toString())}:cookie:`
     );
   },
