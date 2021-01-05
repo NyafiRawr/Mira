@@ -20,7 +20,7 @@ export const list = async (message: Message, args: string[]) => {
     );
   }
 
-  list.sort((a, b) => a.balance - b.balance);
+  list.sort((a, b) => b.balance - a.balance);
 
   const maxTopSize = topSize > list.length ? list.length : topSize;
   const pages: Gild[][] = [];
