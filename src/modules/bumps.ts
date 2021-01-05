@@ -51,13 +51,13 @@ export const remove = async (
 };
 
 export const awardOfBump = async (message: Message): Promise<void> => {
-  // Игнорируем ботов и ЛС
-  if (message.author.bot || !message.guild) {
+  // Игнорируем участников и ЛС
+  if (message.author.bot == false || message.guild == null) {
     return;
   }
-
-  const bot = await getOne(message.guild!.id, message.author.id);
-  if (bot == undefined) {
+  
+  const bot = await getOne(message.guild.id, message.author.id);
+  if (bot == null) {
     return;
   }
 
@@ -72,7 +72,7 @@ export const awardOfBump = async (message: Message): Promise<void> => {
     }
   }
 
-  if (content) {
+  if (content != null) {
     const startMention = content.indexOf('<@');
     if (startMention == -1) {
       return;
