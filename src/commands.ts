@@ -72,7 +72,7 @@ export const commandsAliases = new Collection<string, CommandFile>();
 
 export const commands = async (message: Message): Promise<void> => {
   // Игнорируем ботов и ЛС
-  if (message.author.bot || !message.guild) {
+  if (message.author.bot || message.guild == null) {
     return;
   }
 
