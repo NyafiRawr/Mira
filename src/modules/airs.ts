@@ -109,7 +109,6 @@ client.once('ready', async () => {
     guild.members.cache.map(async (member) => {
       if (member.roles.cache.has(roleId)) {
         await member.roles.remove(roleId);
-        log.warn(`${member.displayName} убран из эфира ${guild.name}`);
       }
     });
   });
