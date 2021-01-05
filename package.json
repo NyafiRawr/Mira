@@ -22,10 +22,10 @@
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
     "build": "tsc",
-    "start": "chcp 65001 && node prod/src/index.js",
-    "start-dev": "npm install && chcp 65001 && ts-node-dev --watch --respawn --transpile-only ./src/index.ts",
-    "start-watch": "chcp 65001 && nodemon",
-    "test": "chcp 65001 && echo \"Ошибка: нет тестов\""
+    "start": "node prod/src/index.js",
+    "start-dev": "npm install && ts-node-dev --watch --respawn --transpile-only ./src/index.ts",
+    "start-watch": "nodemon",
+    "test": "echo \"Ошибка: нет тестов\""
   },
   "dependencies": {
     "@types/validator": "^13.1.2",
