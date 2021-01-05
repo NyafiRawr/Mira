@@ -5,7 +5,7 @@ import * as gildrelations from '../../modules/gildrelations';
 import {
   checkUrl,
   secondsFormattedHMS,
-  timeFomattedDMYHHMMSS,
+  timeFomattedDMY,
   timeLifeFormattedYMD,
 } from '../../utils';
 import config from '../../config';
@@ -115,12 +115,12 @@ module.exports = {
           { name: 'Карма', value: `${user.reputation} F`, inline: true },
           {
             name: 'Создан',
-            value: timeFomattedDMYHHMMSS(member.user.createdAt.getTime()),
+            value: timeFomattedDMY(member.user.createdAt.getTime()),
             inline: true,
           },
           {
             name: 'Первая запись',
-            value: timeFomattedDMYHHMMSS(
+            value: timeFomattedDMY(
               (user.entryFirstDate || member.joinedAt).getTime()
             ),
             inline: true,

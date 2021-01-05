@@ -67,6 +67,15 @@ export const timeFomattedDMYHHMMSS = (unix_time: number): string => {
   )}:${toTwoDigit(sec)}`;
 };
 
+// Приведение unix_time к виду ДД месяц ГГГГ
+export const timeFomattedDMY = (unix_time: number): string => {
+  const timestamp = new Date(unix_time);
+  const year = timestamp.getFullYear();
+  const month = months[timestamp.getMonth()];
+  const date = timestamp.getDate();
+  return `${date} ${month} ${year}`;
+};
+
 // Вычисление прошедшего времени в виде Г лет М месяцев Д дней
 export const timeLifeFormattedYMD = (unix_time: number) => {
   const difference = new Date(Date.now() - unix_time);
