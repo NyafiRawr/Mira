@@ -4,24 +4,18 @@ on:
   push:
     branches:
       - master
-       
+
 jobs:
   build:
-    strategy:
-      matrix:
-        node-version: 12.18.3
-        os: ubuntu-18.04
-        
-    name: Используется NodeJS ${{ matrix.node-version }} на ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
     
-    - name: Установка Node.js ${{ matrix.node-version }}
+    - name: Установка Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '12.18.3'
         
     - name: Установка зависимостей и компиляция проекта
       run: |
