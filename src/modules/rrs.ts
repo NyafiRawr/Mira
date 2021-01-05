@@ -74,10 +74,7 @@ export const reactionRoleAdd = async (
   messageReaction: MessageReaction,
   user: User | PartialUser
 ): Promise<void> => {
-  if (
-    messageReaction.message.guild == null ||
-    messageReaction.message.author.bot
-  ) {
+  if (messageReaction.message.guild == null || user.bot) {
     return; // Игнорируем ЛС и ботов
   }
 
@@ -114,10 +111,7 @@ export const reactionRoleRemove = async (
   messageReaction: MessageReaction,
   user: User | PartialUser
 ): Promise<void> => {
-  if (
-    messageReaction.message.guild == null ||
-    messageReaction.message.author.bot
-  ) {
+  if (messageReaction.message.guild == null || user.bot) {
     return; // Игнорируем ЛС и ботов
   }
   const reaction =
