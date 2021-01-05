@@ -40,7 +40,7 @@ module.exports = {
                 (role, index) =>
                   `${index + 1}. <@&${role.roleId}> - ${role.cost}:cookie:`
               )
-              .join(', ')
+              .join('\n')
           )
           .setFooter(
             `Купить/продать: ${config.discord.prefix}${this.name} [номер] | Можно носить только одну`
