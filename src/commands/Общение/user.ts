@@ -134,7 +134,7 @@ module.exports = {
         footer: {
           text: `На сервере уже ${timeLifeFormattedYMD(
             (member.joinedAt || user.entryFirstDate).getTime()
-          )} | Возраст: ${
+          )}\nВозраст: ${
             user.birthday
               ? timeLifeFormattedYMD(new Date(user.birthday).getTime())
               : 'неизвестно'
