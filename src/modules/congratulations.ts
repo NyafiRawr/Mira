@@ -28,7 +28,7 @@ export const happyBirthday = async () => {
       let ageString = `${age}`;
       if (age % 10 == 1 && age != 11) {
         ageString += ` год`;
-      } else if (age > 1 && age < 5) {
+      } else if (age % 10 >= 2 && age % 10 <= 4 && age != 12 && age != 13 && age != 14) {
         ageString += ` года`;
       } else {
         ageString += ` лет`;
