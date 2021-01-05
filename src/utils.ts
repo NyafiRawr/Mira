@@ -80,7 +80,7 @@ export const timeLifeFormattedYMD = (unix_time: number) => {
     date += `${year}`;
     if (year % 10 == 1 && year != 11) {
       date += ` год `;
-    } else if (year > 1 && year < 5) {
+    } else if (year % 10 > 1 && year % 10 < 5) {
       date += ` года `;
     } else {
       date += ` лет `;
