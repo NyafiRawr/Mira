@@ -23,7 +23,7 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     if (args.shift() == 'edit') {
       const element = args.shift();
-      const source = args.shift();
+      const source = args.join(' ');
       const user = await users.get(message.guild!.id, message.author.id);
       switch (element) {
         case 'desc': {
