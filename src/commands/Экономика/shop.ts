@@ -39,7 +39,9 @@ module.exports = {
             roles
               .map(
                 (role, index) =>
-                  `${index + 1}. <@&${role.roleId}> - ${separateThousandth(role.cost.toString())}:cookie:`
+                  `${index + 1}. <@&${role.roleId}> - ${separateThousandth(
+                    role.cost.toString()
+                  )}:cookie:`
               )
               .join('\n')
           )

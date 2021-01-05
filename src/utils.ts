@@ -89,7 +89,13 @@ export const timeLifeFormattedYMD = (unix_time: number) => {
     date += `${year}`;
     if (year % 10 == 1 && year != 11) {
       date += ` год `;
-    } else if (year % 10 >= 2 && year % 10 <= 4 && year != 12 && year != 13 && year != 14) {
+    } else if (
+      year % 10 >= 2 &&
+      year % 10 <= 4 &&
+      year != 12 &&
+      year != 13 &&
+      year != 14
+    ) {
       date += ` года `;
     } else {
       date += ` лет `;
@@ -99,7 +105,13 @@ export const timeLifeFormattedYMD = (unix_time: number) => {
     date += `${month}`;
     if (month % 10 == 1 && month != 11) {
       date += ` месяц `;
-    } else if (month >= 2 && month <= 4 && month != 12 && month != 13 && month != 14) {
+    } else if (
+      month >= 2 &&
+      month <= 4 &&
+      month != 12 &&
+      month != 13 &&
+      month != 14
+    ) {
       date += ` месяца `;
     } else {
       date += ` месяцев `;
@@ -109,7 +121,13 @@ export const timeLifeFormattedYMD = (unix_time: number) => {
     date += `${day}`;
     if (day % 10 == 1 && day != 11) {
       date += ` день `;
-    } else if (day % 10 >= 2 && day % 10 <= 4 && day != 12 && day != 13 && day != 14) {
+    } else if (
+      day % 10 >= 2 &&
+      day % 10 <= 4 &&
+      day != 12 &&
+      day != 13 &&
+      day != 14
+    ) {
       date += ` дня `;
     } else {
       date += ` дней `;
