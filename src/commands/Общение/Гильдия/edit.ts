@@ -34,7 +34,14 @@ export const edit = async (message: Message, args: string[]) => {
       if (description.length == 0) {
         await gild.update({ description: null });
       } else {
-        await gild.update({ description });
+        const price = await gilds.priceEditDesc(message.guild!.id);
+        if (gild.balance < price) {
+          throw new Error(
+            `не хватает: ${price - gild.balance}/${price}:cookie:`
+          );
+        }
+
+        await gild.update({ description, balance: gild.balance - price });
       }
       break;
     }
@@ -46,7 +53,15 @@ export const edit = async (message: Message, args: string[]) => {
         if ((await checkUrl(imageURL, 'image')) === false) {
           throw new Error('такой ссылки не существует или это не изображение!');
         }
-        await gild.update({ imageURL });
+
+        const price = await gilds.priceEditImg(message.guild!.id);
+        if (gild.balance < price) {
+          throw new Error(
+            `не хватает: ${price - gild.balance}/${price}:cookie:`
+          );
+        }
+
+        await gild.update({ imageURL, balance: gild.balance - price });
       }
       break;
     }
