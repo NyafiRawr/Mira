@@ -119,7 +119,7 @@ module.exports = {
             inline: true,
           },
           {
-            name: 'Первая запись',
+            name: 'Первое появление',
             value: timeFomattedDMY(
               (user.entryFirstDate || member.joinedAt).getTime()
             ),
