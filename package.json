@@ -22,7 +22,7 @@
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
     "build": "tsc",
-    "start": "chcp 65001 && node prod/index.js",
+    "start": "chcp 65001 && node prod/src/index.js",
     "start-dev": "npm install && chcp 65001 && ts-node-dev --watch --respawn --transpile-only ./src/index.ts",
     "start-watch": "chcp 65001 && nodemon",
     "test": "chcp 65001 && echo \"Ошибка: нет тестов\""

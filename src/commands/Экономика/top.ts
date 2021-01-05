@@ -17,7 +17,7 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые богачи',
   usage: '[номер страницы]',
-  aliases: ['cootop', 'moneytop'],
+  aliases: ['list', 'cootop', 'moneytop'],
   cooldown: {
     seconds: 30,
   },

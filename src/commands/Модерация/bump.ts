@@ -16,7 +16,7 @@ module.exports = {
   permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
-    const bots = await bumps.get(message.guild!.id);
+    const bots = await bumps.getAll(message.guild!.id);
 
     const embed = new MessageEmbed(body);
 
