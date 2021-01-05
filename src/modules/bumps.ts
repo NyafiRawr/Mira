@@ -55,7 +55,7 @@ export const awardOfBump = async (message: Message): Promise<void> => {
   if (message.author.bot == false || message.guild == null) {
     return;
   }
-  
+
   const bot = await getOne(message.guild.id, message.author.id);
   if (bot == null) {
     return;
