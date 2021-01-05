@@ -38,7 +38,7 @@ module.exports = {
         .addField(
           'Добавить/изменить или удалить',
           `\`${config.discord.prefix}${this.name} add <@> <вознаграждение> <текст сообщения об успехе>\`` +
-            `\n\`${config.discord.prefix}${this.name} remove <@>\` - удалить из награждаемых`
+            `\n\`${config.discord.prefix}${this.name} remove <номер>\` - удалить из награждаемых`
         );
     } else {
       if (!message.member?.hasPermission(this.permissions[0])) {
