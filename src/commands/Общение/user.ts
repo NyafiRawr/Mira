@@ -24,7 +24,7 @@ module.exports = {
     if (args.shift() == 'edit') {
       const element = args.shift();
       const source = args.join(' ');
-      const user = await users.get(message.guild!.id, message.author.id);
+      let user = await users.get(message.guild!.id, message.author.id);
       switch (element) {
         case 'desc': {
           if (user.reputation < repDesc) {
@@ -36,9 +36,9 @@ module.exports = {
           }
 
           if (source == undefined) {
-            user.update({ biographyDescription: null });
+            user = await user.update({ biographyDescription: null });
           } else {
-            user.update({ biographyDescription: source });
+            user = await user.update({ biographyDescription: source });
           }
           break;
         }
@@ -52,14 +52,14 @@ module.exports = {
           }
 
           if (source == undefined) {
-            user.update({ biographyImageUrl: null });
+            user = await user.update({ biographyImageUrl: null });
           } else {
             if ((await checkUrl(source, 'image')) === false) {
               throw new Error(
                 'такой ссылки не существует или она не поддерживается!'
               );
             }
-            user.update({ biographyImageUrl: source });
+            user = await user.update({ biographyImageUrl: source });
           }
           break;
         }
@@ -73,12 +73,12 @@ module.exports = {
           }
 
           if (source == undefined) {
-            user.update({ biographyLineColor: null });
+            user = await user.update({ biographyLineColor: null });
           } else {
             if (config.patternHexColor.test(source) == false) {
               throw new Error('цвет должен быть указан в формате HEX.');
             }
-            user.update({ biographyLineColor: source });
+            user = await user.update({ biographyLineColor: source });
           }
           break;
         }
