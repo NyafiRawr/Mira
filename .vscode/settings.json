@@ -1,34 +1,9 @@
 {
-	"editor.insertSpaces": false,
-	"files.trimTrailingWhitespace": true,
-	"files.exclude": {
-		".git": true,
-		".build": true,
-		"**/.DS_Store": true,
-		"lib/**/*.js": {
-			"when": "$(basename).ts"
-		}
-	},
 	"search.exclude": {
-		"**/node_modules": true,
-		"**/bower_components": true,
-		".build/**": true,
-		"out/**": true,
-		"out-build/**": true,
-		"out-vscode/**": true,
-		"i18n/**": true,
-		"extensions/**/out/**": true,
-		"test/smoke/out/**": true,
-		"src/vs/base/test/node/uri.test.data.txt": true
+		"**/node_modules": true
 	},
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"npm.exclude": "**/extensions/**",
-	"npm.packageManager": "yarn",
-	"emmet.excludeLanguages": [],
-	"typescript.preferences.importModuleSpecifier": "non-relative",
-	"typescript.preferences.quoteStyle": "single",
-	"remote.extensionKind": {
-		"msjsdiag.debugger-for-chrome": "workspace"
-	},
-	"files.insertFinalNewline": true
+
+	"files.eol": "\n",
+	
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
 }

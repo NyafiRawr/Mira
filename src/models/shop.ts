@@ -1,7 +1,7 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../database';
 
-class Shop extends Model {
+export default class Shop extends Model {
   public serverId!: string;
   public roleId!: string;
   public cost!: number;
@@ -9,10 +9,19 @@ class Shop extends Model {
 
 Shop.init(
   {
-    serverId: STRING,
-    roleId: STRING,
+    serverId: {
+      type: STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
+    roleId: {
+      type: STRING,
+      allowNull: false,
+      primaryKey: true,
+    },
     cost: {
       type: INTEGER,
+      allowNull: false,
       defaultValue: 0,
     },
   },
@@ -21,7 +30,5 @@ Shop.init(
     sequelize,
   }
 );
-
-export default Shop;
 
 Shop.sync();

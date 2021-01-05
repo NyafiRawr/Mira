@@ -1,130 +1,64 @@
-import User from '../models/user';
-import CustomError from '../utils/customError';
-import { sequelize } from '../db';
+import User from '../models/User';
 import * as users from './users';
-import { roundDecimalPlaces } from '../utils/tools';
-import { log } from '../logger';
+import { separateThousandth } from '../utils';
+import { sequelize } from '../database';
 
-/**
- * Установка пользователю печенек, при необходимости добавляет в базу пользователя
- * @param {String} serverId id сервера
- * @param {String} userId id пользователя
- * @param {Number} currency сколько печенек установить
- */
-export const set = async (
+// Добавить / -Забрать печенье
+export const setBalance = async (
   serverId: string,
   userId: string,
   currency: number
-) => {
-  const user = await users.get(serverId, userId);
-
-  if (user !== null) {
-    return user.update({
-      balance: user.balance + currency,
+): Promise<User> => {
+  let user = await users.get(serverId, userId);
+  if (user == null) {
+    user = await User.create({
+      userId,
+      serverId,
+      balance: currency,
     });
   }
-
-  return User.create({
-    id: userId,
-    serverId,
-    balance: currency,
+  // Для случаев когда -currency
+  if (user.balance + currency < 0) {
+    throw new Error(
+      `тебе не хватает ${separateThousandth(
+        Math.abs(currency).toString()
+      )}:cookie:`
+    );
+  }
+  return user.update({
+    balance: user.balance + currency,
   });
 };
 
-/**
- * Списывает у пользователя печенье
- * @param {String} serverId id сервера
- * @param {String} userId id пользователя у которого будут списаны печеньки
- * @param {Number} currency сколько печенек списать
- */
-export const pay = async (
-  serverId: string,
-  userId: string,
-  currency: number = 0
-) => {
-  const user = await users.get(serverId, userId);
-  if (user === null || user.balance < currency) {
-    throw new CustomError('у тебя нет столько печенья!');
-  }
-
-  await set(serverId, userId, -currency);
-};
-
-/**
- * Переводит печеньки между пользователями
- * @param {String} serverId id сервера
- * @param {String} userOutId id пользователя у которого будут списаны печеньки
- * @param {String} userInId id пользователя которому будут добавлены печеньки
- * @param {Number} currency сколько печенек перевести
- */
-export const transaction = async (
+// Перевод средств, возвращает плательщика
+export const payTransaction = async (
   serverId: string,
   userOutId: string,
   userInId: string,
-  currency: number
-) => {
+  currency = 0
+): Promise<User> => {
   const userOut = await users.get(serverId, userOutId);
   const userIn = await users.get(serverId, userInId);
-  if (userOut === null || userIn === null) {
-    throw new CustomError('пользователь не найден');
+
+  if (userOut.balance < currency) {
+    throw new Error(`тебе не хватает ${userOut.balance - currency} печенек!`);
   }
 
-  await sequelize.transaction(async t => {
-    await userOut.update(
+  return sequelize.transaction(async (t) => {
+    const user = await userOut.update(
       {
         balance: userOut.balance - currency,
       },
       { transaction: t }
     );
 
-    if (userIn !== null) {
-      await userIn.update(
-        {
-          balance: userIn.balance + currency,
-        },
-        { transaction: t }
-      );
-    }
-
-    await User.create(
+    userIn.update(
       {
-        id: userInId,
-        serverId,
-        balance: currency,
+        balance: userIn.balance + currency,
       },
       { transaction: t }
-    ).catch((err) =>
-      log.error(err)
     );
-});
-};
 
-export const setWeight = async (
-  serverId: string,
-  userId: string,
-  weight: number
-) => {
-  const user = await users.get(serverId, userId);
-
-  if (user !== null) {
-    return user.update({
-      weight: +roundDecimalPlaces(user.weight + weight, 2),
-    });
-  }
-
-  return User.create({
-    id: userId,
-    serverId,
-    weight,
+    return user;
   });
-};
-
-export const getWeight = async (serverId: string, userId: string) => {
-  const user = await users.get(serverId, userId);
-
-  if (user !== null) {
-    return user.weight;
-  }
-
-  return 0;
 };

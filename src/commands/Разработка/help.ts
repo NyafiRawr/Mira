@@ -1,138 +1,116 @@
-import * as Discord from 'discord.js';
-
+import { Message, MessageEmbed } from 'discord.js';
+import { CommandFile, commandsAliases, commandsList } from './../../commands';
+import { secondsFormattedHMS, toTitle } from '../../utils';
 import config from '../../config';
-import * as tools from '../../utils/tools';
-import { commands } from '../../client';
+
+// Команды по группам
+const spells: { [key: string]: CommandFile[] } = {};
+async function rememberSpells(): Promise<void> {
+  commandsList.map((command) => {
+    if (spells[command.group] == undefined) {
+      spells[command.group] = [command];
+    } else {
+      spells[command.group].push(command);
+    }
+  });
+}
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Список команд',
-  aliases: ['commands'],
-  usage: '[hide или имя команды]',
-  guild: false,
-  hide: true,
-  cooldown: 3,
-  cooldownMessage: undefined,
-  permissions: undefined,
+  description: 'Список заклинаний',
+  aliases: ['spells', 'commands'],
+  usage: '[имя/категория]',
+  cooldown: {
+    seconds: 3,
+  },
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[]) {
-    const embed = new Discord.RichEmbed();
+  async execute(message: Message, args: string[]) {
+    if (Object.keys(spells).length === 0) {
+      await rememberSpells();
+    }
 
-    if (!args.length) {
-      embed.setDescription(
-        'Параметры обёрнутые в <> - обязательны, а в [] - нет'
-      );
-      embed.setAuthor('Список команд');
-      const groups = [...new Set(commands.map(command => command.group))];
-      for (const g of groups) {
-        const catList = [
-          ...new Set(
-            commands
-              .filter(cmd => cmd.hide !== true && cmd.group === g)
-              .map(
-                command =>
-                  `${config.bot.prefix}**${!!command.aliases ? command.aliases[0] : command.name}** ${command.usage ||
-                    ''} - ${command.description}`
-              )
-          ),
-        ]
-          .join('\n')
-          .substring(0, 1024);
-        if (catList) {
-          embed.addField(g, catList, false);
-        }
-      }
-      embed.addField(
-        'Подробная информация о команде',
-        `${config.bot.prefix}**${this.name}** [имя команды]`,
-        false
-      );
-      embed.addField(
-        'Скрытые команды',
-        `${config.bot.prefix}**${this.name} hide**`,
-        false
-      );
-    } else if (args[0] === 'hide') {
-      embed.setDescription(
-        'Параметры обёрнутые в <> - обязательны, а в [] - нет'
-      );
-      embed.setAuthor('Список скрытых команд');
-      const groups = [...new Set(commands.map(command => command.group))];
-      for (const g of groups) {
-        const catList = [
-          ...new Set(
-            commands
-              .filter(cmd => cmd.hide === true && cmd.group === g)
-              .map(
-                command =>
-                  `${config.bot.prefix}**${!!command.aliases ? command.aliases[0] : command.name}** ${command.usage ||
-                    ''} - ${command.description}`
-              )
-          ),
-        ]
-          .join('\n')
-          .substring(0, 1024);
-        if (catList) {
-          embed.addField(g, catList, false);
-        }
-      }
-      embed.addField(
-        'Подробная информация о команде',
-        `${config.bot.prefix}**${this.name}** [имя команды]`,
-        false
-      );
-    } else {
-      if (!commands.has(args[0])) {
-        return message.reply(`команда \`${args[0]}\` не найдена!`);
-      }
+    const embed = new MessageEmbed().setColor(config.colors.help);
 
-      const command = commands.get(args[0]);
+    const spokenWord = args.shift();
 
-      embed.setAuthor(
-        `О команде: ${
-          command.aliases
-            ? `${command.name}, ${command.aliases.join(', ')}`
-            : command.name
-        }`,
-        message.client.user.avatarURL
-      );
-      embed.setDescription(command.description || 'Описание отсутствует');
-      if (command.usage) {
+    if (spokenWord == undefined) {
+      // Все категории с перечислением команд (без описания)
+      Object.keys(spells).map((groupName) => {
         embed.addField(
-          '**Использовать так**',
-          `${config.bot.prefix}${command.name} ${command.usage}`,
-          false
+          groupName,
+          spells[groupName].map((spell) => `\`${spell.name}\``).join(', ')
         );
+      });
+      embed
+        .setTitle('Список заклинаний :P')
+        .addField(
+          'Узнать больше',
+          `О категории: \`${config.discord.prefix}help имя_категории\`` +
+            `\nО команде: \`${config.discord.prefix}help имя_команды\``
+        );
+    } else if (spells[toTitle(spokenWord)] != undefined) {
+      // Отображение списка команд из категории groupName
+      const groupName = toTitle(spokenWord);
+      embed
+        .setAuthor('Заклинания категории')
+        .setTitle(groupName)
+        .setDescription(
+          spells[groupName]
+            .map(
+              (spell) =>
+                `\`${config.discord.prefix}${spell.name} ${
+                  spell.usage || ''
+                }\` - ${spell.description}`
+            )
+            .join('\n')
+        )
+        .setFooter('Параметры обёрнутые в <> - обязательны, а в [] - нет');
+    } else {
+      // Подробная информация о команде spellName
+      const spellName = spokenWord.toLowerCase();
+      const spell =
+        commandsList.get(spellName) || commandsAliases.get(spellName);
+      if (spell == undefined) {
+        message.reply(
+          `ни группа ни заклинание с названием \`${spokenWord}\` не найдены.`
+        );
+        return;
       }
-      if (command.guild !== undefined) {
-        embed.addField('**Доступна в ЛС**', command.guild ? 'Нет' : 'Да', true);
+
+      embed
+        .setAuthor('О заклинании')
+        .setTitle(
+          spell.aliases
+            ? `${spell.name}, ${spell.aliases.join(', ')}`
+            : spell.name
+        )
+        .setDescription(spell.description || 'Описание отсутствует');
+
+      if (spell.usage) {
+        embed
+          .addField(
+            '**Использовать так**',
+            `${config.discord.prefix}${spell.name} ${spell.usage}`,
+            false
+          )
+          .setFooter(
+            'Параметры обёрнутые в <> - обязательны, а в [] - нет\n\n'
+          );
       }
-      if (command.group) {
-        embed.addField('**Категория**', command.group, true);
+
+      if (spell.group) {
+        embed.addField('**Категория**', spell.group, true);
       }
+
       embed.addField(
         '**Откат**',
-        tools.convertSecondsToTime(command.cooldown || 3),
+        secondsFormattedHMS(
+          spell.cooldown?.seconds || config.defaultCooldown.seconds
+        ),
         true
       );
-      if (command.permissions) {
-        embed.addField(
-          '**Требуемые права**',
-          command.permissions.join(', '),
-          true
-        );
-      }
     }
 
-    embed.setColor(tools.randomHexColor());
-
-    if (message.guild !== null) {
-      embed.setFooter(
-        tools.embedFooter(message, this.name),
-        message.author.displayAvatarURL
-      );
-    }
-
-    message.channel.send({ embed });
+    message.channel.send(embed);
   },
 };

@@ -1,37 +1,29 @@
-import User from '../models/user';
+import User from '../models/User';
 
-export const get = async (
-  serverId: string,
-  userId: string
-): Promise<User | null> =>
-  User.findOne({
-    where: {
-      id: userId,
-      serverId,
-    },
-  });
-
-export const getAll = async (serverId: string): Promise<User[] | null> =>
+// Возвращает массив пользователей, может быть пустым
+export const all = async (serverId: string): Promise<User[]> =>
   User.findAll({
     where: {
       serverId,
     },
   });
 
-export const set = async (
-  serverId: string,
-  userId: string,
-  fields: { [key: string]: any }
-) => {
-  const user = await get(serverId, userId);
-
-  if (user != null) {
-    return user.update(fields);
-  }
-
-  return User.create({
-    id: userId,
-    serverId,
-    ...fields,
+// Возвращает указанного пользователя (создаёт, если нет)
+export const get = async (serverId: string, userId: string): Promise<User> => {
+  const user = await User.findOne({
+    where: {
+      userId,
+      serverId,
+    },
   });
+  if (user == null) {
+    return User.create({ serverId, userId });
+  }
+  return user;
+};
+
+// Создаёт пользователя и записывает указанные параметры
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const set = async (serverId: string, userId: string, fields: any) => {
+  return await (await get(serverId, userId)).update(fields);
 };

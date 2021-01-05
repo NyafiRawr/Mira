@@ -1,21 +1,22 @@
-import { Model, STRING, DATE, DATEONLY, INTEGER, DOUBLE, NOW } from 'sequelize';
-import { sequelize } from '../db';
+import { Model, STRING, DATE, DATEONLY, INTEGER, NOW } from 'sequelize';
+import { sequelize } from '../database';
 
-class User extends Model {
-  public id!: number;
+export default class User extends Model {
+  public userId!: string;
   public serverId!: string;
-  public firstEntry!: Date;
-  public birthday!: Date | null;
   public balance!: number;
-  public weight!: number;
+  public birthday?: Date | null;
+  public entryFirstDate!: Date;
   public reputation!: number;
-  public voiceTime!: number;
-  public coupleId!: string | null;
+  public voiceSeconds!: number;
+  public biographyDescription?: string | null;
+  public biographyImageUrl?: string | null;
+  public biographyLineColor?: string | null;
 }
 
 User.init(
   {
-    id: {
+    userId: {
       type: STRING,
       primaryKey: true,
     },
@@ -23,35 +24,41 @@ User.init(
       type: STRING,
       primaryKey: true,
     },
-    firstEntry: {
+    entryFirstDate: {
       type: DATE,
       defaultValue: NOW,
     },
     birthday: {
       type: DATEONLY,
       allowNull: true,
-      defaultValue: null
+      defaultValue: null,
     },
     balance: {
       type: INTEGER,
       defaultValue: 0,
     },
-    weight: {
-      type: DOUBLE,
-      defaultValue: 0.0,
-    },
     reputation: {
       type: INTEGER,
       defaultValue: 0,
     },
-    voiceTime: {
+    voiceSeconds: {
       type: INTEGER,
       defaultValue: 0,
     },
-    coupleId: {
+    biographyDescription: {
       type: STRING,
       allowNull: true,
-      defaultValue: null
+      defaultValue: null,
+    },
+    biographyImageUrl: {
+      type: STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    biographyLineColor: {
+      type: STRING,
+      allowNull: true,
+      defaultValue: null,
     },
   },
   {
@@ -60,6 +67,4 @@ User.init(
   }
 );
 
-export default User;
-
-User.sync();
+User.sync({ force: false });

@@ -1,0 +1,104 @@
+import {
+  Collection,
+  Message,
+  MessageEmbed,
+  MessageReaction,
+  User,
+} from 'discord.js';
+import { randomInteger } from '../../utils';
+import config from '../../config';
+import store from './box-questions.json';
+import * as economy from '../../modules/economy';
+
+const awardCookies = 100;
+const timeoutSeconds = 15; // Секунд
+const body = {
+  color: config.colors.message,
+  author: {
+    name: 'Вопрос из коробки ...',
+  },
+  footer: {
+    text: `На ответ ${timeoutSeconds} секунд`,
+  },
+};
+
+const numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+
+module.exports = {
+  name: __filename.slice(__dirname.length + 1).split('.')[0],
+  description: 'Коробка с вопросами',
+  cooldown: {
+    seconds: 75600,
+    messages: ['проверяю наличие наград в ящиках с вопросами (timeLeft)'],
+  },
+  group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
+  async execute(message: Message) {
+    const index = randomInteger(0, Object.keys(store).length - 1);
+
+    const embed = new MessageEmbed(body)
+      .setTitle(store[index].question)
+      .setDescription(
+        store[index].answers.map(
+          (answer, index) => `**${index + 1}.** ${answer}`
+        )
+      );
+    const msg = await message.channel.send(embed);
+
+    let isSelect = false;
+
+    // eslint-disable-next-line no-async-promise-executor
+    new Promise(async () => {
+      for (let n = 0; n < store[index].answers.length; n += 1) {
+        await msg.react(numbers[n]);
+        if (isSelect) {
+          break;
+        }
+      }
+    });
+
+    const filter = (reaction: MessageReaction, user: User) =>
+      user.id == message.author.id && numbers.includes(reaction.emoji.name);
+
+    await msg
+      .awaitReactions(filter, {
+        max: 1,
+        time: timeoutSeconds * 1000,
+        errors: ['time'],
+      })
+      .then(async (collected: Collection<string, MessageReaction>) => {
+        isSelect = true;
+        if (
+          numbers.indexOf(collected.first()!.emoji.name) ==
+          store[index].answerIndex
+        ) {
+          await msg.edit(
+            embed
+              .setTitle('Верно!')
+              .setDescription(
+                `В награду ты получаешь **+${awardCookies}**:cookie:`
+              )
+              .setFooter('')
+          );
+          await economy.setBalance(
+            message.guild!.id,
+            message.author.id,
+            awardCookies
+          );
+        } else {
+          await msg.edit(
+            embed
+              .setTitle('Не верно!')
+              .setDescription('')
+              .setFooter('Повезёт в следующий раз')
+          );
+        }
+      })
+      .catch(async () => {
+        await msg.edit(
+          embed.setTitle('').setDescription('Время вышло!').setFooter('')
+        );
+      });
+
+    //await msg.reactions.removeAll(); // Создаёт лишнюю нагрузку, поэтому отключено
+  },
+};

@@ -1,73 +1,50 @@
-import * as Discord from 'discord.js';
-import CustomError from '../../utils/customError';
+import { Message } from 'discord.js';
+import { isInteger } from 'lodash';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Удаление сообщений',
-  aliases: ['remove', 'clear', 'prune', 'clean', 'delete'],
+  aliases: ['remove', 'clear', 'prune', 'delete'],
   usage: '[@писатель] <кол-во>',
-  guild: true,
-  hide: true,
-  cooldown: 1.5,
-  cooldownMessage: undefined,
   permissions: ['MANAGE_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[]) {
-    const channel = message.guild.channels.get(message.channel.id);
-
-    if (!channel!.permissionsFor(message.member)!.has(this.permissions[0])) {
-      throw new CustomError('у тебя нет права управлять сообщениями!');
+  async execute(message: Message, args: string[]) {
+    const channel = message.guild!.channels.resolve(message.channel.id);
+    if (!channel?.permissionsFor(message.member!)?.has(this.permissions[0])) {
+      throw new Error('у тебя нет права управлять сообщениями в этом канале!');
+    }
+    if (
+      !channel?.permissionsFor(message.client.user!)!.has(this.permissions[0])
+    ) {
+      throw new Error('у меня нет права управлять сообщениями в этом канале!');
     }
 
-    if (!channel!.permissionsFor(message.client.user)!.has(this.permissions[0])) {
-      throw new CustomError('у меня нет права управлять сообщениями!');
+    let amount: number;
+    const member = message.mentions.members?.first();
+    if (member == undefined) {
+      amount = parseInt(args[0], 10);
+    } else {
+      amount = parseInt(args[1], 10);
+    }
+    if (isInteger(amount) == false) {
+      throw new Error('не указано количество.');
+    }
+    // Удаление больше 100 может вызвать непредсказуемое поведение (заметка по API 2018 года)
+    if (amount < 1 || amount > 100) {
+      throw new Error('можно удалить только от 1 до 100 сообщений за раз.');
     }
 
-    const user = message.mentions.users.first();
-    const val = parseInt(args[0], 0);
-    const amount = val || parseInt(args[1], 0);
+    let messages = await message.channel.messages.fetch({ limit: amount });
+    if (member) {
+      messages = messages.filter((msg) => msg.author.id == member.id);
+    }
 
-    if (!amount && !user) {
-      throw new CustomError(
-        'пожалуйста, укажите участника и количество или только количество!'
-      );
-    }
-    // Удаление больше 100 может вызвать непредсказуемое поведение (заметка 2018 года)
-    if (!amount || amount < 1 || amount > 100) {
-      throw new CustomError(
-        'пожалуйста, укажите число в диапазоне от 1 до 100.'
-      );
-    }
+    messages.map(async (msg) => await msg.delete());
 
     message.channel
-      .fetchMessages({
-        limit: amount,
-      })
-      .then(messages => {
-        let userMsg = messages.array();
-        if (user) {
-          const filterBy = user ? user.id : message.client.user.id;
-          userMsg = messages
-            .filter(m => m.author.id === filterBy)
-            .array()
-            .slice(0, amount);
-        }
-        message.channel
-          .bulkDelete(userMsg)
-          .then(msgs => {
-            message.channel
-              .send(
-                `Удалено сообщений: **${msgs.size}** ${message.author}\nСамоуничтожение через несколько секунд :alarm_clock:`
-              )
-              .then((msg: any) => {
-                setTimeout(() => msg.delete(), 3000);
-              });
-          })
-          .catch(error => {
-            throw new CustomError(
-              `невозможно удалить сообщения, потому что: \n${error}`
-            );
-          });
-      });
+      .send(
+        `Удаление **${messages.size}** сообщений(я), ${message.author}\nЗавершение через несколько секунд :alarm_clock:`
+      )
+      .then(async (msg) => await msg.delete({ timeout: 3000 }));
   },
 };

@@ -1,17 +1,17 @@
-import pino = require('pino');
-import { Stream } from 'stream';
+import pino from 'pino';
 
-import config from './config';
-
-const logThrough = new Stream.PassThrough();
-export const log = pino({
-  name: config.logger.name,
-  level: config.logger.level
+const logger = pino({
+  prettyPrint: { colorize: true, translateTime: true }, // UTC
+  level: process.env.LOG_LEVEL || 'info',
 });
 
-log.info.bind(log);
-log.warn.bind(log);
-log.error.bind(log);
-log.debug.bind(log);
-
-logThrough.pipe(process.stdout);
+export const log = {
+  info: (message: string, details?: string) => logger['info'](message, details),
+  warn: (message: string, details?: string) => logger['warn'](message, details),
+  error: (message: string, details?: string) =>
+    logger['error'](message, details),
+  fatal: (message: string, details?: string) =>
+    logger['fatal'](message, details),
+  trace: (message: string, details?: string) =>
+    logger['trace'](message, details),
+};

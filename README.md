@@ -1,14 +1,20 @@
-# Mira | <a href="https://nodejs.org/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Node.js_logo_2015.svg/1280px-Node.js_logo_2015.svg.png"  height="26" width="100"></a> | <a href="http://dev.mysql.com/downloads/installer/"><img src="https://cdn-images-1.medium.com/max/1600/0*AhVo_3sCq-ft64ki.jpg"  height="26" width="100"></a>
+# Mira | Discord бот
 
-[![Discord](https://img.shields.io/discord/370977534176919552)](https://discord.gg/hCe883B)
+<p>
+<img src="https://github.com/NyafiRawr/Mira/workflows/Default%20workflow/badge.svg" alt="GitHub workflows" />
+<img src="https://img.shields.io/github/package-json/v/NyafiRawr/Mira" alt="GitHub package.json version" />
+<a href="https://github.com/NyafiRawr/Mira/pulls"><img src="https://img.shields.io/github/issues-pr/NyafiRawr/Mira" alt="GitHub pull requests" /></a>
+<p/><p>
+<a href="https://discord.gg/dYmrSZa"><img src="https://img.shields.io/discord/736861365850865784"alt="Discord Server" /></a>
+<p/>
 
-![Default workflow](https://github.com/NyafiRawr/Mira/workflows/Default%20workflow/badge.svg)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/NyafiRawr/Mira) [![GitHub closed pull requests](https://img.shields.io/github/issues-pr/NyafiRawr/Mira)](https://github.com/NyafiRawr/Mira/pulls)
+## Как самостоятельно запустить бота?
 
+0. Скачиваем репозиторий
+1. Настраиваем `.env.example` ([Discord Token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)), а затем сохраняем как `.env`. Все важные надстройки размещены в файле `./src/config.ts`, который так же можно отредактировать по своему желанию
+2. Устанавливаем окружение [Node JS](https://nodejs.org/ru/download/)
+3. Открываем консоль в папке бота и устанавливаем зависимости: `npm i`
+4. Компилируем код `npm run build`
+5. Запускаем бота `npm run start`
 
-## Как запустить?
-
-1. Устанавливаем Node JS
-2. Заполняем файл `.env.example` данными для подключений ([Discord](https://discordapp.com/developers/applications/), [MySQL](http://dev.mysql.com/downloads/installer/), [osu!](https://github.com/ppy/osu-api/wiki/)) и пересохраняем как `.env`
-3. Устанавливаем зависимости - открываем командную строку в папке с ботом и вводим: `npm i`
-4. Запускаем бота командой: `npm run start` или собираем TypeScript в ES5 совместимый код с помощью команды `npm run build`
+Важно! Если используете mysql, то не забудьте создать базу данных с именем, которое указали в настройках .env

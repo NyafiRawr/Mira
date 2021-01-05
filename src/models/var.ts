@@ -1,9 +1,9 @@
 import { Model, STRING } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../database';
 
-class Var extends Model {
+export default class Var extends Model {
   public serverId!: string;
-  public name!: string;
+  public key!: string;
   public value!: string;
 }
 
@@ -11,24 +11,23 @@ Var.init(
   {
     serverId: {
       type: STRING,
+      allowNull: false,
       primaryKey: true,
     },
-    name: {
+    key: {
       type: STRING,
+      allowNull: false,
       primaryKey: true,
     },
     value: {
       type: STRING,
+      allowNull: false,
     },
   },
   {
     modelName: 'var',
     sequelize,
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci',
   }
 );
-
-export default Var;
 
 Var.sync();

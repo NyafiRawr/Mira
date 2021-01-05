@@ -1,35 +1,36 @@
-import Var from '../models/var';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Var from '../models/Var';
 
-export const get = async <T = any>(
-  serverId: string,
-  name: string,
-  define?: T
-): Promise<T> => {
-  const res = await Var.findOne({
-    where: { name, serverId },
+export const getAll = async (key: string): Promise<Var[]> =>
+  Var.findAll({
+    where: { key },
   });
 
-  return res?.value as any || define;
-};
+export const getOne = async (
+  serverId: string,
+  key: string
+): Promise<Var | null> =>
+  Var.findOne({
+    where: { key, serverId },
+  });
 
 export const set = async (
   serverId: string,
-  name: string,
-  value: any
+  key: string,
+  value: string
 ): Promise<Var> => {
-  const variable = await Var.findOne({
-    where: { name, serverId },
-  });
+  const variable = await getOne(serverId, key);
 
-  if (variable !== null) {
-    return variable.update({ name, value });
+  if (variable != null) {
+    return variable.update({ value });
   }
 
-  return Var.create({ serverId, name, value });
+  return Var.create({ serverId, key, value });
 };
 
-export const remove = async (serverId: string, name: string) =>
-  Var.destroy({
-    where: { serverId, name },
-    truncate: false,
-  });
+export const remove = async (serverId: string, key: string): Promise<void> => {
+  const variable = await getOne(serverId, key);
+  if (variable) {
+    return variable.destroy();
+  }
+};

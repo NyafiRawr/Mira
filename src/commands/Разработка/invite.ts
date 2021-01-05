@@ -1,37 +1,22 @@
-import * as Discord from 'discord.js';
-import * as tools from '../../utils/tools';
+import { Message, MessageEmbed } from 'discord.js';
+import config from '../../config';
 
-// tslint:disable-next-line: no-var-requires
-const packageJson = require('../../../package.json');
+const body = new MessageEmbed()
+  .setColor(config.colors.invite)
+  .setAuthor('Приглашаешь к себе?')
+  .setTitle('Да!')
+  .setURL(
+    `https://discordapp.com/oauth2/authorize?client_id=${config.discord.id}&scope=bot&permissions=${config.discord.permissions}`
+  )
+  .setImage(
+    'https://media1.tenor.com/images/023828c4b5291432eecabdee129a1c89/tenor.gif'
+  );
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Пригласить на свой сервер',
-  aliases: undefined,
-  usage: undefined,
-  guild: false,
-  hide: true,
-  cooldown: undefined,
-  cooldownMessage: undefined,
-  permissions: undefined,
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message) {
-    const embed = new Discord.RichEmbed()
-      .setAuthor('Я уже иду!')
-      .setTitle('Пригласить к себе')
-      .setURL(
-        `https://discordapp.com/oauth2/authorize?client_id=${message.client.user.id}&scope=bot&permissions=305261782`
-      )
-      .setDescription(
-        `[Код на GitHub-е](https://github.com/${packageJson.author.name}/${packageJson.name})`
-      )
-      .setColor('#99D8E9');
-
-    message.author.send({ embed }).catch(() => {
-      embed.setFooter(
-        tools.embedFooter(message, this.name),
-        message.author.displayAvatarURL
-      );
-    });
+  execute(message: Message) {
+    message.channel.send(body);
   },
 };

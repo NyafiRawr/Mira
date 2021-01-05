@@ -1,0 +1,30 @@
+name: Проверка компиляции проекта
+
+on:
+  push:
+    branches:
+      - master
+       
+jobs:
+  build:
+    strategy:
+      matrix:
+        node-version: 12.18.3
+        os: ubuntu-18.04
+        
+    name: Используется NodeJS ${{ matrix.node-version }} на ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Установка Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Установка зависимостей и компиляция проекта
+      run: |
+          npm install
+          npm run lint
+          npm run build

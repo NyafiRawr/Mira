@@ -1,27 +1,47 @@
-import * as Discord from 'discord.js';
-import { randomInteger } from '../../utils/tools';
-import CustomError from '../../utils/customError';
+import { Message, MessageEmbed } from 'discord.js';
+import config from '../../config';
+import { randomInteger } from '../../utils';
+
+const body = {
+  color: config.colors.message,
+  author: {
+    name: 'Бросаю виртуальные кубики и выпадает ...',
+  },
+};
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Бросить кости',
-  aliases: undefined,
-  usage: '[максимальное число]', // TODO: '[максимальное число]/[начало-конец]'
-  guild: true,
-  cooldown: undefined,
-  cooldownMessage: undefined,
-  permissions: undefined,
+  description: 'Бросить кубики',
+  usage: '[начало-конец или максимальное число]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  execute(message: Discord.Message, args: string[]) {
-    let limit = 100;
+  execute(message: Message, args: string[]) {
+    let start = 0;
+    let end = 100;
 
-    if (args[0]) {
-      limit = parseInt(args[0], 10);
-      if (!Number.isInteger(limit)) throw new CustomError('только целые числа.');
+    if (args.length == 1) {
+      end = parseInt(args[0], 10);
     }
 
-    message.reply(
-      `вы бросаете кости и выпадает **||${randomInteger(0, limit)}|| из ${limit}!**`
+    if (args.length == 2) {
+      start = parseInt(args[0], 10);
+      end = parseInt(args[1], 10);
+    }
+
+    if (!Number.isInteger(start) || !Number.isInteger(end)) {
+      throw new Error('только целые числа.');
+    }
+
+    if (start >= end) {
+      throw new Error(
+        `начальное значение (${start}) должно быть меньше конечного (${end}).`
+      );
+    }
+
+    const embed = new MessageEmbed(body);
+    message.channel.send(
+      embed
+        .setTitle(`||${randomInteger(start, end)}||`)
+        .setDescription(`**из ${end}!**`)
     );
   },
 };

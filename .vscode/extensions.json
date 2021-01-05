@@ -1,12 +1,10 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=827846
-  // for the documentation about the extensions.json format
   "recommendations": [
-    "ms-vscode.vscode-typescript-tslint-plugin",
-    "visualstudioexptteam.vscodeintellicode",
-    "eg2.vscode-npm-script",
-    "editorconfig.editorconfig",
-    "donjayamanne.githistory",
-    "eamodio.gitlens"
+    "dbaeumer.vscode-eslint",
+    "coenraads.bracket-pair-colorizer",
+    "esbenp.prettier-vscode",
+    "mikestead.dotenv",
+    "oderwat.indent-rainbow",
+    "naumovs.color-highlight"
   ]
 }
