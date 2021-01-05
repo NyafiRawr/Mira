@@ -13,7 +13,7 @@ export const happyBirthday = async () => {
     where: { birthday: { [Op.eq]: Date.now() } },
   });
 
-  users.map((user) => {
+  users.map((user: User) => {
     const guild = client.guilds.resolve(user.serverId);
     const member = guild?.members.resolve(user.userId);
     if (member) {
