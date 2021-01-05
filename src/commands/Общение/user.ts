@@ -131,10 +131,13 @@ module.exports = {
             inline: true,
           },
         ],
-        footer: {
-          text: `На сервере уже ${timeLifeFormattedYMD(
+        author: {
+          name: `На сервере уже ${timeLifeFormattedYMD(
             (member.joinedAt || user.entryFirstDate).getTime()
-          )}\nВозраст: ${
+          )}`,
+        },
+        footer: {
+          text: `Возраст: ${
             user.birthday
               ? timeLifeFormattedYMD(new Date(user.birthday).getTime())
               : 'неизвестно'
