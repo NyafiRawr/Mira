@@ -26,7 +26,7 @@ module.exports = {
     const base = await users.all(message.guild!.id);
     const onlyLiveHumans = base?.filter(async (user: User) => {
       const member = await message.guild!.members.fetch(user.userId);
-      if (member?.user.bot === false && user.balance !== 0) {
+      if (member?.user?.bot == false && user.balance != 0) {
         return true;
       }
       return false;
