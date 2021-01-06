@@ -52,6 +52,7 @@ const commandsPaths = [
   __dirname + '/commands/Общение/bday',
   __dirname + '/commands/Общение/ems',
   __dirname + '/commands/Общение/rep',
+  __dirname + '/commands/Общение/reps',
   __dirname + '/commands/Общение/server',
   __dirname + '/commands/Общение/user',
 ];
