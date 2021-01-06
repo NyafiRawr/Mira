@@ -19,7 +19,7 @@ module.exports = {
   usage: '[номер страницы]',
   aliases: ['cootop', 'moneytop'],
   cooldown: {
-    seconds: 30,
+    seconds: 3,
   },
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
