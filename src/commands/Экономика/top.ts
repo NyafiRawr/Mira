@@ -24,15 +24,10 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
     const base = await users.all(message.guild!.id);
-    const onlyLiveHumans: User[] = [];
-    for await (const user of base) {
-      const member = await message
-        .guild!.members.fetch(user.userId)
-        .catch(() => null);
-      if (member?.user?.bot === false && user.balance !== 0) {
-        onlyLiveHumans.push(user);
-      }
-    }
+    const onlyLiveHumans: User[] = base.filter((user) => {
+      const member = message.guild!.members.cache.get(user.userId);
+      return member?.user?.bot === false && user.balance !== 0;
+    });
     if (onlyLiveHumans.length == 0) {
       throw new Error(
         'в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!'
