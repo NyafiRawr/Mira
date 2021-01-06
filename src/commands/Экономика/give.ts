@@ -24,7 +24,11 @@ module.exports = {
     }
     const user = await users.get(message.guild!.id, message.author.id);
     if (user.balance < amount * message.mentions.members.size) {
-      throw new Error('не хватает.');
+      throw new Error(
+        `не хватает, нужно ${separateThousandth(
+          (amount * message.mentions.members.size).toString()
+        )}:cookie:.`
+      );
     }
 
     if (members.has(message.author.id)) {

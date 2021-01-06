@@ -41,7 +41,11 @@ export const payTransaction = async (
   const userIn = await users.get(serverId, userInId);
 
   if (userOut.balance < currency) {
-    throw new Error(`тебе не хватает ${userOut.balance - currency} печенек!`);
+    throw new Error(
+      `тебе не хватает ${separateThousandth(
+        (userOut.balance - currency).toString()
+      )} печенек!`
+    );
   }
 
   return sequelize.transaction(async (t) => {

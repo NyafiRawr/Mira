@@ -125,7 +125,7 @@ module.exports = {
           );
           embed
             .setDescription(`Роль <@&${roles[num - 1].roleId}> продана!`)
-            .setFooter(`Тебе возвращена часть средств: ${partOfFunds}:cookie:`);
+            .setFooter(`Тебе возвращено ${separateThousandth(partOfFunds.toString())} печенек (70%)`);
         } else {
           await economy.setBalance(
             message.guild!.id,

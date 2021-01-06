@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import config from '../../../config';
 import * as gilds from '../../../modules/gilds';
 import * as gildrelations from '../../../modules/gildrelations';
-import { checkUrl } from '../../../utils';
+import { checkUrl, separateThousandth } from '../../../utils';
 import { info } from './info';
 
 export const edit = async (message: Message, args: string[]) => {
@@ -37,7 +37,9 @@ export const edit = async (message: Message, args: string[]) => {
         const price = await gilds.priceEditDesc(message.guild!.id);
         if (gild.balance < price) {
           throw new Error(
-            `не хватает: ${price - gild.balance}/${price}:cookie:`
+            `не хватает: ${separateThousandth(
+              (price - gild.balance).toString()
+            )}/${separateThousandth(price.toString())}:cookie:`
           );
         }
 
@@ -57,7 +59,9 @@ export const edit = async (message: Message, args: string[]) => {
         const price = await gilds.priceEditImg(message.guild!.id);
         if (gild.balance < price) {
           throw new Error(
-            `не хватает: ${price - gild.balance}/${price}:cookie:`
+            `не хватает: ${separateThousandth(
+              (price - gild.balance).toString()
+            )}/${separateThousandth(price.toString())}:cookie:`
           );
         }
 

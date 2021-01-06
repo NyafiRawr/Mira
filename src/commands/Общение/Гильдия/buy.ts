@@ -8,6 +8,7 @@ import config from '../../../config';
 import * as gilds from '../../../modules/gilds';
 import * as gildrelations from '../../../modules/gildrelations';
 import { info } from './info';
+import { separateThousandth } from '../../../utils';
 
 export const buy = async (message: Message, args: string[]) => {
   const relation = await gildrelations.getOne(
@@ -80,7 +81,11 @@ export const buy = async (message: Message, args: string[]) => {
     case 'text': {
       price = await gilds.priceBuyChannelText(message.guild!.id);
       if (gild.balance < price) {
-        throw new Error(`не хватает: ${price - gild.balance}/${price}:cookie:`);
+        throw new Error(
+          `не хватает: ${separateThousandth(
+            (price - gild.balance).toString()
+          )}/${separateThousandth(price.toString())}:cookie:`
+        );
       }
 
       channel = await message.guild!.channels.create(name, {
@@ -95,7 +100,11 @@ export const buy = async (message: Message, args: string[]) => {
     case 'voice': {
       price = await gilds.priceBuyChannelVoice(message.guild!.id);
       if (gild.balance < price) {
-        throw new Error(`не хватает: ${price - gild.balance}/${price}:cookie:`);
+        throw new Error(
+          `не хватает: ${separateThousandth(
+            (price - gild.balance).toString()
+          )}/${separateThousandth(price.toString())}:cookie:`
+        );
       }
 
       channel = await message.guild!.channels.create(name, {
