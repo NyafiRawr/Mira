@@ -21,7 +21,7 @@ export const setBalance = async (
   if (user.balance + currency < 0) {
     throw new Error(
       `тебе не хватает ${separateThousandth(
-        Math.abs(currency).toString()
+        Math.abs(user.balance + currency).toString()
       )}:cookie:`
     );
   }
@@ -56,7 +56,7 @@ export const payTransaction = async (
       { transaction: t }
     );
 
-    userIn.update(
+    await userIn.update(
       {
         balance: userIn.balance + currency,
       },

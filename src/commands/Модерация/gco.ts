@@ -30,11 +30,11 @@ module.exports = {
       );
     }
 
-    members.map((member) => {
-      economy.setBalance(message.guild!.id, member.id, amount);
+    members.map(async (member) => {
+      await economy.setBalance(message.guild!.id, member.id, amount);
     });
 
-    message.reply(
+    return message.reply(
       `ты выдал ${members.array().join(', ')}` +
         ` ${separateThousandth(amount.toString())}:cookie:`
     );

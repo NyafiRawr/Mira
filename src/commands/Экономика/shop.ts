@@ -125,7 +125,11 @@ module.exports = {
           );
           embed
             .setDescription(`Роль <@&${roles[num - 1].roleId}> продана!`)
-            .setFooter(`Тебе возвращено ${separateThousandth(partOfFunds.toString())} печенек (70%)`);
+            .setFooter(
+              `Тебе возвращено ${separateThousandth(
+                partOfFunds.toString()
+              )} печенек (70%)`
+            );
         } else {
           await economy.setBalance(
             message.guild!.id,

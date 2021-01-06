@@ -33,9 +33,7 @@ export const kick = async (message: Message, args: string[]) => {
         'не найдено мертвых участников, которых не было бы на сервере.'
       );
     }
-    return message.reply(
-      `из гильдии исключены мертвые участники (${counter})`
-    );
+    return message.reply(`из гильдии исключены мертвые участники (${counter})`);
   }
 
   const member = message.mentions.members?.first();

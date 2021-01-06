@@ -17,7 +17,7 @@ module.exports = {
     const members = message.mentions.members;
 
     const amount = parseInt(args[members.size], 10);
-    if (Number.isInteger(amount) == false || amount < 1) {
+    if (Number.isInteger(amount) === false || amount < 1) {
       throw new Error(
         'ты не указал количество, оно должно быть целочисленным и положительным.'
       );
@@ -27,7 +27,7 @@ module.exports = {
       throw new Error(
         `не хватает, нужно ${separateThousandth(
           (amount * message.mentions.members.size).toString()
-        )}:cookie:.`
+        )}:cookie:`
       );
     }
 
@@ -37,8 +37,8 @@ module.exports = {
       );
     }
 
-    members.map((member) => {
-      economy.payTransaction(
+    members.map(async (member) => {
+      await economy.payTransaction(
         message.guild!.id,
         message.author.id,
         member.id,
@@ -46,7 +46,7 @@ module.exports = {
       );
     });
 
-    message.reply(
+    return message.reply(
       `ты передал ${members.array().join(', ')} ${separateThousandth(
         amount.toString()
       )}:cookie:`
