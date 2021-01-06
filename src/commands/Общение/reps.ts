@@ -25,7 +25,7 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     const base = await users.all(message.guild!.id);
     const onlyLiveHumans: User[] = [];
-    for (const user of base) {
+    for await (const user of base) {
       const member = await message
         .guild!.members.fetch(user.userId)
         .catch(() => null);
@@ -67,11 +67,14 @@ module.exports = {
       embed
         .setDescription(
           pages[pageNumber - 1]
-            .map((user, index) => {
-              return `**${maxTopSize * (pageNumber - 1) + index + 1}. <@${
-                user.userId
-              }>** ${separateThousandth(user.reputation.toString())} оч. кармы`;
-            })
+            .map(
+              (user, index) =>
+                `**${maxTopSize * (pageNumber - 1) + index + 1}. <@${
+                  user.userId
+                }>** ${separateThousandth(
+                  user.reputation.toString()
+                )} оч. кармы`
+            )
             .join('\n')
         )
         .setFooter(`Страница: ${pageNumber}/${pages.length}`)

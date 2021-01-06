@@ -25,7 +25,7 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     const base = await users.all(message.guild!.id);
     const onlyLiveHumans: User[] = [];
-    for (const user of base) {
+    for await (const user of base) {
       const member = await message
         .guild!.members.fetch(user.userId)
         .catch(() => null);
