@@ -25,7 +25,7 @@ export const invite = async (message: Message, args: string[]) => {
     throw new Error('приглашать самого себя нельзя.');
   } else if (gilds.invites.has(member.id)) {
     throw new Error(
-      `у ${member.displayName} уже есть приглашение, ему нужно отклонить \`=g no\` или принять его \`=g yes\`, прежде, чем ты сможешь послать ему новое.`
+      `у ${member.displayName} уже есть приглашение, ему нужно отклонить \`${config.discord.prefix}g no\` или принять его \`${config.discord.prefix}g yes\`, прежде, чем ты сможешь послать ему новое.`
     );
   } else if (
     (await gildrelations.getOne(message.guild!.id, member.id)) != null

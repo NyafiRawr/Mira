@@ -100,7 +100,7 @@ module.exports = {
             }
           }
 
-          message.reply(`теперь ты часть гильдии **${gild?.name}**!`);
+          message.reply(`ты принял приглашение и стал частью гильдии **${gild?.name}**!`);
         } else {
           message.reply('у тебя нет приглашения, чтобы принимать его.');
         }
