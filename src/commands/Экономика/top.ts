@@ -17,21 +17,23 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Печеньковые богачи',
   usage: '[номер страницы]',
-  aliases: ['list', 'cootop', 'moneytop'],
+  aliases: ['cootop', 'moneytop'],
   cooldown: {
     seconds: 30,
   },
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
     const base = await users.all(message.guild!.id);
-    const onlyLiveHumans = base?.filter(async (user: User) => {
-      const member = await message.guild!.members.fetch(user.userId);
-      if (member?.user?.bot == false && user.balance != 0) {
-        return true;
+    const onlyLiveHumans: User[] = [];
+    for (const user of base) {
+      const member = await message
+        .guild!.members.fetch(user.userId)
+        .catch(() => null);
+      if (member?.user?.bot === false && user.balance !== 0) {
+        onlyLiveHumans.push(user);
       }
-      return false;
-    });
-    if (!onlyLiveHumans.length) {
+    }
+    if (onlyLiveHumans.length == 0) {
       throw new Error(
         'в этом мире нет печенья... но я здесь и вместе мы сможем исправить это!'
       );
