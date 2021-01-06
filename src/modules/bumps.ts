@@ -78,7 +78,13 @@ export const awardOfBump = async (message: Message): Promise<void> => {
       return;
     }
     const endMention = content.indexOf('>', startMention);
-    const mentionId = content.slice(startMention + 2, endMention);
+    if (startMention == -1) {
+      return;
+    }
+    let mentionId = content.slice(startMention + 2, endMention); // "<@"
+    if (mentionId.includes('!')) {
+      mentionId = mentionId.slice(1);
+    }
 
     await economy.setBalance(message.guild!.id, mentionId, bot.award);
 
