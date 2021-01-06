@@ -145,6 +145,7 @@ module.exports = {
                 value:
                   `\`${config.discord.prefix}g invite <@>\` - пригласить упомянутых` +
                   `\n\`${config.discord.prefix}g kick <@>\` - исключить упомянутых` +
+                  `\n\`${config.discord.prefix}g kick dead\` - исключить вышедших с сервера` +
                   `\n\`${
                     config.discord.prefix
                   }g edit img [ссылка]\` - изменить знамя ${separateThousandth(

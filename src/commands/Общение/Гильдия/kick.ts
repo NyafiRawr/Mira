@@ -2,7 +2,6 @@ import { Message } from 'discord.js';
 import * as gilds from '../../../modules/gilds';
 import * as gildrelations from '../../../modules/gildrelations';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const kick = async (message: Message, args: string[]) => {
   const relation = await gildrelations.getOne(
     message.guild!.id,
@@ -15,6 +14,28 @@ export const kick = async (message: Message, args: string[]) => {
   const gild = await gilds.getOne(message.guild!.id, relation.gildId);
   if (gild?.ownerId != message.author.id) {
     throw new Error('исключать из гильдии может только гильдмастер!');
+  }
+
+  if (args.shift() === 'dead') {
+    let counter = 0;
+    const grs = await gildrelations.getAll(message.guild!.id, gild.gildId);
+    for (const gr of grs) {
+      const member = await message
+        .guild!.members.fetch(gr.userId)
+        .catch(() => null);
+      if (member == null) {
+        await gildrelations.remove(message.guild!.id, gr.userId);
+        counter += 1;
+      }
+    }
+    if (counter == 0) {
+      throw new Error(
+        'не найдено мертвых участников, которых не было бы на сервере.'
+      );
+    }
+    return message.reply(
+      `из гильдии исключены мертвые участники (${counter})`
+    );
   }
 
   const member = message.mentions.members?.first();
