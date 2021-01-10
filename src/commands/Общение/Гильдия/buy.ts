@@ -127,9 +127,13 @@ export const buy = async (message: Message, args: string[]) => {
   });
 
   const members = await gildrelations.getAll(message.guild!.id, gild.gildId);
-  members.map((relation) =>
-    channel!.updateOverwrite(relation.userId, { VIEW_CHANNEL: true })
-  );
+  members.map(async (relation) => {
+    try {
+      await channel!.updateOverwrite(relation.userId, { VIEW_CHANNEL: true });
+    } catch {
+      // Юзер не является участником сервера - игнорируем
+    }
+  });
 
   await info(message, [gild.gildId.toString()]);
 };
