@@ -32,7 +32,7 @@ module.exports = {
         const response = await axios.get(
           message.attachments?.first()?.url || ''
         );
-        if (!embed) {
+        if (!response?.data) {
           throw new Error(
             'код для вставки не найден - прикрепленный файл пуст.'
           );
