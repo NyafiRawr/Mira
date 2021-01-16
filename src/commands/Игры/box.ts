@@ -26,7 +26,7 @@ const numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Коробка с вопросами',
+  description: 'Коробка с вопросами :cookie:',
   aliases: ['trivia', 'quiz', 'quizbox'],
   cooldown: {
     seconds: 75600,
