@@ -1,0 +1,52 @@
+[
+  {
+    "question": "Какой мод даёт -0.10 очков, но позволяет не вращать спиннеры?",
+    "answers": ["HT", "SO", "AP", "RX"],
+    "answerIndex": 1
+  },
+  {
+    "question": "Название режима где нужно стучать в барабаны",
+    "answers": ["osu!standard", "osu!taiko", "osu!catch", "osu!mania"],
+    "answerIndex": 1
+  },
+  {
+    "question": "Мод \"Я промахнулся и R.I.P.\"",
+    "answers": ["SD", "AP", "FL", "Нет такого"],
+    "answerIndex": 0
+  },
+  {
+    "question": "Кто создатель osu!?",
+    "answers": ["ppy", "poppy", "pippy", "peppy"],
+    "answerIndex": 3
+  },
+  {
+    "question": "Год и месяц создания osu!",
+    "answers": ["2007 Сентябрь", "2009 Сентябрь"],
+    "answerIndex": 0
+  },
+  {
+    "question": "Как зовут маскота osu!standard?",
+    "answers": ["Pippi", "Yuzu", "Maria", "ppy"],
+    "answerIndex": 0
+  },
+  {
+    "question": "Режим в котором киай в виде бананов",
+    "answers": ["osu!standard", "osu!taiko", "osu!catch", "osu!mania"],
+    "answerIndex": 2
+  },
+  {
+    "question": "На основе какой игры была создана osu!?",
+    "answers": [
+      "Elite Beat Agents",
+      "Beatmania",
+      "Pop'n'Music",
+      "Osu! Tatakae! Ouendan"
+    ],
+    "answerIndex": 3
+  },
+  {
+    "question": "Ни кругов, ни касаний, что за мод?",
+    "answers": ["HD", "RX", "CINEMA", "AP"],
+    "answerIndex": 2
+  }
+]
