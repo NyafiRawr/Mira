@@ -5,6 +5,10 @@
     "esbenp.prettier-vscode",
     "mikestead.dotenv",
     "oderwat.indent-rainbow",
-    "naumovs.color-highlight"
+    "naumovs.color-highlight",
+    "dmodalek.markdown-preview-github-styles-custom",
+    "codeandstuff.package-json-upgrade",
+    "lihui.vs-color-picker",
+    "rubenverg.discord-vscode"
   ]
 }
