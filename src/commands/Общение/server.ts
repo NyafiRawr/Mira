@@ -24,8 +24,11 @@ module.exports = {
           name: message.guild!.name,
           icon_url: message.guild!.iconURL() || '',
         },
+        thumbnail: {
+          url: message.guild!.splashURL() || '',
+        },
         image: {
-          url: message.guild!.splashURL() || message.guild!.bannerURL() || '',
+          url: message.guild!.bannerURL() || '',
         },
         fields: [
           { name: 'Местный тиран', value: message.guild!.owner, inline: true },
