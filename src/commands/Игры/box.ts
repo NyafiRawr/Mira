@@ -10,7 +10,7 @@ import config from '../../config';
 import store from './box-questions.json';
 import * as economy from '../../modules/economy';
 
-const awardCookies = 100;
+const awardCookies = 50;
 const timeoutSeconds = 15; // Секунд
 const body = {
   color: config.colors.message,
@@ -27,6 +27,7 @@ const numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Коробка с вопросами',
+  aliases: ['trivia', 'quiz', 'quizbox'],
   cooldown: {
     seconds: 75600,
     messages: ['проверяю наличие наград в ящиках с вопросами (timeLeft)'],
@@ -73,8 +74,8 @@ module.exports = {
         ) {
           await msg.edit(
             embed
-              .setTitle('Верно!')
-              .setDescription(
+              .addField(
+                'Верно!',
                 `В награду ты получаешь **+${awardCookies}**:cookie:`
               )
               .setFooter('')
@@ -86,17 +87,12 @@ module.exports = {
           );
         } else {
           await msg.edit(
-            embed
-              .setTitle('Не верно!')
-              .setDescription('')
-              .setFooter('Повезёт в следующий раз')
+            embed.addField('Не верно!', `Повезёт в следующий раз`).setFooter('')
           );
         }
       })
       .catch(async () => {
-        await msg.edit(
-          embed.setTitle('').setDescription('Время вышло!').setFooter('')
-        );
+        await msg.edit(embed.setFooter('Время вышло!'));
       });
 
     //await msg.reactions.removeAll(); // Создаёт лишнюю нагрузку, поэтому отключено
