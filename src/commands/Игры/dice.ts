@@ -27,7 +27,7 @@ module.exports = {
     const result = randomInteger(0, 5);
     const embed = new MessageEmbed(body);
     message.channel.send(
-      embed.setImage(gifs[result]).setTitle(`||${emojis[result]}||`)
+      embed.setImage(gifs[result]).setTitle(`${emojis[result]}`)
     );
   },
 };

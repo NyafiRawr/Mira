@@ -40,7 +40,7 @@ module.exports = {
     const embed = new MessageEmbed(body);
     message.channel.send(
       embed
-        .setTitle(`||${randomInteger(start, end)}||`)
+        .setTitle(`${randomInteger(start, end)}`)
         .setDescription(`**из ${end}!**`)
     );
   },
