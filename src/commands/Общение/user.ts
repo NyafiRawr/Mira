@@ -17,7 +17,7 @@ const repColor = 1;
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Страница пользователя',
-  aliases: ['userinfo'],
+  aliases: ['profile', 'p', 'userinfo', 'u'],
   usage: '[@ ИЛИ edit desc [текст] ИЛИ edit img [ссылка] ИЛИ edit color [hex]]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
