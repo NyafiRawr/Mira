@@ -42,3 +42,11 @@ export const remove = async (
     return relation.destroy();
   }
 };
+
+export const count = async (
+  serverId: string,
+  gildId: number
+): Promise<number> => {
+  const relation = await getAll(serverId, gildId);
+  return relation.length;
+};

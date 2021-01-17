@@ -3,6 +3,7 @@ import config from '../../../config';
 import Gild from '../../../models/Gild';
 import * as gilds from '../../../modules/gilds';
 import { separateThousandth } from '../../../utils';
+import * as gildrelations from '../../../modules/gildrelations';
 
 const topSize = 5;
 
@@ -41,17 +42,23 @@ export const list = async (message: Message, args: string[]) => {
     pageNumber = 1;
   }
 
-  message.channel.send(
+  const page = [];
+  for await (const gild of pages[pageNumber - 1]) {
+    page.push(
+      `${gild.gildId}. **${gild.name}** | <@${
+        gild.ownerId
+      }> | ${await gildrelations.count(
+        message.guild!.id,
+        gild.gildId
+      )}:person_pouting: | ${separateThousandth(
+        gild.balance.toString()
+      )}:cookie:`
+    );
+  }
+
+  await message.channel.send(
     new MessageEmbed(body)
-      .setDescription(
-        pages[pageNumber - 1]
-          .map((gild) => {
-            return `${gild.gildId}. **${gild.name}** | <@${
-              gild.ownerId
-            }> | ${separateThousandth(gild.balance.toString())}:cookie:`;
-          })
-          .join('\n')
-      )
+      .setDescription(page.join('\n'))
       .setFooter(`Страница: ${pageNumber}/${pages.length}`)
   );
 };
