@@ -50,7 +50,7 @@ export const invite = async (message: Message, args: string[]) => {
         url: message.author.avatarURL({ dynamic: true }) || '',
       },
       footer: {
-        text: 'Принять: =g yes | Отклонить: =g no | Срок: до перезагрузки бота',
+        text: `Принять: ${config.discord.prefix}g yes | Отклонить: ${config.discord.prefix}g no | Срок: до перезагрузки бота`,
       },
     },
   });
