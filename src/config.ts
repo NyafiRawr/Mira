@@ -76,6 +76,9 @@ export default {
       color: '#ef6703',
       betMin: 100,
     },
+    slots: {
+      convertCookie: 200000,
+    },
   },
 };
 
