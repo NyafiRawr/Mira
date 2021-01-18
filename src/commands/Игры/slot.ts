@@ -51,11 +51,14 @@ module.exports = {
           .setColor('#0080c0')
           .setTitle('Ковертация валюты')
           .setDescription(
-            `${
-              cookie * config.games.slots.convertCookie
-            }:strawberry: -> ${cookie}:cookie:`
+            `${separateThousandth(
+              (cookie * config.games.slots.convertCookie).toString()
+            )}:strawberry: -> ${separateThousandth(cookie.toString())}:cookie:`
           )
-          .addField('Остаток', `${virtualCurrency}:strawberry:`)
+          .addField(
+            'Остаток',
+            `${separateThousandth(virtualCurrency.toString())}:strawberry:`
+          )
       );
     }
 
