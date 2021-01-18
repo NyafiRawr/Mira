@@ -83,7 +83,9 @@ module.exports = {
               )}:strawberry: -> 1:cookie:)`
           )
           .setFooter(
-            `На счету: ${separateThousandth(virtualCurrency.toString())}🍓`
+            `На счету: ${separateThousandth(
+              virtualCurrency.toString()
+            )}🍓 | Сгорают с перезагрузкой`
           )
       );
     }
@@ -183,7 +185,9 @@ module.exports = {
     return message.channel.send(
       `${means[a]}${means[b]}${means[c]}`,
       embed.setFooter(
-        `На счету: ${separateThousandth(virtualCurrency.toString())}🍓`
+        `На счету: ${separateThousandth(
+          virtualCurrency.toString()
+        )}🍓 | Сгорают с перезагрузкой`
       )
     );
   },
