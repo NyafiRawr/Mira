@@ -9,6 +9,12 @@ module.exports = {
   usage: '[@]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message) {
+    if (message.mentions.members?.size && message.mentions.members.size > 1) {
+      throw new Error(
+        'за одну команду можно узнать количество печенья только одного человека.'
+      );
+    }
+
     const victim = message.mentions.members?.size
       ? message.mentions.members.first()
       : message.member;
