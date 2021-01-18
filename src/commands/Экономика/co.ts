@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { GuildMember, Message } from 'discord.js';
 import { separateThousandth } from '../../utils';
 import * as users from '../../modules/users';
 
@@ -6,19 +6,25 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Баланс печенек',
   aliases: ['coo', 'cookies', 'balance', 'money', 'credits'],
-  usage: '[@]',
+  usage: '[@ ИЛИ ID]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
-  async execute(message: Message) {
-    if (message.mentions.members?.size && message.mentions.members.size > 1) {
-      throw new Error(
-        'за одну команду можно узнать количество печенья только одного человека.'
-      );
+  async execute(message: Message, args: string[]) {
+    let victim: GuildMember | undefined | null;
+
+    if (message.mentions.members?.size) {
+      if (message.mentions.members.size > 1) {
+        throw new Error(
+          'за одну команду можно узнать количество печенья только одного человека.'
+        );
+      }
+      victim = message.mentions.members.first();
+    } else if (args.length === 0) {
+      victim = message.member;
+    } else {
+      victim = await message.guild!.members.fetch(args.shift()!);
     }
 
-    const victim = message.mentions.members?.size
-      ? message.mentions.members.first()
-      : message.member;
-    if (victim == null) {
+    if (!victim) {
       throw new Error('участник не найден.');
     }
 
