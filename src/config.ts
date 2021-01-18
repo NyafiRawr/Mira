@@ -77,7 +77,7 @@ export default {
       betMin: 100,
     },
     slots: {
-      convertCookie: 200000,
+      convertCookie: 5000000,
     },
   },
 };
