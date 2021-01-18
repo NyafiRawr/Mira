@@ -114,7 +114,7 @@ module.exports = {
           { name: 'Гильдия', value: gild?.name || 'Нет', inline: true },
           { name: 'Карма', value: `${user.reputation} F`, inline: true },
           {
-            name: 'Зарегался',
+            name: 'Создан',
             value: timeFomattedDMY(member.user.createdAt.getTime()),
             inline: true,
           },
