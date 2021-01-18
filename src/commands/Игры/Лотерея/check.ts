@@ -23,7 +23,9 @@ export const check = async (
   );
 
   await message.channel.send(
-    `<@${lottery.members[winnerIndex]}> победил в лотерее от <@${lottery.authorId}>!`,
+    `<@${lottery.members[winnerIndex]}> победил в лотерее от <@${
+      lottery.authorId
+    }>! ${lottery.members.map((id) => `<@${id}>`).join(', ')}`,
     {
       embed: {
         color: config.games.lottery.color,
