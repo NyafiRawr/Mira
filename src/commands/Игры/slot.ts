@@ -70,6 +70,10 @@ module.exports = {
             'Существующие комбинации (столбцы: 1,2,3) `1 = 2 = 3`, `1 = 2` или `1 = 3` или `2 = 3`, остальное зависит от случайно выпадающего бонуса "Удача"!'
           )
           .addField(
+            'Важно',
+            'С перезагрузкой бота :strawberry: сгорают, так что не храните их'
+          )
+          .addField(
             'Команды',
             `\`${config.discord.prefix}${this.name} <ставка>\`- запуск игры (ставка берётся из :strawberry:, если её нет, то 1:cookie: -> 1:strawberry:)` +
               `\n\`${config.discord.prefix}${
@@ -159,7 +163,7 @@ module.exports = {
         embed
           .setColor('#ffff4f')
           .setDescription('Из-за бонуса ты ничего не потерял! ')
-          .addField(bonusText, 'Держи печеньку!');
+          .addField(bonusText, 'Держи :strawberry:!');
       } else {
         embed
           .setColor('#ff4040')
