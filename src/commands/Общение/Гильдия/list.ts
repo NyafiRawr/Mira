@@ -5,7 +5,7 @@ import * as gilds from '../../../modules/gilds';
 import { separateThousandth } from '../../../utils';
 import * as gildrelations from '../../../modules/gildrelations';
 
-const topSize = 5;
+const topSize = 15;
 
 const body = {
   color: config.colors.message,
@@ -45,12 +45,10 @@ export const list = async (message: Message, args: string[]) => {
   const page = [];
   for await (const gild of pages[pageNumber - 1]) {
     page.push(
-      `${gild.gildId}. **${gild.name}** | <@${
-        gild.ownerId
-      }> | ${await gildrelations.count(
+      `${gild.gildId}. **${gild.name}** | ${await gildrelations.count(
         message.guild!.id,
         gild.gildId
-      )}:person_pouting: | ${separateThousandth(
+      )}:person_pouting: | <@${gild.ownerId}> | ${separateThousandth(
         gild.balance.toString()
       )}:cookie:`
     );

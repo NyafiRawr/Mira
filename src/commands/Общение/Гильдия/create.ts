@@ -4,6 +4,7 @@ import * as economy from '../../../modules/economy';
 import * as gilds from '../../../modules/gilds';
 import * as gildrelations from '../../../modules/gildrelations';
 import { info } from './info';
+import { toTitle } from '../../../utils';
 
 export const create = async (message: Message, args: string[]) => {
   const name = args.join(' ').trim();
@@ -30,7 +31,11 @@ export const create = async (message: Message, args: string[]) => {
     -(await gilds.priceCreate(message.guild!.id))
   );
 
-  const gild = await gilds.create(message.guild!.id, message.author.id, name);
+  const gild = await gilds.create(
+    message.guild!.id,
+    message.author.id,
+    toTitle(name)
+  );
 
   await gildrelations.create(message.guild!.id, message.author.id, gild.gildId);
 
