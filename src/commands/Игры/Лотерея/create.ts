@@ -16,17 +16,17 @@ export const create = async (message: Message, args: string[]) => {
   const bet = parseInt(args[0], 10);
   if (Number.isInteger(bet) === false) {
     throw new Error(
-      'не указана ставка, она должна быть целочисленной и положительной.'
+      'не указана сумма розыгрыша, она должна быть целочисленной и положительной.'
     );
   } else if (bet < config.games.lottery.betMin) {
     throw new Error(
-      `минимальная ставка для лотереи: ${separateThousandth(
+      `минимальная сумма розыгрыша для лотереи: ${separateThousandth(
         config.games.lottery.betMin.toString()
       )}:cookie:`
     );
   }
 
-  await economy.setBalance(message.guild!.id, message.author.id, bet);
+  await economy.setBalance(message.guild!.id, message.author.id, -bet);
 
   const varMaxMembers = (await vars.getOne(message.guild!.id, keyMaxMembers))
     ?.value;
