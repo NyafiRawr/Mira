@@ -15,6 +15,6 @@ export const maxmembers = async (message: Message, args: string[]) => {
   await vars.set(message.guild!.id, keyMaxMembers, maxMembers.toString());
 
   await message.reply(
-    `теперь максимальное количество участников в лотерее: ${maxMembers}:person_frowning:`
+    `изменена серверная настройка - максимальное количество участников в создаваемой лотерее: ${maxMembers}:person_frowning:`
   );
 };
