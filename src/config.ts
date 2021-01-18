@@ -70,6 +70,13 @@ export default {
     defaultPriceBuyChannelVoice: 50000,
   },
   patternHexColor: /[0-9A-Fa-f]{6}/g,
+  games: {
+    lottery: {
+      maxMembers: 10,
+      color: '#ef6703',
+      betMin: 100,
+    },
+  },
 };
 
 // Проверка и создание таблиц базы данных до первого обращения
