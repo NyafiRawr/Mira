@@ -22,6 +22,8 @@ const body = {
   },
 };
 
+const authorLink = 'Вопросы взяты с baza-otvetov.ru';
+
 const numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
 
 module.exports = {
@@ -68,17 +70,23 @@ module.exports = {
       })
       .then(async (collected: Collection<string, MessageReaction>) => {
         isSelect = true;
-        if (
-          numbers.indexOf(collected.first()!.emoji.name) ==
-          store[index].answerIndex
-        ) {
+        const selectIndex = numbers.indexOf(collected.first()!.emoji.name);
+        if (selectIndex == store[index].answerIndex) {
           await msg.edit(
             embed
               .addField(
                 'Верно!',
                 `В награду ты получаешь **+${awardCookies}**:cookie:`
               )
-              .setFooter('')
+              .setDescription(
+                store[index].answers.map((answer, i) => {
+                  if (i === store[index].answerIndex) {
+                    return `**${i + 1}.** ${answer} :white_check_mark:`;
+                  }
+                  return `**${i + 1}.** ${answer}`;
+                })
+              )
+              .setFooter(authorLink)
           );
           await economy.setBalance(
             message.guild!.id,
@@ -87,7 +95,19 @@ module.exports = {
           );
         } else {
           await msg.edit(
-            embed.addField('Не верно!', `Повезёт в следующий раз`).setFooter('')
+            embed
+              .addField('Не верно!', `Повезёт в следующий раз`)
+              .setDescription(
+                store[index].answers.map((answer, i) => {
+                  if (i === store[index].answerIndex) {
+                    return `**${i + 1}.** ${answer} :white_check_mark:`;
+                  } else if (i === selectIndex) {
+                    return `**${i + 1}.** ${answer} :x:`;
+                  }
+                  return `**${i + 1}.** ${answer}`;
+                })
+              )
+              .setFooter(authorLink)
           );
         }
       })
