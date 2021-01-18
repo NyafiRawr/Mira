@@ -21,7 +21,6 @@ module.exports = {
   usage: '[take]',
   cooldown: {
     seconds: 0.5,
-    messages: ['слот-машина перезагружается (timeLeft)'],
   },
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
@@ -71,10 +70,6 @@ module.exports = {
           .setTitle('Игровой автомат')
           .setDescription(
             'Существующие комбинации (столбцы: 1,2,3) `1 = 2 = 3`, `1 = 2` или `1 = 3` или `2 = 3`, остальное зависит от случайно выпадающего бонуса "Удача"!'
-          )
-          .addField(
-            'Важно',
-            'С перезагрузкой бота :strawberry: сгорают, так что не храните их'
           )
           .addField(
             'Команды',
