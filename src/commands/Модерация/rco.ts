@@ -1,6 +1,8 @@
 import { Message } from 'discord.js';
 import { separateThousandth } from '../../utils';
-import * as economy from '../../modules/economy';
+
+import User from '../../models/User';
+import * as users from '../../modules/users';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -30,9 +32,19 @@ module.exports = {
       );
     }
 
-    members.map(async (member) => {
-      await economy.setBalance(message.guild!.id, member.id, -amount);
-    });
+    for await (const member of members.array()) {
+      let user = await users.get(message.guild!.id, member.id);
+      if (user == null) {
+        user = await User.create({
+          userId: member.id,
+          serverId: message.guild!.id,
+          balance: -amount,
+        });
+      }
+      await user.update({
+        balance: user.balance - amount,
+      });
+    }
 
     return message.reply(
       `ты изъял у ${members.array().join(', ')}` +

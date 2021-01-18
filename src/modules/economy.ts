@@ -3,7 +3,7 @@ import * as users from './users';
 import { separateThousandth } from '../utils';
 import { sequelize } from '../database';
 
-// Добавить / -Забрать печенье
+// Выдать / -Заплатить
 export const setBalance = async (
   serverId: string,
   userId: string,
