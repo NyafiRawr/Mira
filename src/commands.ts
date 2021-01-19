@@ -3,6 +3,7 @@ import cooldowns from './cooldowns';
 import config from './config';
 import { log } from './logger';
 import { randomInteger, secondsFormattedHMS } from './utils';
+import * as access from './modules/access';
 
 export interface CommandFile {
   cooldown: {
@@ -48,6 +49,7 @@ const commandsPaths = [
   __dirname + '/commands/Модерация/purge',
   __dirname + '/commands/Модерация/say',
   __dirname + '/commands/Модерация/rr',
+  __dirname + '/commands/Модерация/access',
 
   __dirname + '/commands/Общение/g',
   __dirname + '/commands/Общение/ava',
@@ -58,7 +60,13 @@ const commandsPaths = [
   __dirname + '/commands/Общение/server',
   __dirname + '/commands/Общение/user',
 ];
-
+// Исключения из запрещения доступа (алиасы тоже нужно указывать)
+export const commandsExcludes = [
+  'access',
+  'a',
+  // 'mute',
+  // 'warn'
+];
 export const commandsList = new Collection<string, CommandFile>();
 export const commandsAliases = new Collection<string, CommandFile>();
 (async () => {
@@ -79,16 +87,6 @@ export const commands = async (message: Message): Promise<void> => {
     return;
   }
 
-  // Даём информацию о себе по упоминанию
-  if (
-    message.client.user &&
-    message.mentions.users.has(message.client.user.id) &&
-    message.content.length <= message.client.user.id.length + 5 // "<@!ID> " - восклицательного знака и пробела может не быть
-  ) {
-    commandsList.get('info')?.execute(message);
-    return;
-  }
-
   // Проверяем, что наш префикс использовали
   if (!message.content.startsWith(config.discord.prefix)) {
     return;
@@ -102,6 +100,18 @@ export const commands = async (message: Message): Promise<void> => {
     commandsList.get(commandName) || commandsAliases.get(commandName);
   if (command == undefined) {
     return;
+  }
+
+  if (commandsExcludes.includes(commandName) === false) {
+    // Проверяем разрешение отвечать в этом канале &| на эту команду
+    const isDeny = await access.check(
+      message.guild!.id,
+      message.channel.id,
+      commandName
+    );
+    if (isDeny) {
+      return;
+    }
   }
 
   // Проверяем не в откате ли эта команда и, если да, то сообщаем
