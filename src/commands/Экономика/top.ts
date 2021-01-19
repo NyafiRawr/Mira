@@ -50,7 +50,7 @@ module.exports = {
       if (Number.isInteger(pageNumber) == false) {
         throw new Error('некорректный номер страницы!');
       }
-      if (pageNumber < 1 || pages.length > pageNumber) {
+      if (pageNumber < 1 && pages.length > pageNumber) {
         throw new Error(`страницы ${pageNumber} нет.`);
       }
     } else {
