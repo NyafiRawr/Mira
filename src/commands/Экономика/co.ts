@@ -21,7 +21,11 @@ module.exports = {
     } else if (args.length === 0) {
       victim = message.member;
     } else {
-      victim = await message.guild!.members.fetch(args.shift()!);
+      try {
+        victim = await message.guild!.members.fetch(args.shift()!);
+      } catch {
+        throw new Error('участник с таким ID не найден на сервере.');
+      }
     }
 
     if (!victim) {
