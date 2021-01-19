@@ -8,7 +8,7 @@ const priceReputation = 100;
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: `Press F to pay respect ${priceReputation}:cookie:`,
-  aliases: ['f', 'respect', 'like'],
+  aliases: ['f', 'karma', 'respect', 'like'],
   usage: '<@>',
   cooldown: {
     seconds: 75600,
