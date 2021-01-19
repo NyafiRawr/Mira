@@ -2,6 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { CommandFile, commandsAliases, commandsList } from './../../commands';
 import { secondsFormattedHMS, toTitle } from '../../utils';
 import config from '../../config';
+import * as access from '../../modules/access';
 
 // Команды по группам
 const spells: { [key: string]: CommandFile[] } = {};
@@ -35,12 +36,24 @@ module.exports = {
 
     if (spokenWord == undefined) {
       // Все категории с перечислением команд (без описания)
-      Object.keys(spells).map((groupName) => {
+      for await (const groupName of Object.keys(spells)) {
+        const spellsAllow: string[] = [];
+        for await (const spell of spells[groupName]) {
+          const isDeny = await access.check(
+            message.guild!.id,
+            message.channel.id,
+            spell.name
+          );
+          if (isDeny === false) {
+            spellsAllow.push(spell.name);
+          }
+        }
         embed.addField(
           groupName,
-          spells[groupName].map((spell) => `\`${spell.name}\``).join(', ')
+          spellsAllow.map((name) => `\`${name}\``).join(', ') ||
+            `Команды категории отключены администратором сервера (\`${config.discord.prefix}access\`)`
         );
-      });
+      }
       embed
         .setTitle('Список заклинаний :P')
         .addField(
