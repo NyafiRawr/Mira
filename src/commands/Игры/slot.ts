@@ -24,7 +24,7 @@ const bank = new Collection<string, number>();
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Слот-машина, совпадения и удача :strawberry:',
-  aliases: ['slots'],
+  aliases: ['s', 'slots'],
   usage: '[take ИЛИ bonus]',
   cooldown: {
     seconds: 0.5,
