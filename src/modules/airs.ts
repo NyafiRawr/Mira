@@ -49,14 +49,11 @@ export const set = async (
         return true;
       } catch {
         if (guild.available) {
-          await setRoleId(guild.id, null).then(
-            async () =>
-              await guild.owner
-                ?.send(
-                  `Не удалось выдать эфирную роль на сервере ${guild.name} участнику ${member.displayName}, скорее всего у меня нет прав для выдачи ролей или роль удалена. Выдача отключена.`
-                )
-                .catch(/* ЛС ЗАКРЫТО ИЛИ МЫ ЗАБЛОКИРОВАНЫ */)
-          );
+          await guild.owner
+            ?.send(
+              `Не удалось выдать эфирную роль на сервере ${guild.name} участнику ${member.displayName}, скорее всего у меня нет прав для выдачи ролей или роль удалена, проверьте через команду \`.air\` на сервере`
+            )
+            .catch(/* ЛС ЗАКРЫТО ИЛИ МЫ ЗАБЛОКИРОВАНЫ */);
         }
       }
     }
