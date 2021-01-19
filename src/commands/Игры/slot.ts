@@ -1,7 +1,13 @@
 import { Collection, Message, MessageEmbed } from 'discord.js';
-import { randomInteger, randomBoolean, separateThousandth } from '../../utils';
+import {
+  randomInteger,
+  randomBoolean,
+  separateThousandth,
+  secondsFormattedHMS,
+} from '../../utils';
 import * as economy from '../../modules/economy';
 import * as users from '../../modules/users';
+import cooldowns from '../../cooldowns';
 import config from '../../config';
 
 const body = {
@@ -101,6 +107,23 @@ module.exports = {
     }
 
     if (args.join() === 'bonus') {
+      const cd = cooldowns.get(
+        message.guild!.id,
+        message.author.id,
+        'slot bonus'
+      );
+      if (cd) {
+        throw new Error(
+          `бонус станет доступен через ${secondsFormattedHMS(cd)}`
+        );
+      }
+      cooldowns.set(
+        message.guild!.id,
+        message.author.id,
+        'slot bonus',
+        config.games.slots.bonusCooldownSeconds
+      );
+
       const rep = (await users.get(message.guild!.id, message.author.id))
         .reputation;
 

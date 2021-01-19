@@ -79,6 +79,7 @@ export default {
     slots: {
       convertCookie: 5000000,
       limitVirtualCurrency: 100000000,
+      bonusCooldownSeconds: 75600,
     },
   },
 };
