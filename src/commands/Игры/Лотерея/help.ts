@@ -13,6 +13,7 @@ export const help = async (message: Message) => {
           name: 'Команды',
           value:
             `\`${config.discord.prefix}lottery create <ставка> [кол-во участников] [@,@,...]\` - создать` +
+            `\n\`${config.discord.prefix}lottery final\` - определить победителя` +
             `\n\`${config.discord.prefix}lottery close\` - закрыть и вернуть себе :cookie:` +
             `\n\`${config.discord.prefix}lottery info\` - узнать больше` +
             `\n\`${config.discord.prefix}lottery join\` - присоединиться`,

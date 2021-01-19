@@ -13,6 +13,7 @@ export const lots = new Collection<string, Lot>();
 export const keyMaxMembers = 'lottery_maxmembers';
 
 import { create } from './Лотерея/create';
+import { final } from './Лотерея/final';
 import { close } from './Лотерея/close';
 import { info } from './Лотерея/info';
 import { join } from './Лотерея/join';
@@ -22,11 +23,16 @@ import { maxmembers } from './Лотерея/maxmembers';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Розыгрыш :cookie:',
+  aliases: ['lot'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
     switch (args.shift()) {
       case 'create': {
         await create(message, args);
+        break;
+      }
+      case 'final': {
+        await final(message);
         break;
       }
       case 'close': {
