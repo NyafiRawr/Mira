@@ -60,10 +60,9 @@ const commandsPaths = [
   __dirname + '/commands/Общение/server',
   __dirname + '/commands/Общение/user',
 ];
-// Исключения из запрещения доступа (алиасы тоже нужно указывать)
+// Исключения из запрещения доступа (алиасы не нужно указывать)
 export const commandsExcludes = [
   'access',
-  'a',
   // 'mute',
   // 'warn'
 ];
@@ -102,12 +101,12 @@ export const commands = async (message: Message): Promise<void> => {
     return;
   }
 
-  if (commandsExcludes.includes(commandName) === false) {
+  if (commandsExcludes.includes(command.name) === false) {
     // Проверяем разрешение отвечать в этом канале &| на эту команду
     const isDeny = await access.check(
       message.guild!.id,
       message.channel.id,
-      commandName
+      command.name
     );
     if (isDeny) {
       return;

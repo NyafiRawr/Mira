@@ -65,7 +65,7 @@ export const info = async (message: Message) => {
         },
       ],
       footer: {
-        text: 'Важно: алиасы считаются отдельными командами',
+        text: 'Примечание: команда access работает всегда',
       },
     },
   });

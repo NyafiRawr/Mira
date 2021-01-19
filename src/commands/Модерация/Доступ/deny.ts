@@ -1,10 +1,6 @@
 import { Message } from 'discord.js';
 import * as access from '../../../modules/access';
-import {
-  commandsList,
-  commandsAliases,
-  commandsExcludes,
-} from '../../../commands';
+import { commandsList, commandsExcludes } from '../../../commands';
 
 export const deny = async (message: Message, args: string[]) => {
   const channelId = message.mentions.channels.first()?.id || null;
@@ -18,10 +14,7 @@ export const deny = async (message: Message, args: string[]) => {
         'эту команду нельзя заблокировать, потому что она находится в списке исключений :x:'
       );
     }
-    if (
-      (commandsList.has(commandName) || commandsAliases.has(commandName)) ===
-      false
-    ) {
+    if (commandsList.has(commandName) === false) {
       throw new Error('указанного имени команды у меня нет :x:');
     }
   }
