@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Var from '../models/Var';
 
 export const getAll = async (key: string): Promise<Var[]> =>
