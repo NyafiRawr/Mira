@@ -1,4 +1,4 @@
-import { Model, STRING, INTEGER } from 'sequelize';
+import { Model, STRING } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class Access extends Model {
@@ -12,7 +12,6 @@ Access.init(
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
     },
     channelId: {
       type: STRING,

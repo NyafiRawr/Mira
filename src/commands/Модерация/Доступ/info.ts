@@ -16,19 +16,11 @@ export const info = async (message: Message) => {
     } else if (record.channelId !== null && record.commandName === null) {
       channel.push(record.channelId);
     } else if (record.channelId !== null && record.commandName !== null) {
-      if (
-        server.includes(record.commandName) &&
-        channel.includes(record.channelId) === false
-      ) {
-        const commandNames = command.get(record.channelId);
-        if (commandNames === undefined) {
-          command.set(record.channelId, [record.commandName]);
-        } else {
-          command.set(
-            record.channelId,
-            commandNames.concat(record.commandName)
-          );
-        }
+      const commandNames = command.get(record.channelId);
+      if (commandNames === undefined) {
+        command.set(record.channelId, [record.commandName]);
+      } else {
+        command.set(record.channelId, commandNames.concat(record.commandName));
       }
     }
   }
@@ -37,9 +29,13 @@ export const info = async (message: Message) => {
     commandByChannel.push(`<#${channelId}> - ЗАПРЕЩЕНО ВСЁ`)
   );
 
-  command.map((commandNames, channelId) =>
-    commandByChannel.push(`<#${channelId}> - ${commandNames.join(', ')}`)
-  );
+  command.map((commandNames, channelId) => {
+    commandByChannel.push(
+      `<#${channelId}> - ${commandNames
+        .filter((commandName) => server.includes(commandName) === false)
+        .join(', ')}`
+    );
+  });
 
   await message.channel.send({
     embed: {
@@ -49,17 +45,17 @@ export const info = async (message: Message) => {
       },
       fields: [
         {
-          name: 'Команды запрещенные на сервере',
+          name: 'Команды',
           value:
             (server.map((commandName) => `${commandName}`).join(', ') ||
               'Нет') +
             '\n' +
             `\n\`${config.discord.prefix}access deny <команда>\` - запретить команду на всём сервере` +
-            `\n\`${config.discord.prefix}access allow <команда>\` - удалить запрет`,
+            `\n\`${config.discord.prefix}access allow [команда]\` - удалить все запреты [или запрет]`,
           inline: false,
         },
         {
-          name: 'Запрещенные команды по каналам',
+          name: 'Каналы',
           value:
             (commandByChannel.join('\n') || 'Нет') +
             '\n' +

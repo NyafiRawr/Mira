@@ -5,6 +5,14 @@ export const getAll = async (serverId: string): Promise<Access[]> =>
     where: { serverId },
   });
 
+export const getAllByChannel = async (
+  serverId: string,
+  channelId: string
+): Promise<Access[]> =>
+  Access.findAll({
+    where: { serverId, channelId },
+  });
+
 export const getOne = async (
   serverId: string,
   channelId: string | null,
@@ -54,13 +62,17 @@ export const set = async (
   const deny = await getOne(serverId, channelId, commandName);
 
   if (deny !== null) {
-    throw new Error('такая команда уже запрещена.');
+    throw new Error('такой запрет уже есть.');
+  }
+
+  if (channelId !== null && commandName === null) {
+    await removeByChannel(serverId, channelId);
   }
 
   return Access.create({ serverId, channelId, commandName });
 };
 
-export const remove = async (
+export const removeByCommand = async (
   serverId: string,
   channelId: string | null,
   commandName: string | null
@@ -69,6 +81,37 @@ export const remove = async (
 
   if (deny) {
     await deny.destroy();
+    return true;
+  }
+
+  return false;
+};
+
+export const removeByChannel = async (
+  serverId: string,
+  channelId: string
+): Promise<boolean> => {
+  const denyByChannels = await getAllByChannel(serverId, channelId);
+
+  if (denyByChannels.length) {
+    for await (const denyByChannel of denyByChannels) {
+      await denyByChannel.destroy();
+    }
+    return true;
+  }
+
+  return false;
+};
+
+export const removeByServer = async (serverId: string): Promise<boolean> => {
+  const denyByServers = await Access.findAll({
+    where: { serverId, channelId: null },
+  });
+
+  if (denyByServers.length) {
+    for await (const denyByServer of denyByServers) {
+      await denyByServer.destroy();
+    }
     return true;
   }
 
