@@ -7,24 +7,33 @@ import { onAirInPresence, onAirInVoice } from './modules/airs';
 import { happyBirthday } from './modules/congratulations';
 import { rescueVoiceTime, recVoiceTime } from './modules/voices';
 import { reactionRoleAdd, reactionRoleRemove } from './modules/rrs';
+import {
+  logKick,
+  logBanRemove,
+  logBanAdd,
+  logMessageDelete,
+  logMessageBulk,
+  logMessageUpdate,
+} from './modules/logs';
 import * as users from './modules/users';
 
 client.on('disconnect', () => log.error('Соединение оборвалось!'));
+
+client.on('warn', log.warn);
+
 client.on('guildCreate', (guild) =>
   log.info(
-    `Меня добавили в: ${guild.name} [GID: ${guild.id}] Участники: ${guild.memberCount}`
+    `Меня добавили в: ${guild.name} [GID: ${guild.id}]. Владелец: ${guild.owner}. Участники: ${guild.memberCount}`
   )
 );
+
 client.on('guildDelete', (guild) =>
   log.info(
-    `Меня удалили из: ${guild.name} [GID: ${guild.id}] Участников: ${guild.memberCount}`
+    `Меня удалили из: ${guild.name} [GID: ${guild.id}]. Владелец: ${guild.owner}. Участники: ${guild.memberCount}`
   )
 );
-client.on('guildMemberAdd', async (guildMember) => {
-  // Записываем время входа
-  await users.get(guildMember.guild.id, guildMember.user.id);
-});
 
+// Один раз при запуске
 client.once('ready', async () => {
   await client.user?.setPresence({
     activity: {
@@ -37,30 +46,74 @@ client.once('ready', async () => {
   await happyBirthday(); // Вызывает сама себя каждые сутки
 });
 
+// При каждом восстановлении соединения
 client.on('ready', async () => {
   log.info(`Бот ${client.user?.tag} на связи!`);
 
-  await rescueVoiceTime();
+  await rescueVoiceTime(); // Вычислить время проведенное участниками в голосовых чатах
 });
 
 client.on('message', async (message) => await commands(message));
 client.on('message', async (message) => await awardOfBump(message));
 
+//#region Streams
+
 client.on('voiceStateUpdate', async (oldState, newState) => {
   await onAirInVoice(oldState, newState);
   await recVoiceTime(oldState, newState);
 });
+
 client.on(
   'presenceUpdate',
   async (oldPresence, newPresence) =>
     await onAirInPresence(oldPresence, newPresence)
 );
 
+//#endregion
+
+//#region Reactions
+
 client.on('messageReactionAdd', async (messageReaction, user) => {
   await reactionRoleAdd(messageReaction, user);
 });
+
 client.on('messageReactionRemove', async (messageReaction, user) => {
   await reactionRoleRemove(messageReaction, user);
 });
+
+//#endregion
+
+//#region Logs
+
+client.on('guildMemberAdd', async (guildMember) => {
+  // Записываем время входа
+  await users.get(guildMember.guild.id, guildMember.user.id);
+});
+
+client.on('guildMemberRemove', async (guildMember) => {
+  await logKick(guildMember);
+});
+
+client.on('guildBanAdd', async (guild, user) => await logBanAdd(guild, user));
+
+client.on(
+  'guildBanRemove',
+  async (guild, user) => await logBanRemove(guild, user)
+);
+
+client.on('messageDelete', async (message) => await logMessageDelete(message));
+
+client.on(
+  'messageDeleteBulk',
+  async (message) => await logMessageBulk(message)
+);
+
+client.on(
+  'messageUpdate',
+  async (messageOld, messageNew) =>
+    await logMessageUpdate(messageOld, messageNew)
+);
+
+//#endregion
 
 client.login(config.discord.token);
