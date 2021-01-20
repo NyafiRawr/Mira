@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
 import { separateThousandth } from '../../../utils';
-import { lots, keyMaxMembers } from '../lottery';
+import { lots, keyMaxMembers } from '../lot';
 import * as economy from '../../../modules/economy';
 import * as vars from '../../../modules/vars';
 import { info } from './info';

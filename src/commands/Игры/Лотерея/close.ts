@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { lots } from '../lottery';
+import { lots } from '../lot';
 import * as economy from '../../../modules/economy';
 
 export const close = async (message: Message) => {

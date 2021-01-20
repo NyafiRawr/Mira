@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { lots } from '../lottery';
+import { lots } from '../lot';
 import { check } from './check';
 
 export const join = async (message: Message) => {

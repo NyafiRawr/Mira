@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
-import { lots } from '../lottery';
+import { lots } from '../lot';
 import { check } from './check';
 
 export const final = async (message: Message) => {

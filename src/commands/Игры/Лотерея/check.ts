@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
 import { randomInteger, separateThousandth } from '../../../utils';
-import { lots, Lot } from '../lottery';
+import { lots, Lot } from '../lot';
 import * as economy from '../../../modules/economy';
 
 export const check = async (

@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
 import { separateThousandth } from '../../../utils';
-import { lots } from '../lottery';
+import { lots } from '../lot';
 
 export const info = async (message: Message) => {
   const lottery = lots.get(message.guild!.id);

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import * as vars from '../../../modules/vars';
-import { keyMaxMembers } from '../lottery';
+import { keyMaxMembers } from '../lot';
 
 const permission = 'ADMINISTRATOR';
 
