@@ -61,6 +61,11 @@ export const create = async (message: Message, args: string[]) => {
         'упомянутых участников больше, чем разрешено иметь в лотерее.'
       );
     }
+    if (message.mentions.members.has(message.author.id)) {
+      throw new Error(
+        'среди упомянутых участников ты упомянул себя самого, так нельзя.'
+      );
+    }
     message.mentions.members.map((gm) => lottery!.members.push(gm.id));
   }
 

@@ -22,20 +22,27 @@ export const check = async (
     lottery.prize
   );
 
+  const winner =
+    (await message
+      .guild!.members.fetch(lottery.members[winnerIndex])
+      .catch(() => undefined)
+      .then((member) => member?.displayName)) ||
+    `<@${lottery.members[winnerIndex]}>`;
+
   await message.channel.send(
     `<@${lottery.members[winnerIndex]}> победил в лотерее от <@${
       lottery.authorId
-    }>! ${lottery.members.map((id) => `<@${id}>`).join(', ')}`,
+    }>! ${lottery.members
+      .filter((_id, index) => index !== winnerIndex)
+      .map((id) => `<@${id}>`)
+      .join(', ')}`,
     {
       embed: {
         color: config.games.lottery.color,
-        author: {
-          name: 'Лотерея',
-        },
-        title: 'Победитель определен!',
-        description: `<@${
-          lottery.members[winnerIndex]
-        }> получает ${separateThousandth(lottery.prize.toString())}:cookie:!`,
+        title: 'Лотерея завершена!',
+        description: `**${winner} забирает ${separateThousandth(
+          lottery.prize.toString()
+        )}:cookie:**`,
         image: {
           url:
             'https://media1.tenor.com/images/757adf1f06b3ffd328339b1b9401db44/tenor.gif',
