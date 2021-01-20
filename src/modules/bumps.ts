@@ -89,7 +89,7 @@ export const awardOfBump = async (message: Message): Promise<void> => {
     await economy.setBalance(message.guild!.id, mentionId, bot.award);
 
     message.channel.send(
-      `<@${mentionId}>, получена награда за бамп ${bot.award}:cookie:`
+      `<@${mentionId}>, награда за бамп: +${bot.award}:cookie:`
     );
   }
 };
