@@ -22,7 +22,9 @@ export const join = async (message: Message) => {
   lottery.members.push(message.author.id);
   lots.set(message.guild!.id, lottery);
 
-  await message.channel.send(`${message.author} присоединился к лотерее!`);
+  await message.channel.send(
+    `${message.author} присоединился к лотерее! Участники: ${lottery.members.length}/${lottery.membersMaxCount}`
+  );
 
   await check(message, lottery);
 };
