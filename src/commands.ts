@@ -37,7 +37,6 @@ const commandsPaths = [
   __dirname + '/commands/Игры/roll',
   __dirname + '/commands/Игры/dice',
   __dirname + '/commands/Игры/coin',
-  __dirname + '/commands/Игры/slot',
   __dirname + '/commands/Игры/lottery',
 
   __dirname + '/commands/Модерация/bump',
