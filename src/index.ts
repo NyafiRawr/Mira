@@ -7,6 +7,7 @@ import { onAirInPresence, onAirInVoice } from './modules/airs';
 import { happyBirthday } from './modules/congratulations';
 import { rescueVoiceTime, recVoiceTime } from './modules/voices';
 import { reactionRoleAdd, reactionRoleRemove } from './modules/rrs';
+import { checkReleases, checkBadWords, returnMuteRole } from './modules/mutes';
 import {
   logKick,
   logBanRemove,
@@ -43,7 +44,8 @@ client.once('ready', async () => {
     status: 'online',
   });
 
-  await happyBirthday(); // Вызывает сама себя каждые сутки
+  await happyBirthday(); // Вызывает сам себя
+  await checkReleases(); // Вызывает сам себя
 });
 
 // При каждом восстановлении соединения
@@ -55,6 +57,7 @@ client.on('ready', async () => {
 
 client.on('message', async (message) => await commands(message));
 client.on('message', async (message) => await awardOfBump(message));
+client.on('message', async (message) => await checkBadWords(message));
 
 //#region Streams
 
@@ -86,8 +89,8 @@ client.on('messageReactionRemove', async (messageReaction, user) => {
 //#region Logs
 
 client.on('guildMemberAdd', async (guildMember) => {
-  // Записываем время входа
-  await users.get(guildMember.guild.id, guildMember.user.id);
+  await users.get(guildMember.guild.id, guildMember.user.id); // Записываем время входа
+  await returnMuteRole(guildMember);
 });
 
 client.on('guildMemberRemove', async (guildMember) => {

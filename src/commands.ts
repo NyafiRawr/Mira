@@ -50,6 +50,9 @@ const commandsPaths = [
   __dirname + '/commands/Модерация/rr',
   __dirname + '/commands/Модерация/access',
   __dirname + '/commands/Модерация/logs',
+  __dirname + '/commands/Модерация/warn',
+  __dirname + '/commands/Модерация/mute',
+  __dirname + '/commands/Модерация/bw',
 
   __dirname + '/commands/Общение/g',
   __dirname + '/commands/Общение/ava',
@@ -61,11 +64,7 @@ const commandsPaths = [
   __dirname + '/commands/Общение/user',
 ];
 // Исключения из запрещения доступа (алиасы не нужно указывать)
-export const commandsExcludes = [
-  'access',
-  // 'mute',
-  // 'warn'
-];
+export const commandsExcludes = ['access', 'mute', 'warn'];
 export const commandsList = new Collection<string, CommandFile>();
 export const commandsAliases = new Collection<string, CommandFile>();
 (async () => {
