@@ -155,7 +155,7 @@ export const logMessageDelete = async (message: Message | PartialMessage) => {
             message.member?.displayName || message.author?.tag
           }** (${message.author}) в канале ${message.channel} было удалено`,
           fields: [
-            { name: 'Текст', value: message.content, inline: false },
+            { name: 'Текст', value: message.content || '-', inline: false },
             { name: 'Модератор', value: executor, inline: true },
             {
               name: 'Вложенные файлы',
@@ -163,6 +163,11 @@ export const logMessageDelete = async (message: Message | PartialMessage) => {
                 message.attachments
                   .map((attach, index) => `[${index + 1}](${attach.url})`)
                   .join(', ') || 'Нет',
+              inline: true,
+            },
+            {
+              name: 'Был Embed?',
+              value: message.embeds.length ? 'Да' : 'Нет',
               inline: true,
             },
           ],
