@@ -5,7 +5,6 @@ import * as lots from '../../../modules/lots';
 import * as economy from '../../../modules/economy';
 import { info } from './info';
 import { check } from './check';
-import Lottery from '../../../models/Lottery';
 
 export const create = async (message: Message, args: string[]) => {
   const oldLot = await lots.get(message.guild!.id);
