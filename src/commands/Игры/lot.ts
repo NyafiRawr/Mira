@@ -1,16 +1,4 @@
-import { Collection, Message } from 'discord.js';
-import config from '../../config';
-
-export class Lot {
-  serverId: string;
-  authorId: string;
-  prize = config.games.lottery.betMin;
-  membersMaxCount: number = config.games.lottery.maxMembers;
-  members: string[] = [];
-}
-export const lots = new Collection<string, Lot>();
-
-export const keyMaxMembers = 'lottery_maxmembers';
+import { Message } from 'discord.js';
 
 import { create } from './Лотерея/create';
 import { final } from './Лотерея/final';

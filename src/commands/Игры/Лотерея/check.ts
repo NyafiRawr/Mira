@@ -1,38 +1,38 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
 import { randomInteger, separateThousandth } from '../../../utils';
-import { lots, Lot } from '../lot';
 import * as economy from '../../../modules/economy';
+import Lottery from '../../../models/Lottery';
 
 export const check = async (
   message: Message,
-  lottery: Lot
+  lottery: Lottery
 ): Promise<boolean> => {
-  if (lottery.members.length !== lottery.membersMaxCount) {
+  const members = lottery.memberIds.split(',');
+  if (members.length !== lottery.membersWaitCount) {
     return false;
   }
 
-  lots.delete(message.guild!.id);
+  await lottery.destroy();
 
-  const winnerIndex = randomInteger(0, lottery.membersMaxCount - 1);
+  const winnerIndex = randomInteger(0, lottery.membersWaitCount - 1);
 
   await economy.setBalance(
     message.guild!.id,
-    lottery.members[winnerIndex],
+    members[winnerIndex],
     lottery.prize
   );
 
   const winner =
     (await message
-      .guild!.members.fetch(lottery.members[winnerIndex])
+      .guild!.members.fetch(members[winnerIndex])
       .catch(() => undefined)
-      .then((member) => member?.displayName)) ||
-    `<@${lottery.members[winnerIndex]}>`;
+      .then((member) => member?.displayName)) || `<@${members[winnerIndex]}>`;
 
   await message.channel.send(
-    `<@${lottery.members[winnerIndex]}> победил в лотерее от <@${
-      lottery.authorId
-    }>! ${lottery.members
+    `<@${members[winnerIndex]}> победил в лотерее от <@${
+      lottery.userId
+    }>! ${members
       .filter((_id, index) => index !== winnerIndex)
       .map((id) => `<@${id}>`)
       .join(', ')}`,

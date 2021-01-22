@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import * as vars from '../../../modules/vars';
-import { keyMaxMembers } from '../lot';
+import * as lots from '../../../modules/lots';
 
 const permission = 'ADMINISTRATOR';
 
@@ -18,7 +18,7 @@ export const maxmembers = async (message: Message, args: string[]) => {
     throw new Error('нужно указать целочисленное и положительное число.');
   }
 
-  await vars.set(message.guild!.id, keyMaxMembers, maxMembers.toString());
+  await vars.set(message.guild!.id, lots.keyMaxMembers, maxMembers.toString());
 
   await message.reply(
     `изменена серверная настройка - максимальное количество участников в создаваемой лотерее: ${maxMembers}:person_frowning:`

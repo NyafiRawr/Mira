@@ -12,20 +12,19 @@ export const help = async (message: Message) => {
         {
           name: 'Команды',
           value:
-            `\`${config.discord.prefix}lottery create <ставка> [кол-во участников] [@,@,...]\` - создать` +
-            `\n\`${config.discord.prefix}lottery final\` - определить победителя` +
-            `\n\`${config.discord.prefix}lottery close\` - закрыть и вернуть себе :cookie:` +
-            `\n\`${config.discord.prefix}lottery info\` - узнать больше` +
-            `\n\`${config.discord.prefix}lottery join\` - присоединиться`,
+            `\`${config.discord.prefix}lot create <ставка> [кол-во участников] [@,@,...]\` - создать` +
+            `\n\`${config.discord.prefix}lot final\` - определить победителя` +
+            `\n\`${config.discord.prefix}lot close\` - закрыть и вернуть себе :cookie:` +
+            `\n\`${config.discord.prefix}lot info\` - узнать больше` +
+            `\n\`${config.discord.prefix}lot join\` - присоединиться`,
           inline: false,
         },
         {
           name: 'Настройка',
-          value: `\`${config.discord.prefix}lottery maxmembers <кол-во>\` - изменить предел участников`,
+          value: `\`${config.discord.prefix}lot maxmembers <кол-во>\` - изменить предел участников`,
           inline: false,
         },
       ],
-      footer: { text: 'Лотерея сбрасывается при перезагрузке бота' },
     },
   });
 };

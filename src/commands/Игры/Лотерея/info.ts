@@ -1,10 +1,10 @@
 import { Message, MessageEmbed } from 'discord.js';
 import config from '../../../config';
 import { separateThousandth } from '../../../utils';
-import { lots } from '../lot';
+import * as lots from '../../../modules/lots';
 
 export const info = async (message: Message) => {
-  const lottery = lots.get(message.guild!.id);
+  const lottery = await lots.get(message.guild!.id);
 
   const embed = new MessageEmbed({
     color: config.games.lottery.color,
@@ -12,18 +12,19 @@ export const info = async (message: Message) => {
       name: 'Лотерея',
     },
   });
-  if (lottery === undefined) {
+  if (lottery === null) {
     embed.setTitle('Ничего не проводится');
   } else {
+    const members = lottery.memberIds.split(',');
     embed
       .setTitle(
         `Розыгрыш: ${separateThousandth(lottery.prize.toString())}:cookie:`
       )
       .setDescription(
-        `Организатор: <@${lottery.authorId}>` +
-          `\nУчастники: ${lottery.members.length}/${lottery.membersMaxCount}`
+        `Организатор: <@${lottery.userId}>` +
+          `\nУчастники: ${members.length}/${lottery.membersWaitCount}`
       );
-    if (lottery.members.some((id) => message.author.id === id)) {
+    if (members.some((id) => message.author.id === id)) {
       embed.setFooter('Ты принял участие в этой лотерее');
     } else {
       embed.setFooter(`Участвовать: ${config.discord.prefix}lottery join`);

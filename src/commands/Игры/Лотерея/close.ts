@@ -1,23 +1,25 @@
 import { Message } from 'discord.js';
-import { lots } from '../lot';
+import * as lots from '../../../modules/lots';
 import * as economy from '../../../modules/economy';
 
 export const close = async (message: Message) => {
-  const lottery = lots.get(message.guild!.id);
+  const lottery = await lots.get(message.guild!.id);
 
-  if (lottery === undefined) {
+  if (lottery === null) {
     throw new Error('лотерей нет - нечего закрывать.');
   }
 
-  if (lottery.authorId !== message.author.id) {
+  if (lottery.userId !== message.author.id) {
     throw new Error('ты не организатор лотереи и не можешь её закрыть.');
   }
 
-  lots.delete(message.guild!.id);
+  await lottery.destroy();
+
   await economy.setBalance(message.guild!.id, message.author.id, lottery.prize);
 
+  const members = lottery.memberIds.split(',');
   await message.channel.send(
-    `Лотерея от ${message.author} закрыта! ${lottery.members
+    `Лотерея от ${message.author} закрыта! ${members
       .map((id) => `<@${id}>`)
       .join(', ')}`
   );

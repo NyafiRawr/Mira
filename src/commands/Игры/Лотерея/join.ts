@@ -1,29 +1,31 @@
 import { Message } from 'discord.js';
-import { lots } from '../lot';
+import * as lots from '../../../modules/lots';
 import { check } from './check';
 
 export const join = async (message: Message) => {
-  const lottery = lots.get(message.guild!.id);
+  const lottery = await lots.get(message.guild!.id);
 
-  if (lottery === undefined) {
+  if (lottery === null) {
     throw new Error(
       'на этом сервере не проводится лотерея к которой можно присоединиться.'
     );
   }
 
-  if (lottery.authorId === message.author.id) {
+  if (lottery.userId === message.author.id) {
     throw new Error('ты организатор лотереи и не можешь участвовать.');
   }
 
-  if (lottery.members.includes(message.author.id)) {
+  const members = lottery.memberIds.split(',');
+  if (members.includes(message.author.id)) {
     throw new Error('ты уже участвуешь в лотерее, покинуть её нельзя.');
   }
 
-  lottery.members.push(message.author.id);
-  lots.set(message.guild!.id, lottery);
+  members.push(message.author.id);
+  lottery.memberIds = members.toString();
+  await lots.set(lottery);
 
   await message.channel.send(
-    `${message.author} присоединился к лотерее! Участники: ${lottery.members.length}/${lottery.membersMaxCount}`
+    `${message.author} присоединился к лотерее! Участники: ${members.length}/${lottery.membersWaitCount}`
   );
 
   await check(message, lottery);

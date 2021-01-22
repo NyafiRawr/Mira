@@ -1,15 +1,15 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
 import { separateThousandth } from '../../../utils';
-import { lots, keyMaxMembers } from '../lot';
+import * as lots from '../../../modules/lots';
 import * as economy from '../../../modules/economy';
-import * as vars from '../../../modules/vars';
 import { info } from './info';
 import { check } from './check';
+import Lottery from '../../../models/Lottery';
 
 export const create = async (message: Message, args: string[]) => {
-  let lottery = lots.get(message.guild!.id);
-  if (lottery !== undefined) {
+  let lottery = await lots.get(message.guild!.id);
+  if (lottery !== null) {
     throw new Error(`какая-то лотерея уже проводится, нельзя начать новую.`);
   }
 
@@ -28,11 +28,7 @@ export const create = async (message: Message, args: string[]) => {
 
   await economy.setBalance(message.guild!.id, message.author.id, -bet);
 
-  const varMaxMembers = (await vars.getOne(message.guild!.id, keyMaxMembers))
-    ?.value;
-  const maxMembers = varMaxMembers
-    ? parseInt(varMaxMembers, 10)
-    : config.games.lottery.maxMembers;
+  const maxMembers = await lots.getMaxMembers(message.guild!.id);
 
   const membersLimitCount = parseInt(args[1], 10) || maxMembers;
   if (Number.isInteger(membersLimitCount)) {
@@ -47,13 +43,13 @@ export const create = async (message: Message, args: string[]) => {
     }
   }
 
-  lottery = {
+  lottery = new Lottery({
     serverId: message.guild!.id,
-    authorId: message.author.id,
+    userId: message.author.id,
     prize: bet,
-    membersMaxCount: membersLimitCount,
-    members: [],
-  };
+    membersWaitCount: membersLimitCount,
+    memberIds: '',
+  });
 
   if (message.mentions.members?.size) {
     if (message.mentions.members.size > membersLimitCount) {
@@ -66,10 +62,10 @@ export const create = async (message: Message, args: string[]) => {
         'среди упомянутых участников ты упомянул себя самого, так нельзя.'
       );
     }
-    message.mentions.members.map((gm) => lottery!.members.push(gm.id));
+    lottery.memberIds = message.mentions.members.map((gm) => gm.id).toString();
   }
 
-  lots.set(message.guild!.id, lottery);
+  await lots.set(lottery);
 
   const isComplete = await check(message, lottery);
   if (isComplete === false) {
