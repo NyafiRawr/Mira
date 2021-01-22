@@ -9,6 +9,7 @@ import {
   TextChannel,
   MessageEmbed,
 } from 'discord.js';
+import { timeFomattedDMYHHMMSS } from '../utils';
 import * as vars from './vars';
 
 export const getLogsChannelId = async (
@@ -173,6 +174,11 @@ export const logMessageDelete = async (message: Message | PartialMessage) => {
               inline: true,
             },
           ],
+          footer: {
+            text: `Сообщение создано: ${timeFomattedDMYHHMMSS(
+              message.createdAt.getTime()
+            )}`,
+          },
         },
       });
     }
@@ -207,6 +213,11 @@ export const logMessageDelete = async (message: Message | PartialMessage) => {
           inline: true,
         },
       ],
+      footer: {
+        text: `Сообщение создано: ${timeFomattedDMYHHMMSS(
+          message.createdAt.getTime()
+        )}`,
+      },
     },
   });
 };
@@ -253,6 +264,11 @@ export const logMessageBulk = async (
             inline: true,
           },
         ],
+        footer: {
+          text: `Сообщение создано: ${timeFomattedDMYHHMMSS(
+            message.createdAt.getTime()
+          )}`,
+        },
       },
     });
   });
@@ -290,6 +306,11 @@ export const logMessageUpdate = async (
     }** (${messageOld.author}) отредактировал сообщение в канале ${
       messageOld.channel
     }`,
+    footer: {
+      text: `Сообщение создано: ${timeFomattedDMYHHMMSS(
+        messageNew.createdAt.getTime()
+      )}`,
+    },
   });
 
   if (messageOld.content) {
