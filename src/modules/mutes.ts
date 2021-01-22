@@ -431,6 +431,22 @@ export const checkBadWords = async (message: Message): Promise<void> => {
     );
 
     await message.channel.send(message.author, embed);
+
+    const muteTerm = await checkTermForMute(
+      message.guild!.id,
+      message.author.id
+    );
+    if (muteTerm !== null) {
+      const muteEmbed = await setMute(
+        message.guild!.id,
+        message.author.id,
+        `Получено ${muteTerm.countWarnings} предупреждений за ${muteTerm.forDays} дней`,
+        message.client.user?.id || config.author.discord.id,
+        message.channel.toString(),
+        muteTerm.timestamp
+      );
+      await message.channel.send(message.author, muteEmbed);
+    }
   }
 };
 
