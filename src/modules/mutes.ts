@@ -128,7 +128,7 @@ export const returnMuteRole = async (guildMember: GuildMember) => {
     if (roleId) {
       await guildMember.roles.add(roleId);
       await mute.update({
-        releaseDate: mute.releaseDate.getTime() + 24 * 60 * 60 * 60 * 1000,
+        releaseDate: mute.releaseDate.getTime() + 24 * 60 * 60 * 1000,
       });
     }
   }
