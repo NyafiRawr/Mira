@@ -141,7 +141,7 @@ module.exports = {
         embed.setFooter(`Отображаются последние 25 участников`);
         for await (const mute of list.slice(0, 25)) {
           embed.addField(
-            `${mute.userId}`,
+            `<@${mute.userId}>`,
             `Модератор: <@${mute.executorId}> | Канал: ${mute.channelName}` +
               `\nБудет освобожден: ${timeFomattedDMYHHMMSS(
                 mute.releaseDate.getTime()
@@ -167,7 +167,7 @@ module.exports = {
             name: 'Команды',
             value:
               `\`${config.discord.prefix}${this.name} role <@роль>\` - установить роль молчания` +
-              `\`${config.discord.prefix}${this.name} list\` - список проклятых` +
+              `\n\`${config.discord.prefix}${this.name} list\` - список проклятых` +
               `\n\`${config.discord.prefix}${this.name} give <@> <срок в минутах> <причина>\` - проклянуть` +
               `\n\`${config.discord.prefix}${this.name} remove <@> <причина>\` - снять проклятие`,
             inline: false,
