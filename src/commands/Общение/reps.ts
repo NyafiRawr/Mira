@@ -44,13 +44,13 @@ module.exports = {
       );
     }
 
-    let pageNumber = 0;
+    let pageNumber = 1;
     if (args.length > 0) {
       pageNumber = parseInt(args[0], 10);
       if (Number.isInteger(pageNumber) == false) {
         throw new Error('некорректный номер страницы!');
       }
-      if (pageNumber < 1 && pages.length > pageNumber) {
+      if (pageNumber < 1 || pageNumber > pages.length) {
         throw new Error(`страницы ${pageNumber} нет.`);
       }
     } else {
