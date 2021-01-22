@@ -22,7 +22,13 @@ export const join = async (message: Message) => {
 
   members.push(message.author.id);
   lottery.memberIds = members.toString();
-  await lots.set(lottery);
+  await lots.set(
+    lottery.serverId,
+    lottery.userId,
+    lottery.prize,
+    lottery.membersWaitCount,
+    lottery.memberIds
+  );
 
   await message.channel.send(
     `${message.author} присоединился к лотерее! Участники: ${members.length}/${lottery.membersWaitCount}`

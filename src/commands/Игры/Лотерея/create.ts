@@ -8,8 +8,8 @@ import { check } from './check';
 import Lottery from '../../../models/Lottery';
 
 export const create = async (message: Message, args: string[]) => {
-  let lottery = await lots.get(message.guild!.id);
-  if (lottery !== null) {
+  const oldLot = await lots.get(message.guild!.id);
+  if (oldLot !== null) {
     throw new Error(`какая-то лотерея уже проводится, нельзя начать новую.`);
   }
 
@@ -43,13 +43,7 @@ export const create = async (message: Message, args: string[]) => {
     }
   }
 
-  lottery = new Lottery({
-    serverId: message.guild!.id,
-    userId: message.author.id,
-    prize: bet,
-    membersWaitCount: membersLimitCount,
-    memberIds: '',
-  });
+  let memberIds = '';
 
   if (message.mentions.members?.size) {
     if (message.mentions.members.size > membersLimitCount) {
@@ -62,12 +56,18 @@ export const create = async (message: Message, args: string[]) => {
         'среди упомянутых участников ты упомянул себя самого, так нельзя.'
       );
     }
-    lottery.memberIds = message.mentions.members.map((gm) => gm.id).toString();
+    memberIds = message.mentions.members.map((gm) => gm.id).toString();
   }
 
-  await lots.set(lottery);
+  const newLot = await lots.set(
+    message.guild!.id,
+    message.author.id,
+    bet,
+    membersLimitCount,
+    memberIds
+  );
 
-  const isComplete = await check(message, lottery);
+  const isComplete = await check(message, newLot);
   if (isComplete === false) {
     await info(message);
   }

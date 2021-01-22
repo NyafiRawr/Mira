@@ -9,12 +9,24 @@ export const get = async (serverId: string) =>
     where: { serverId },
   });
 
-export const set = async (lottery: Lottery) => {
-  const lot = await get(lottery.serverId);
-  if (lot !== null) {
-    return lot.update(lottery);
+export const set = async (
+  serverId: string,
+  userId: string,
+  prize: number,
+  membersWaitCount: number,
+  memberIds: string
+) => {
+  const oldLot = await get(serverId);
+  if (oldLot !== null) {
+    return await oldLot.update({ userId, prize, membersWaitCount, memberIds });
   }
-  return Lottery.create(lottery);
+  return await Lottery.create({
+    serverId,
+    userId,
+    prize,
+    membersWaitCount,
+    memberIds,
+  });
 };
 
 export const getMaxMembers = async (serverId: string): Promise<number> => {
