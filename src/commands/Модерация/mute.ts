@@ -141,7 +141,10 @@ module.exports = {
         embed.setFooter(`Отображаются последние 25 участников`);
         for await (const mute of list.slice(0, 25)) {
           embed.addField(
-            `<@${mute.userId}>`,
+            `${
+              message.guild!.members.cache.get(mute.userId)?.displayName ||
+              `ID участника: ${mute.userId}`
+            }`,
             `Модератор: <@${mute.executorId}> | Канал: ${mute.channelName}` +
               `\nБудет освобожден: ${timeFomattedDMYHHMMSS(
                 mute.releaseDate.getTime()
