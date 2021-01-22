@@ -349,19 +349,19 @@ export const addBadWords = async (
   serverId: string,
   newWords: string[]
 ): Promise<string[]> => {
-  const variable = await vars.getOne(serverId, 'warn_bad_words');
+  let variable = await vars.getOne(serverId, 'warn_bad_words');
 
-  let words;
-  if (variable === null) {
-    words = await vars.set(serverId, 'warn_bad_words', newWords.toString());
-  } else {
+  const words = newWords.map((word) => word.toLowerCase());
+  if (variable !== null) {
     const oldWords = variable.value.split(',');
-    const union = newWords.concat(oldWords);
+    const union = words.concat(oldWords);
     const unique = union.filter((word, index) => union.indexOf(word) === index);
-    words = await variable.update({ value: unique.toString() });
+    variable = await variable.update({ value: unique.toString() });
+  } else {
+    variable = await vars.set(serverId, 'warn_bad_words', words.toString());
   }
 
-  return words.value.split(',');
+  return variable.value.split(',');
 };
 
 export const removeBadWords = async (
@@ -464,7 +464,9 @@ export const checkBadWords = async (message: Message): Promise<void> => {
     return;
   }
 
-  const haveBadWord = words.some((word) => message.content.includes(word));
+  const content = message.content.toLowerCase();
+
+  const haveBadWord = words.some((word) => content.includes(word));
   if (haveBadWord) {
     await message.delete({ reason: reasonBadWord });
 
