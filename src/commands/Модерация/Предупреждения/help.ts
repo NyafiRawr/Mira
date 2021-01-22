@@ -31,14 +31,15 @@ export const help = async (message: Message) => {
           name: 'Команды',
           value:
             `\`${config.discord.prefix}warn set <кол-во warn> <в течение скольки дней> [срок в минутах]\` - добавить` +
-            `\n\`${config.discord.prefix}warn remove <номер>\` - удалить настройку авто-мута` +
+            `\n\`${config.discord.prefix}warn unset <номер>\` - удалить настройку авто-мута` +
             `\n\`${config.discord.prefix}warn give <@кому> [почему]\` - сделать предупреждение` +
+            `\n\`${config.discord.prefix}warn remove <ID>\` - удалить предупреждение` +
             `\n\`${config.discord.prefix}warn list [@]\` - история предупреждений`,
           inline: false,
         },
       ],
       footer: {
-        text: `Обязательно должен быть настроен "${config.discord.prefix}mute"!`,
+        text: `Обязательно должен быть настроен ${config.discord.prefix}mute`,
       },
     },
   });

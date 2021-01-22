@@ -9,8 +9,6 @@ import { removewords } from './Фильтр слов/removewords';
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Фильтр плохих слов',
-  usage:
-    '[add/rem <список через пробел>] [allow/deny <#каналы где разрешены слова>]',
   permissions: ['ADMINISTRATOR'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {

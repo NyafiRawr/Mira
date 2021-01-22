@@ -9,7 +9,6 @@ import {
   TextChannel,
   MessageEmbed,
 } from 'discord.js';
-import config from '../config';
 import * as vars from './vars';
 
 export const getLogsChannelId = async (
@@ -65,13 +64,13 @@ export const logKick = async (member: GuildMember | PartialGuildMember) => {
   if (kickMember.id === member.id) {
     await (channel as TextChannel).send({
       embed: {
-        color: config.colors.alert,
+        color: '#800040',
         description: `Участник **${member.displayName}** (${member}) был кикнут`,
         fields: [
           { name: 'Модератор', value: executor, inline: true },
           { name: 'Причина', value: reason, inline: true },
         ],
-        footer: { text: `Его ID: ${member.id}` },
+        footer: { text: `${member.displayName} ID: ${member.id}` },
       },
     });
   }
@@ -90,10 +89,10 @@ export const logBanAdd = async (guild: Guild, user: User) => {
   const ban = await guild.fetchBan(user);
   await (channel as TextChannel).send({
     embed: {
-      color: config.colors.alert,
+      color: '#ff0000',
       description: `Участник **${user.tag}** (${user}) был забанен`,
       fields: [{ name: 'Причина', value: ban.reason, inline: true }],
-      footer: { text: `Его ID: ${user.id}` },
+      footer: { text: `${user.username} ID: ${user.id}` },
     },
   });
 };
@@ -108,14 +107,12 @@ export const logBanRemove = async (guild: Guild, user: User) => {
     return;
   }
 
-  await (channel as TextChannel).send(
-    `User ${user.tag} [ID: ${user.id}] unbanned.`
-  );
+  await (channel as TextChannel).send(`User ${user.tag} (${user}) unbanned.`);
   await (channel as TextChannel).send({
     embed: {
-      color: config.colors.message,
+      color: '#ffffff',
       description: `Участник **${user.tag}** (${user}) был разбанен`,
-      footer: { text: `Его ID: ${user.id}` },
+      footer: { text: `${user.username} ID: ${user.id}` },
     },
   });
 };
@@ -150,23 +147,28 @@ export const logMessageDelete = async (message: Message | PartialMessage) => {
     if (deletionMember.id === message.author?.id) {
       return (channel as TextChannel).send({
         embed: {
-          color: config.colors.message,
+          color: '#800000',
           description: `Сообщение участника **${
             message.member?.displayName || message.author?.tag
           }** (${message.author}) в канале ${message.channel} было удалено`,
           fields: [
-            { name: 'Текст', value: message.content || '-', inline: false },
+            {
+              name: 'Текст',
+              value: message.content?.slice(0, 1024) || '-',
+              inline: false,
+            },
             { name: 'Модератор', value: executor, inline: true },
             {
               name: 'Вложенные файлы',
               value:
                 message.attachments
                   .map((attach, index) => `[${index + 1}](${attach.url})`)
-                  .join(', ') || 'Нет',
+                  .join(', ')
+                  .slice(0, 1024) || 'Нет',
               inline: true,
             },
             {
-              name: 'Был Embed?',
+              name: 'Есть Embed?',
               value: message.embeds.length ? 'Да' : 'Нет',
               inline: true,
             },
@@ -178,20 +180,30 @@ export const logMessageDelete = async (message: Message | PartialMessage) => {
 
   return (channel as TextChannel).send({
     embed: {
-      color: config.colors.message,
+      color: '#e80000',
       description: `Участник **${
         message.member?.displayName || message.author?.tag
       }** (${message.author}) удалил своё сообщение из канала ${
         message.channel
       }`,
       fields: [
-        { name: 'Текст', value: message.content, inline: false },
+        {
+          name: 'Текст',
+          value: message.content?.slice(0, 1024) || '-',
+          inline: false,
+        },
         {
           name: 'Вложенные файлы',
           value:
             message.attachments
               .map((attach, index) => `[${index + 1}](${attach.url})`)
-              .join(', ') || 'Нет',
+              .join(', ')
+              .slice(0, 1024) || 'Нет',
+          inline: true,
+        },
+        {
+          name: 'Есть Embed?',
+          value: message.embeds.length ? 'Да' : 'Нет',
           inline: true,
         },
       ],
@@ -219,19 +231,25 @@ export const logMessageBulk = async (
   messages.map(async (message, index) => {
     await (channel as TextChannel).send({
       embed: {
-        color: config.colors.message,
-        description: `Было удалено ${messages.size} сообщений из канала ${
+        color: '#800000',
+        description: `Было удалено **${messages.size} сообщений** из канала ${
           message.channel
-        }. Автор сообщения №${index + 1}: **${
+        }. Автор сообщения **№${index + 1}: ${
           message.member?.displayName || message.author?.tag
         }** (${message.author})`,
         fields: [
-          { name: 'Текст', value: message.content, inline: false },
+          {
+            name: 'Текст',
+            value: message.content?.slice(0, 1024) || '-',
+            inline: false,
+          },
           {
             name: 'Вложенные файлы',
-            value: message.attachments
-              .map((attach, index) => `[${index + 1}](${attach.url})`)
-              .join(', '),
+            value:
+              message.attachments
+                .map((attach, index) => `[${index + 1}](${attach.url})`)
+                .join(', ')
+                .slice(0, 1024) || 'Нет',
             inline: true,
           },
         ],
@@ -244,29 +262,29 @@ export const logMessageUpdate = async (
   messageOld: Message | PartialMessage,
   messageNew: Message | PartialMessage
 ) => {
-  if (messageOld.partial) {
-    messageOld = await messageOld.fetch();
-  }
-
-  if (messageOld.guild === null || messageOld.author.bot) {
-    return;
-  }
-
-  const channelId = await getLogsChannelId(messageOld.guild.id);
-  if (channelId === null || channelId === messageOld.channel.id) {
-    return;
-  }
-  const channel = messageOld.guild.channels.cache.get(channelId);
-  if (channel === undefined) {
-    return;
+  if (messageOld.editedAt === messageNew.editedAt) {
+    return; // Сообщения отредактированные дискордом (встраивание ссылок)
   }
 
   if (messageNew.partial) {
     messageNew = await messageNew.fetch();
   }
 
+  if (messageNew.guild === null || messageNew.author.bot) {
+    return;
+  }
+
+  const channelId = await getLogsChannelId(messageNew.guild.id);
+  if (channelId === null || channelId === messageOld.channel.id) {
+    return;
+  }
+  const channel = messageNew.guild.channels.cache.get(channelId);
+  if (channel === undefined) {
+    return;
+  }
+
   const embed = new MessageEmbed({
-    color: config.colors.message,
+    color: '#80ffff',
     description: `Участник **${
       messageOld.member?.displayName || messageOld.author?.tag
     }** (${messageOld.author}) отредактировал сообщение в канале ${
@@ -275,11 +293,11 @@ export const logMessageUpdate = async (
   });
 
   if (messageOld.content) {
-    embed.addField('Было', messageOld.content, false);
+    embed.addField('Было', messageOld.content.slice(0, 1024), false);
   }
 
   if (messageNew.content) {
-    embed.addField('Стало', messageNew.content, false);
+    embed.addField('Стало', messageNew.content.slice(0, 1024), false);
   }
 
   if (messageOld.attachments.size) {
@@ -294,7 +312,7 @@ export const logMessageUpdate = async (
 
   if (messageOld.embeds.length) {
     embed.addField(
-      'Был изменен Embed?',
+      'Есть Есть Embed?',
       messageOld.embeds !== messageNew.embeds ? 'Да' : 'Нет',
       true
     );

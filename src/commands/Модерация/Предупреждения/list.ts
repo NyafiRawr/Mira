@@ -1,27 +1,28 @@
 import { Message, MessageEmbed } from 'discord.js';
-import config from '../../../config';
 import * as punches from '../../../modules/mutes';
+import { timeFomattedDMYHHMMSS } from '../../../utils';
 
 export const list = async (message: Message) => {
-  const victim = message.mentions.users.first() || message.author;
+  const victim = message.mentions.members?.first() || message.member!;
   const list = await punches.getWarns(message.guild!.id, victim.id);
 
   const embed = new MessageEmbed({
-    color: config.colors.message,
+    color: victim.displayColor,
     author: {
-      name: `Список предупреждений ${victim.tag}`,
+      name: `Список предупреждений ${victim.displayName} (${list.length})`,
     },
   });
 
   if (list.length === 0) {
-    embed.setTitle('Ничего нет');
+    embed.setTitle('Пусто');
   } else {
+    embed.setFooter(`Отображаются последние 25 предупреждений`);
     for await (const warn of list.slice(0, 25)) {
       embed.addField(
-        warn.date,
-        `Причина: ${warn.reason || 'Не указана'}` +
-          `\nКанал: ${warn.channelName}>` +
-          `\nМодератор: <@${warn.executorId}>`
+        `${timeFomattedDMYHHMMSS(warn.date.getTime())} | ID: ${warn.id}`,
+        `Модератор: <@${warn.executorId}> | Канал: ${warn.channelName}` +
+          `\nПричина: ${warn.reason || 'Не указана'}`,
+        false
       );
     }
   }

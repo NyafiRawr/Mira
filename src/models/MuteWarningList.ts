@@ -1,7 +1,8 @@
-import { Model, STRING, DATE, NOW } from 'sequelize';
+import { Model, STRING, DATE, NOW, INTEGER } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class MuteWarningList extends Model {
+  public id!: number;
   public serverId!: string;
   public userId!: string;
   public reason!: string;
@@ -12,15 +13,19 @@ export default class MuteWarningList extends Model {
 
 MuteWarningList.init(
   {
+    id: {
+      type: INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
     },
     userId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
     },
     reason: {
       type: STRING,
@@ -46,4 +51,4 @@ MuteWarningList.init(
   }
 );
 
-MuteWarningList.sync();
+MuteWarningList.sync({ force: false });

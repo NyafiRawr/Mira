@@ -5,9 +5,7 @@ import * as punches from '../../modules/mutes';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Изолировать участника от остальных',
-  usage:
-    'give <@> <срок в минутах> <причина> ИЛИ remove <@> <причина> ИЛИ role <@роль>',
+  description: 'Раздача мутов хулиганам',
   permissions: ['MANAGE_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
@@ -55,9 +53,13 @@ module.exports = {
       }
       const timestamp = minutes * 60 * 1000;
 
-      const reason = args.join();
-      if (reason === undefined) {
+      const reason = args.join(' ');
+      if (reason.trim().length === 0) {
         throw new Error('не указана причина изоляции.');
+      } else if (reason.length > 400) {
+        throw new Error(
+          'слишком длинная причина изоляции, максимум 400 символов.'
+        );
       }
 
       const roleId = await punches.getMuteRoleId(message.guild!.id);
@@ -87,15 +89,20 @@ module.exports = {
         );
       }
       const victim = message.mentions.members!.first()!;
+      args.shift();
 
       const roleId = await punches.getMuteRoleId(message.guild!.id);
       if (roleId === null) {
         throw new Error('не установлена роль изоляции.');
       }
 
-      const reason = args.shift();
-      if (reason === undefined) {
+      const reason = args.join(' ');
+      if (reason.trim().length === 0) {
         throw new Error('не указана причина освобождения.');
+      } else if (reason.length > 400) {
+        throw new Error(
+          'слишком длинная причина изоляции, максимум 400 символов.'
+        );
       }
 
       const embed = await punches.removeMute(
@@ -117,8 +124,27 @@ module.exports = {
       return;
     }
 
-    throw new Error(
-      `используйте \`${config.discord.prefix}help ${this.name}\`, чтобы узнать, как использовать эту команду.`
-    );
+    await message.channel.send({
+      embed: {
+        color: config.colors.message,
+        author: {
+          name: this.description,
+        },
+        fields: [
+          {
+            name: 'Команды',
+            value:
+              `\`${config.discord.prefix}${this.name} role <@роль>\` - установить роль для изоляции` +
+              `\n\`${config.discord.prefix}${this.name} give <@> <срок в минутах> <причина>\` - мут` +
+              `\n\`${config.discord.prefix}${this.name} remove <@> <причина>\` - размут`,
+            inline: false,
+          },
+        ],
+        footer: {
+          text:
+            'Каждый перезаход на сервер с мутом: возвращает роль изоляции и даёт +1 день к сроку',
+        },
+      },
+    });
   },
 };

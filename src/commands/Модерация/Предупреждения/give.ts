@@ -11,9 +11,11 @@ export const give = async (message: Message, args: string[]) => {
   }
   args.shift();
 
-  const reason = args.join();
-  if (reason === undefined) {
+  const reason = args.join(' ');
+  if (reason.trim().length === 0) {
     throw new Error('нужно указать причину выдачи предупреждения.');
+  } else if (reason.length > 400) {
+    throw new Error('слишком длинная причина, максимум 400 символов.');
   }
 
   const warnEmbed = await punches.setWarn(

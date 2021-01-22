@@ -15,7 +15,7 @@ export const help = async (message: Message) => {
       'Выдаёт предупреждения за использование слов из списка запрещенных, игнорирует каналы с пометкой NSFW и из списка игнорируемых',
     title: words ? 'Включен' : 'Отключен',
     footer: {
-      text: `Для выдачи мута обязательно должны быть настроены "${config.discord.prefix}warn set" и "${config.discord.prefix}mute role"!`,
+      text: `Для выдачи мута обязательно должны быть настроены: ${config.discord.prefix}warn set И ${config.discord.prefix}mute role`,
     },
   });
 

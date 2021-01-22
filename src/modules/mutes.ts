@@ -44,10 +44,40 @@ export const setWarn = async (
     author: {
       name: 'Система предупреждений',
     },
-    description: `Участник <@${userId}> получил предупреждение`,
+    description: `Участник <@${userId}> получает предупреждение`,
     fields: [
-      { name: 'Причина', value: reason },
-      { name: 'Модератор', value: `<@${executorId}>` },
+      { name: 'Модератор', value: `<@${executorId}>`, inline: true },
+      { name: 'Причина', value: reason, inline: true },
+    ],
+  });
+};
+
+export const removeWarn = async (
+  serverId: string,
+  userId: string,
+  reason: string,
+  executorId: string,
+  warnId: number
+): Promise<MessageEmbed | null> => {
+  const warn = await MuteWarningList.findOne({
+    where: { serverId, id: warnId },
+  });
+
+  if (warn === null) {
+    return null;
+  }
+
+  await warn.destroy();
+
+  return new MessageEmbed({
+    color: '#00ff40',
+    author: {
+      name: 'Система предупреждений',
+    },
+    description: `Удалено предупреждение участника **<@${userId}>** с **ID: ${warnId}**`,
+    fields: [
+      { name: 'Модератор', value: `<@${executorId}>`, inline: true },
+      { name: 'Причина', value: reason, inline: true },
     ],
   });
 };
@@ -97,6 +127,9 @@ export const returnMuteRole = async (guildMember: GuildMember) => {
     const roleId = await getMuteRoleId(guildMember.guild.id);
     if (roleId) {
       await guildMember.roles.add(roleId);
+      await mute.update({
+        releaseDate: mute.releaseDate.getTime() + 24 * 60 * 60 * 60 * 1000,
+      });
     }
   }
 };
@@ -208,7 +241,7 @@ export const setMute = async (
 
   if (mute !== null) {
     mute = await mute.update({
-      releaseDate: mute.releaseDate.getDate() + timestamp,
+      releaseDate: mute.releaseDate.getTime() + timestamp,
     });
   } else {
     mute = await MuteList.create({
@@ -222,19 +255,19 @@ export const setMute = async (
   }
 
   return new MessageEmbed({
-    color: '#c60000',
+    color: '#ff0000',
     author: {
       name: 'Система предупреждений',
     },
-    description: `Участник <@${userId}> получил мут`,
+    description: `Участник <@${userId}> получает мут`,
     fields: [
-      { name: 'Причина', value: reason },
-      { name: 'Модератор', value: `<@${executorId}>` },
-      { name: 'Срок', value: `${timeFomattedDHMS(timestamp)}` },
+      { name: 'Модератор', value: `<@${executorId}>`, inline: true },
+      { name: 'Причина', value: reason, inline: true },
+      { name: 'Срок', value: `${timeFomattedDHMS(timestamp)}`, inline: true },
     ],
     footer: {
       text: `Мут будет снят: ${timeFomattedDMYHHMMSS(
-        mute.releaseDate.getDate()
+        mute.releaseDate.getTime()
       )}`,
     },
   });
@@ -255,15 +288,20 @@ export const removeMute = async (
   await mute.destroy();
 
   return new MessageEmbed({
-    color: '#c60000',
+    color: '#00ff40',
     author: {
       name: 'Система предупреждений',
     },
     description: `С участника <@${userId}> снят мут`,
     fields: [
-      { name: 'Причина', value: reason },
-      { name: 'Модератор', value: `<@${executorId}>` },
+      { name: 'Модератор', value: `<@${executorId}>`, inline: true },
+      { name: 'Причина', value: reason, inline: true },
     ],
+    footer: {
+      text: `До конца срока оставалось: ${timeFomattedDHMS(
+        mute.releaseDate.getDate() - Date.now()
+      )}`,
+    },
   });
 };
 

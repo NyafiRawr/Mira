@@ -4,6 +4,7 @@ import { help } from './Предупреждения/help';
 import { list } from './Предупреждения/list';
 import { set } from './Предупреждения/set';
 import { give } from './Предупреждения/give';
+import { unset } from './Предупреждения/unset';
 import { remove } from './Предупреждения/remove';
 
 module.exports = {
@@ -31,6 +32,14 @@ module.exports = {
           );
         }
         return set(message, args);
+      }
+      case 'unset': {
+        if (!message.member?.hasPermission(this.permissions[1])) {
+          throw new Error(
+            `нужно иметь глобальную привилегию ${this.permissions[1]}`
+          );
+        }
+        return unset(message, args);
       }
       case 'remove': {
         if (!message.member?.hasPermission(this.permissions[1])) {

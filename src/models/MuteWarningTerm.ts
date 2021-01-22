@@ -2,6 +2,7 @@ import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class MuteWarningTerm extends Model {
+  public id!: number;
   public serverId!: string;
   public countWarnings!: number;
   public forDays!: number;
@@ -10,6 +11,12 @@ export default class MuteWarningTerm extends Model {
 
 MuteWarningTerm.init(
   {
+    id: {
+      type: INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,
@@ -33,4 +40,4 @@ MuteWarningTerm.init(
   }
 );
 
-MuteWarningTerm.sync();
+MuteWarningTerm.sync({ force: false });
