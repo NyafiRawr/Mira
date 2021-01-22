@@ -34,7 +34,7 @@ MuteList.init(
       type: STRING,
       allowNull: false,
     },
-    date: {
+    releaseDate: {
       type: DATE,
       allowNull: false,
     },
@@ -45,4 +45,4 @@ MuteList.init(
   }
 );
 
-MuteList.sync();
+MuteList.sync({ force: false });
