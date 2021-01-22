@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { isInteger } from 'lodash';
-import { list } from './list';
+import { help } from './help';
 import * as punches from '../../../modules/mutes';
 
 export const set = async (message: Message, args: string[]) => {
@@ -48,5 +48,5 @@ export const set = async (message: Message, args: string[]) => {
 
   await punches.setTerm(message.guild!.id, countWarnings, forDays, timestamp);
 
-  await list(message);
+  await help(message);
 };

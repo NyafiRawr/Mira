@@ -15,7 +15,7 @@ module.exports = {
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
     switch (args.shift()) {
-      case 'addchannels': {
+      case 'ac': {
         if (!message.member?.hasPermission(this.permissions[0])) {
           throw new Error(
             `нужно иметь глобальную привилегию ${this.permissions[0]}`
@@ -23,7 +23,7 @@ module.exports = {
         }
         return await addchannels(message);
       }
-      case 'addwords': {
+      case 'aw': {
         if (!message.member?.hasPermission(this.permissions[0])) {
           throw new Error(
             `нужно иметь глобальную привилегию ${this.permissions[0]}`
@@ -31,7 +31,7 @@ module.exports = {
         }
         return await addwords(message, args);
       }
-      case 'removechannels': {
+      case 'rc': {
         if (!message.member?.hasPermission(this.permissions[0])) {
           throw new Error(
             `нужно иметь глобальную привилегию ${this.permissions[0]}`
@@ -39,7 +39,7 @@ module.exports = {
         }
         return await removechannels(message);
       }
-      case 'removewords': {
+      case 'rw': {
         if (!message.member?.hasPermission(this.permissions[0])) {
           throw new Error(
             `нужно иметь глобальную привилегию ${this.permissions[0]}`

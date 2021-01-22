@@ -3,7 +3,7 @@ import { isInteger } from 'lodash';
 import { list } from './list';
 import * as punches from '../../../modules/mutes';
 
-export const set = async (message: Message, args: string[]) => {
+export const remove = async (message: Message, args: string[]) => {
   const argNum = args.shift();
   if (argNum === undefined) {
     throw new Error('не указан номер условия.');

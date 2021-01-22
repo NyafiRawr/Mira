@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { isInteger } from 'lodash';
+import config from '../../config';
 import * as punches from '../../modules/mutes';
 
 module.exports = {
@@ -38,6 +39,7 @@ module.exports = {
         );
       }
       const victim = message.mentions.members!.first()!;
+      args.shift();
 
       const argTime = args.shift();
       if (argTime === undefined) {
@@ -75,6 +77,7 @@ module.exports = {
       );
 
       await message.channel.send(embed);
+      return;
     }
 
     if (action === 'remove') {
@@ -111,6 +114,11 @@ module.exports = {
           'запись о муте не найдена, но, если у этого участника была роль изолированного, то она снята.'
         );
       }
+      return;
     }
+
+    throw new Error(
+      `используйте \`${config.discord.prefix}help ${this.name}\`, чтобы узнать, как использовать эту команду.`
+    );
   },
 };

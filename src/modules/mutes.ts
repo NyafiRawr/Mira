@@ -35,6 +35,7 @@ export const setWarn = async (
     serverId,
     userId,
     reason,
+    executorId,
     channelName,
   });
 
