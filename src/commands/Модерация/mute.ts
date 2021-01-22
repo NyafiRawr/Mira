@@ -1,11 +1,12 @@
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { isInteger } from 'lodash';
 import config from '../../config';
 import * as punches from '../../modules/mutes';
+import { timeFomattedDMYHHMMSS } from '../../utils';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Раздача мутов хулиганам',
+  description: 'Проклятие молчания',
   permissions: ['MANAGE_MESSAGES'],
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
@@ -124,6 +125,37 @@ module.exports = {
       return;
     }
 
+    if (action === 'list') {
+      const list = await punches.getMutes(message.guild!.id);
+
+      const embed = new MessageEmbed({
+        color: config.colors.message,
+        author: {
+          name: `Список участников проклятых молчанием`,
+        },
+      });
+
+      if (list.length === 0) {
+        embed.setTitle('Пусто');
+      } else {
+        embed.setFooter(`Отображаются последние 25 участников`);
+        for await (const mute of list.slice(0, 25)) {
+          embed.addField(
+            `${mute.userId}`,
+            `Модератор: <@${mute.executorId}> | Канал: ${mute.channelName}` +
+              `\nБудет освобожден: ${timeFomattedDMYHHMMSS(
+                mute.releaseDate.getTime()
+              )}` +
+              `\nПричина: ${mute.reason}`,
+            false
+          );
+        }
+      }
+
+      await message.channel.send(embed);
+      return;
+    }
+
     await message.channel.send({
       embed: {
         color: config.colors.message,
@@ -134,15 +166,16 @@ module.exports = {
           {
             name: 'Команды',
             value:
-              `\`${config.discord.prefix}${this.name} role <@роль>\` - установить роль для изоляции` +
-              `\n\`${config.discord.prefix}${this.name} give <@> <срок в минутах> <причина>\` - мут` +
-              `\n\`${config.discord.prefix}${this.name} remove <@> <причина>\` - размут`,
+              `\`${config.discord.prefix}${this.name} role <@роль>\` - установить роль молчания` +
+              `\`${config.discord.prefix}${this.name} list\` - список проклятых` +
+              `\n\`${config.discord.prefix}${this.name} give <@> <срок в минутах> <причина>\` - проклянуть` +
+              `\n\`${config.discord.prefix}${this.name} remove <@> <причина>\` - снять проклятие`,
             inline: false,
           },
         ],
         footer: {
           text:
-            'Каждый перезаход на сервер с мутом: возвращает роль изоляции и даёт +1 день к сроку',
+            'Каждый перезаход на сервер с проклятием: возвращает роль молчания и даёт +1 день к сроку',
         },
       },
     });

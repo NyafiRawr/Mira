@@ -21,7 +21,7 @@ export const list = async (message: Message) => {
       embed.addField(
         `${timeFomattedDMYHHMMSS(warn.date.getTime())} | ID: ${warn.id}`,
         `Модератор: <@${warn.executorId}> | Канал: ${warn.channelName}` +
-          `\nПричина: ${warn.reason || 'Не указана'}`,
+          `\nПричина: ${warn.reason}`,
         false
       );
     }

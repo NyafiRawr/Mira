@@ -226,6 +226,13 @@ export const checkTermForMute = async (
 
 //#region Mutes
 
+export const getMutes = async (serverId: string) =>
+  MuteList.findAll({
+    where: {
+      serverId,
+    },
+  });
+
 export const getMute = async (serverId: string, userId: string) =>
   MuteList.findOne({ where: { serverId, userId } });
 
