@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import config from '../../../config';
 import * as punches from '../../../modules/mutes';
+import { timeFomattedDHMS } from '../../../utils';
 
 export const help = async (message: Message) => {
   const terms = await punches.getTerms(message.guild!.id);
@@ -20,9 +21,11 @@ export const help = async (message: Message) => {
                 (term, index) =>
                   `${index + 1}. За ${
                     term.countWarnings
-                  } предупреждения в течение ${term.forDays} дней изоляция на ${
+                  } предупреждения в течение ${
+                    term.forDays
+                  } дней изоляция на ${timeFomattedDHMS(
                     term.timestamp / 60 / 1000
-                  } мин.`
+                  )} мин.`
               )
               .join('\n') || 'Нет',
           inline: false,
