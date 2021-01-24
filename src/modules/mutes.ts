@@ -319,7 +319,7 @@ export const removeMute = async (
     ],
     footer: {
       text: `До конца срока оставалось: ${timeFomattedDHMS(
-        mute.releaseDate.getDate() - Date.now()
+        mute.releaseDate.getTime() - Date.now()
       )}`,
     },
   });
