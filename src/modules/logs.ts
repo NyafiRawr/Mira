@@ -69,7 +69,7 @@ export const logKick = async (member: GuildMember | PartialGuildMember) => {
         description: `Участник **${member.displayName}** (${member}) был кикнут`,
         fields: [
           { name: 'Модератор', value: executor, inline: true },
-          { name: 'Причина', value: reason, inline: true },
+          { name: 'Причина', value: reason || 'Не указана', inline: true },
         ],
         footer: { text: `${member.displayName} ID: ${member.id}` },
       },
@@ -92,7 +92,9 @@ export const logBanAdd = async (guild: Guild, user: User) => {
     embed: {
       color: '#ff0000',
       description: `Участник **${user.tag}** (${user}) был забанен`,
-      fields: [{ name: 'Причина', value: ban.reason, inline: true }],
+      fields: [
+        { name: 'Причина', value: ban.reason || 'Не указана', inline: true },
+      ],
       footer: { text: `${user.username} ID: ${user.id}` },
     },
   });
