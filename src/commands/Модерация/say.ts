@@ -21,7 +21,7 @@ module.exports = {
     }
 
     if (message.mentions.channels.size) {
-      channel.send(args.slice(1));
+      channel.send(args.slice(1).join(' '));
     } else {
       channel.send(args.join(' '));
     }
