@@ -71,11 +71,7 @@ module.exports = {
 
         const role = message.mentions.roles.first();
         await shops.add(message.guild!.id, role!.id, cost);
-        embed.setDescription(
-          `**${role}** выставлена под номером ${
-            roles.length + 1
-          } за **${cost}**:cookie:`
-        );
+        embed.setDescription(`**${role}** выставлена за **${cost}**:cookie:`);
       } else if (args[0] == 'rem') {
         if (!message.member?.hasPermission(this.permissions[0])) {
           throw new Error(
@@ -101,11 +97,20 @@ module.exports = {
 
         const isRemove = message.member!.roles.cache.has(roles[num - 1].roleId);
 
+        if (isRemove === false) {
+          const haveShopRole = roles.some((role) =>
+            message.member!.roles.cache.has(role.roleId)
+          );
+          if (haveShopRole) {
+            throw new Error('можно иметь только одну роль из магазина.');
+          }
+        }
+
         try {
           if (isRemove) {
-            await message.member?.roles.remove(roles[num - 1].roleId);
+            await message.member!.roles.remove(roles[num - 1].roleId);
           } else {
-            await message.member?.roles.add(roles[num - 1].roleId);
+            await message.member!.roles.add(roles[num - 1].roleId);
           }
         } catch (e) {
           throw new Error(
