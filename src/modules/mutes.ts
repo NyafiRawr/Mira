@@ -468,7 +468,7 @@ export const checkBadWords = async (message: Message): Promise<void> => {
   }
 
   const channels = await getBadChannels(message.guild.id);
-  if (channels === null || channels.some((id) => id === message.channel.id)) {
+  if (channels?.some((id) => id === message.channel.id)) {
     return;
   }
 
