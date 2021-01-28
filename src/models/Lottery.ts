@@ -1,4 +1,4 @@
-import { Model, STRING } from 'sequelize';
+import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class Lottery extends Model {
@@ -21,11 +21,11 @@ Lottery.init(
       allowNull: false,
     },
     prize: {
-      type: STRING,
+      type: INTEGER,
       allowNull: false,
     },
     membersWaitCount: {
-      type: STRING,
+      type: INTEGER,
       allowNull: false,
     },
     memberIds: {
