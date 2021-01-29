@@ -5,8 +5,9 @@ import { client } from '../client';
 import { Collection } from 'discord.js';
 import GildRelation from '../models/GildRelation';
 
-Gild.sync({ alter: true });
-GildRelation.sync({ alter: true });
+import { alter, force } from '../database';
+Gild.sync({ alter, force });
+GildRelation.sync({ alter, force });
 
 // userId - gildId
 export const invites = new Collection<string, number>();

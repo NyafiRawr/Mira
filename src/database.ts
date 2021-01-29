@@ -1,6 +1,9 @@
 import { Sequelize, Dialect } from 'sequelize';
 import config from './config';
 
+export const alter = true; // Обновить таблицы, если они не совпадают со своими моделями
+export const force = false; // Принудительное пересоздание таблиц (удаляет данные). Может не сработать для таблиц с FK - нужно удалить дочерную таблицу вручную
+
 const generalSettings = {
   dialect: config.db.dialect as Dialect,
   define: {
@@ -10,8 +13,8 @@ const generalSettings = {
   },
   logging: console.log, // Или logging: function (str) {}
   sync: {
-    alter: true,
-    force: false,
+    alter,
+    force,
   },
 };
 

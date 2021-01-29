@@ -1,5 +1,5 @@
 import { Model, STRING } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class Access extends Model {
   public serverId!: string | null;
@@ -30,4 +30,4 @@ Access.init(
   }
 );
 
-Access.sync({ alter: true });
+Access.sync({ alter, force });

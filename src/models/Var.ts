@@ -1,5 +1,5 @@
 import { Model, STRING, TEXT } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class Var extends Model {
   public serverId!: string;
@@ -30,4 +30,4 @@ Var.init(
   }
 );
 
-Var.sync({ alter: true });
+Var.sync({ alter, force });

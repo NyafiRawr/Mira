@@ -1,5 +1,5 @@
 import { INTEGER, Model, STRING } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class ReactionRole extends Model {
   public id: number;
@@ -45,4 +45,4 @@ ReactionRole.init(
   }
 );
 
-ReactionRole.sync({ alter: true });
+ReactionRole.sync({ alter, force });

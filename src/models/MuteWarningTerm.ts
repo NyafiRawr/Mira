@@ -1,5 +1,5 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class MuteWarningTerm extends Model {
   public id!: number;
@@ -40,4 +40,4 @@ MuteWarningTerm.init(
   }
 );
 
-MuteWarningTerm.sync({ alter: true });
+MuteWarningTerm.sync({ alter, force });

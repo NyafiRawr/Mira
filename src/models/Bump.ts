@@ -1,5 +1,5 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class Bump extends Model {
   public serverId!: string;
@@ -36,4 +36,4 @@ Bump.init(
   }
 );
 
-Bump.sync({ alter: true });
+Bump.sync({ alter, force });

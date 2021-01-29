@@ -3,8 +3,9 @@ import Lot from '../models/Lot';
 import LotRelation from '../models/LotRelation';
 import * as vars from './vars';
 
-Lot.sync({ alter: true });
-LotRelation.sync({ alter: true });
+import { alter, force } from '../database';
+Lot.sync({ alter, force });
+LotRelation.sync({ alter, force });
 
 export const keyMaxMembers = 'lottery_maxmembers';
 

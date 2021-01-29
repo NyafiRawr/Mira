@@ -1,5 +1,5 @@
 import { Model, STRING, DATE, DATEONLY, INTEGER, NOW } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class User extends Model {
   public id!: string;
@@ -77,4 +77,4 @@ User.init(
   }
 );
 
-User.sync({ alter: true });
+User.sync({ alter, force });

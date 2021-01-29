@@ -1,5 +1,5 @@
 import { INTEGER, Model, STRING } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class VoiceTime extends Model {
   public serverId!: string;
@@ -30,4 +30,4 @@ VoiceTime.init(
   }
 );
 
-VoiceTime.sync({ alter: true });
+VoiceTime.sync({ alter, force });

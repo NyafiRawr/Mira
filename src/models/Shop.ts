@@ -1,5 +1,5 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize } from '../database';
+import { sequelize, alter, force } from '../database';
 
 export default class Shop extends Model {
   public serverId!: string;
@@ -31,4 +31,4 @@ Shop.init(
   }
 );
 
-Shop.sync({ alter: true });
+Shop.sync({ alter, force });
