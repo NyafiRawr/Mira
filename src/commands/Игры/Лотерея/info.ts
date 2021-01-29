@@ -12,20 +12,23 @@ export const info = async (message: Message) => {
       name: 'Лотерея',
     },
   });
+
   if (lottery === null) {
     embed.setTitle('Ничего не проводится');
   } else {
-    const members = lottery.memberIds.split(',');
+    const members = await lots.getMembers(lottery.id);
+
     embed
       .setTitle(
         `Розыгрыш: ${separateThousandth(lottery.prize.toString())}:cookie:`
       )
       .setDescription(
         `Организатор: <@${lottery.userId}>` +
-          `\nУчастники: ${members.length}/${lottery.membersWaitCount}`
+          `\nУчастники: ${members.length}/${lottery.membersWait}`
       );
-    if (members.some((id) => message.author.id === id)) {
-      embed.setFooter('Ты принял участие в этой лотерее');
+
+    if (members.some((member) => member.userId === message.author.id)) {
+      embed.setFooter('Ты участвуешь в этой лотерее');
     } else {
       embed.setFooter(`Участвовать: ${config.discord.prefix}lottery join`);
     }

@@ -14,14 +14,14 @@ export const final = async (message: Message) => {
     throw new Error('ты не организатор лотереи и не можешь её завершить.');
   }
 
-  const members = lottery.memberIds.split(',');
+  const members = await lots.getMembers(lottery.id);
   if (members.length === 0) {
     throw new Error(
       `невозможно определить победителя без участников, используй \`${config.discord.prefix}lot close\`, если хочешь закрыть лотерею.`
     );
   }
 
-  lottery.membersWaitCount = members.length;
+  lottery.membersWait = members.length;
 
   await check(message, lottery);
 };

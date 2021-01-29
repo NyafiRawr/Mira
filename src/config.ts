@@ -72,7 +72,7 @@ export default {
   patternHexColor: /[0-9A-Fa-f]{6}/g,
   games: {
     lottery: {
-      maxMembers: 10,
+      maxMembers: 100,
       color: '#ef6703',
       betMin: 100,
     },

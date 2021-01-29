@@ -15,23 +15,22 @@ export const join = async (message: Message) => {
     throw new Error('ты организатор лотереи и не можешь участвовать.');
   }
 
-  const members = lottery.memberIds.split(',');
-  if (members.includes(message.author.id)) {
+  const members = await lots.getMembers(lottery.id);
+  if (members.some((member) => member.userId === message.author.id)) {
     throw new Error('ты уже участвуешь в лотерее, покинуть её нельзя.');
   }
 
-  members.push(message.author.id);
-  lottery.memberIds = members.toString();
+  await lots.addMember(lottery.id, message.author.id);
+
   await lots.set(
     lottery.serverId,
     lottery.userId,
     lottery.prize,
-    lottery.membersWaitCount,
-    lottery.memberIds
+    lottery.membersWait
   );
 
   await message.channel.send(
-    `${message.author} присоединился к лотерее! Участники: ${members.length}/${lottery.membersWaitCount}`
+    `${message.author} присоединился к лотерее! Участники: ${members.length}/${lottery.membersWait}`
   );
 
   await check(message, lottery);

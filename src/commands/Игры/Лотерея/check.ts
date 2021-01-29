@@ -3,44 +3,45 @@ import config from '../../../config';
 import { randomInteger, separateThousandth } from '../../../utils';
 import * as economy from '../../../modules/economy';
 import Lottery from '../../../models/Lottery';
+import * as lots from '../../../modules/lots';
 
 export const check = async (
   message: Message,
   lottery: Lottery
 ): Promise<boolean> => {
-  const members = lottery.memberIds.split(',');
-  if (members.length !== lottery.membersWaitCount) {
+  const members = await lots.getMembers(lottery.id);
+  if (members.length !== lottery.membersWait) {
     return false;
   }
 
   await lottery.destroy();
 
-  const winnerIndex = randomInteger(0, lottery.membersWaitCount - 1);
+  const winnerIndex = randomInteger(0, lottery.membersWait - 1);
 
   await economy.setBalance(
     message.guild!.id,
-    members[winnerIndex],
+    members[winnerIndex].userId,
     lottery.prize
   );
 
-  const winner =
+  const winnerName =
     (await message
-      .guild!.members.fetch(members[winnerIndex])
+      .guild!.members.fetch(members[winnerIndex].userId)
       .catch(() => undefined)
       .then((member) => member?.displayName)) || `<@${members[winnerIndex]}>`;
 
   await message.channel.send(
-    `<@${members[winnerIndex]}> победил в лотерее от <@${
+    `<@${members[winnerIndex].userId}> победил в лотерее от <@${
       lottery.userId
     }>! ${members
       .filter((_id, index) => index !== winnerIndex)
-      .map((id) => `<@${id}>`)
+      .map((member) => `<@${member.userId}>`)
       .join(', ')}`,
     {
       embed: {
         color: config.games.lottery.color,
         title: 'Лотерея завершена!',
-        description: `**${winner} забирает ${separateThousandth(
+        description: `**${winnerName} забирает ${separateThousandth(
           lottery.prize.toString()
         )}:cookie:**`,
         image: {

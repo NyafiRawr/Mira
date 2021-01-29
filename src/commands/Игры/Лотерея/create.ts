@@ -29,11 +29,11 @@ export const create = async (message: Message, args: string[]) => {
 
   const maxMembers = await lots.getMaxMembers(message.guild!.id);
 
-  const membersLimitCount = parseInt(args[1], 10) || maxMembers;
-  if (Number.isInteger(membersLimitCount)) {
-    if (membersLimitCount < 2) {
+  const membersWait = parseInt(args[1], 10) || maxMembers;
+  if (Number.isInteger(membersWait)) {
+    if (membersWait < 2) {
       throw new Error('количество участников не может быть меньше двух.');
-    } else if (membersLimitCount > maxMembers) {
+    } else if (membersWait > maxMembers) {
       throw new Error(
         `количество участников не может быть больше ${
           maxMembers || config.games.lottery.maxMembers
@@ -42,10 +42,15 @@ export const create = async (message: Message, args: string[]) => {
     }
   }
 
-  let memberIds = '';
+  const newLot = await lots.set(
+    message.guild!.id,
+    message.author.id,
+    bet,
+    membersWait
+  );
 
   if (message.mentions.members?.size) {
-    if (message.mentions.members.size > membersLimitCount) {
+    if (message.mentions.members.size > membersWait) {
       throw new Error(
         'упомянутых участников больше, чем разрешено иметь в лотерее.'
       );
@@ -55,16 +60,11 @@ export const create = async (message: Message, args: string[]) => {
         'среди упомянутых участников ты упомянул себя самого, так нельзя.'
       );
     }
-    memberIds = message.mentions.members.map((gm) => gm.id).toString();
-  }
 
-  const newLot = await lots.set(
-    message.guild!.id,
-    message.author.id,
-    bet,
-    membersLimitCount,
-    memberIds
-  );
+    for await (const [, member] of message.mentions.members) {
+      await lots.addMember(newLot.id, member.id);
+    }
+  }
 
   const isComplete = await check(message, newLot);
   if (isComplete === false) {

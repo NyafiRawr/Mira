@@ -13,14 +13,14 @@ export const close = async (message: Message) => {
     throw new Error('ты не организатор лотереи и не можешь её закрыть.');
   }
 
-  await lottery.destroy();
+  const members = await lots.getMembers(lottery.id);
+  await lottery.destroy(); // Так же удаляет участников
 
   await economy.setBalance(message.guild!.id, message.author.id, lottery.prize);
 
-  const members = lottery.memberIds.split(',');
   await message.channel.send(
     `Лотерея от ${message.author} закрыта! ${members
-      .map((id) => `<@${id}>`)
+      .map((member) => `<@${member.userId}>`)
       .join(', ')}`
   );
 };

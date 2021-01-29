@@ -1,5 +1,6 @@
 import config from '../config';
 import Lottery from '../models/Lottery';
+import LotteryRelation from '../models/LotteryRelation';
 import * as vars from './vars';
 
 export const keyMaxMembers = 'lottery_maxmembers';
@@ -13,21 +14,25 @@ export const set = async (
   serverId: string,
   userId: string,
   prize: number,
-  membersWaitCount: number,
-  memberIds: string
+  membersWait: number
 ) => {
   const oldLot = await get(serverId);
   if (oldLot !== null) {
-    return await oldLot.update({ userId, prize, membersWaitCount, memberIds });
+    return await oldLot.update({ userId, prize, membersWait });
   }
   return await Lottery.create({
     serverId,
     userId,
     prize,
-    membersWaitCount,
-    memberIds,
+    membersWait,
   });
 };
+
+export const getMembers = async (lotteryId: number) =>
+  LotteryRelation.findAll({ where: { lotteryId } });
+
+export const addMember = async (lotteryId: number, userId: string) =>
+  LotteryRelation.create({ lotteryId, userId });
 
 export const getMaxMembers = async (serverId: string): Promise<number> => {
   const variable = await vars.getOne(serverId, keyMaxMembers);
