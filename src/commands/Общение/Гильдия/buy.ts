@@ -18,7 +18,7 @@ export const buy = async (message: Message, args: string[]) => {
   if (relation == null) {
     throw new Error('у тебя нет гильдии, чтобы приобретать каналы для неё.');
   }
-  const gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  const gild = await gilds.getOne(relation.gildId);
   if (gild?.ownerId != message.author.id) {
     throw new Error('покупать каналы для гильдии может только гильдмастер!');
   }
@@ -126,7 +126,7 @@ export const buy = async (message: Message, args: string[]) => {
     channels: JSON.stringify(channels),
   });
 
-  const members = await gildrelations.getAll(message.guild!.id, gild.gildId);
+  const members = await gildrelations.getAll(message.guild!.id, gild.id);
   members.map(async (relation) => {
     try {
       await channel!.updateOverwrite(relation.userId, { VIEW_CHANNEL: true });
@@ -135,5 +135,5 @@ export const buy = async (message: Message, args: string[]) => {
     }
   });
 
-  await info(message, [gild.gildId.toString()]);
+  await info(message, [gild.id.toString()]);
 };

@@ -20,7 +20,7 @@ export const info = async (message: Message, args: string[]) => {
     if (Number.isInteger(id) == false) {
       throw new Error('ID гильдии должен быть целым числом.');
     }
-    gild = await gilds.getOne(message.guild!.id, id);
+    gild = await gilds.getOne(id);
     if (gild == null) {
       throw new Error(`гильдия с ID: ${id} не найдена.`);
     }
@@ -32,7 +32,7 @@ export const info = async (message: Message, args: string[]) => {
     if (relation == null) {
       throw new Error('ты не принадлежишь никакой гильдии.');
     }
-    gild = await gilds.getOne(message.guild!.id, relation.gildId);
+    gild = await gilds.getOne(relation.gildId);
     if (gild == null) {
       throw new Error(
         `ты принадлежишь гильдии ID: ${relation.gildId}, но её не существует, сообщи об этом разработчику.`
@@ -71,7 +71,7 @@ export const info = async (message: Message, args: string[]) => {
     );
   }
 
-  const members = await gildrelations.getAll(message.guild!.id, gild.gildId);
+  const members = await gildrelations.getAll(message.guild!.id, gild.id);
   embed.addField(
     `Участники (${members.length})`,
     members.map((r) => `<@${r.userId}>`).join(', '),

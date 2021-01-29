@@ -15,7 +15,7 @@ export const happyBirthday = async () => {
 
   users.map((user: User) => {
     const guild = client.guilds.resolve(user.serverId);
-    const member = guild?.members.resolve(user.userId);
+    const member = guild?.members.resolve(user.id);
     if (member) {
       log.info(
         `[Happy Birthday] Поздравляю ${member.displayName} с днём рождения!`

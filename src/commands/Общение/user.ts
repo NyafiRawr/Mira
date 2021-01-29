@@ -99,7 +99,7 @@ module.exports = {
     let gild = null;
     const relation = await gildrelations.getOne(message.guild!.id, member.id);
     if (relation) {
-      gild = await gilds.getOne(message.guild!.id, relation.gildId);
+      gild = await gilds.getOne(relation.gildId);
     }
 
     await message.channel.send({

@@ -14,7 +14,7 @@ export const close = async (message: Message) => {
   }
 
   const members = await lots.getMembers(lottery.id);
-  await lottery.destroy(); // Так же удаляет участников
+  await lots.remove(lottery); // Удаляет лотерею И участников
 
   await economy.setBalance(message.guild!.id, message.author.id, lottery.prize);
 

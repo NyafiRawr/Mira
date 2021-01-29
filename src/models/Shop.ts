@@ -12,12 +12,12 @@ Shop.init(
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'productId',
     },
     roleId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'productId',
     },
     cost: {
       type: INTEGER,
@@ -31,4 +31,4 @@ Shop.init(
   }
 );
 
-Shop.sync();
+Shop.sync({ alter: true });

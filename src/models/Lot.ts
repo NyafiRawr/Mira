@@ -1,8 +1,9 @@
 import { Model, STRING, INTEGER } from 'sequelize';
+import config from '../config';
 import { sequelize } from '../database';
-import LotteryRelation from './LotteryRelation';
+import LotRelation from './LotRelation';
 
-export default class Lottery extends Model {
+export default class Lot extends Model {
   public id!: number;
   public serverId!: string;
   public userId!: string;
@@ -10,7 +11,7 @@ export default class Lottery extends Model {
   public membersWait!: number;
 }
 
-Lottery.init(
+Lot.init(
   {
     id: {
       type: INTEGER,
@@ -21,7 +22,6 @@ Lottery.init(
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
     },
     userId: {
       type: STRING,
@@ -30,18 +30,20 @@ Lottery.init(
     prize: {
       type: INTEGER,
       allowNull: false,
+      defaultValue: config.games.lottery.betMin,
     },
     membersWait: {
       type: INTEGER,
       allowNull: false,
+      defaultValue: config.games.lottery.maxMembers,
     },
   },
   {
-    modelName: 'lot_list',
+    modelName: 'lot',
     sequelize,
   }
 );
 
-Lottery.hasMany(LotteryRelation, { as: 'lot_lists', foreignKey: 'lotteryId' });
-
-Lottery.sync({ force: true });
+Lot.hasMany(LotRelation, {
+  foreignKey: 'lotteryId',
+});

@@ -11,7 +11,7 @@ export const sell = async (message: Message, args: string[]) => {
   if (relation == null) {
     throw new Error('у тебя нет гильдии, чтобы продавать её каналы.');
   }
-  const gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  const gild = await gilds.getOne(relation.gildId);
   if (gild?.ownerId != message.author.id) {
     throw new Error('продавать каналы гильдии может только гильдмастер!');
   }
@@ -61,5 +61,5 @@ export const sell = async (message: Message, args: string[]) => {
     await channel.delete('Продажа канала');
   }
 
-  await info(message, [gild.gildId.toString()]);
+  await info(message, [gild.id.toString()]);
 };

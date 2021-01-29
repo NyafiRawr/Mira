@@ -51,4 +51,4 @@ MuteWarningList.init(
   }
 );
 
-MuteWarningList.sync({ force: false });
+MuteWarningList.sync({ alter: true });

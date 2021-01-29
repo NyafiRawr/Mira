@@ -1,26 +1,26 @@
-import { Model, STRING } from 'sequelize';
+import { INTEGER, Model, STRING } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class VoiceTime extends Model {
   public serverId!: string;
   public userId!: string;
-  public entryTime!: string;
+  public entryTime!: number;
 }
 
 VoiceTime.init(
   {
     serverId: {
       type: STRING,
-      primaryKey: true,
+      unique: 'voicetimeId',
       allowNull: false,
     },
     userId: {
       type: STRING,
-      primaryKey: true,
+      unique: 'voicetimeId',
       allowNull: false,
     },
     entryTime: {
-      type: STRING,
+      type: INTEGER,
       allowNull: false,
     },
   },
@@ -30,4 +30,4 @@ VoiceTime.init(
   }
 );
 
-VoiceTime.sync({ force: false });
+VoiceTime.sync({ alter: true });

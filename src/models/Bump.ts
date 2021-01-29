@@ -13,12 +13,12 @@ Bump.init(
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'bumpId',
     },
     botId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'bumpId',
     },
     award: {
       type: INTEGER,
@@ -36,4 +36,4 @@ Bump.init(
   }
 );
 
-Bump.sync();
+Bump.sync({ alter: true });

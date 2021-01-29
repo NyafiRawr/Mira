@@ -14,18 +14,18 @@ GildRelation.init(
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'relationId',
     },
     userId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'relationId',
     },
     gildId: {
       type: INTEGER,
       references: {
         model: Gild,
-        key: 'gildId',
+        key: 'id',
       },
     },
     entryDate: {
@@ -39,5 +39,3 @@ GildRelation.init(
     sequelize,
   }
 );
-
-GildRelation.sync();

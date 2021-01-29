@@ -36,7 +36,7 @@ module.exports = {
       let user = await users.get(message.guild!.id, member.id);
       if (user == null) {
         user = await User.create({
-          userId: member.id,
+          id: member.id,
           serverId: message.guild!.id,
           balance: -amount,
         });

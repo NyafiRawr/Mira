@@ -28,7 +28,7 @@ export const store = async (message: Message, args: string[]) => {
 
   await economy.setBalance(message.guild!.id, message.author.id, -amount);
 
-  let gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  let gild = await gilds.getOne(relation.gildId);
   if (gild == null) {
     throw new Error(
       `не удалось получить информацию о твоей гильдии, сообщи об этом разработчику.`

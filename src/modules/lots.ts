@@ -1,12 +1,15 @@
 import config from '../config';
-import Lottery from '../models/Lottery';
-import LotteryRelation from '../models/LotteryRelation';
+import Lot from '../models/Lot';
+import LotRelation from '../models/LotRelation';
 import * as vars from './vars';
+
+Lot.sync();
+LotRelation.sync();
 
 export const keyMaxMembers = 'lottery_maxmembers';
 
 export const get = async (serverId: string) =>
-  Lottery.findOne({
+  Lot.findOne({
     where: { serverId },
   });
 
@@ -20,7 +23,7 @@ export const set = async (
   if (oldLot !== null) {
     return await oldLot.update({ userId, prize, membersWait });
   }
-  return await Lottery.create({
+  return await Lot.create({
     serverId,
     userId,
     prize,
@@ -28,11 +31,20 @@ export const set = async (
   });
 };
 
+export const remove = async (lottery: Lot) => lottery.destroy();
+
 export const getMembers = async (lotteryId: number) =>
-  LotteryRelation.findAll({ where: { lotteryId } });
+  LotRelation.findAll({ where: { lotteryId } });
 
 export const addMember = async (lotteryId: number, userId: string) =>
-  LotteryRelation.create({ lotteryId, userId });
+  LotRelation.create({ lotteryId, userId });
+
+export const addMembers = async (lotteryId: number, userIds: string[]) =>
+  LotRelation.bulkCreate(
+    userIds.map((id) => {
+      return { lotteryId, userId: id };
+    })
+  );
 
 export const getMaxMembers = async (serverId: string): Promise<number> => {
   const variable = await vars.getOne(serverId, keyMaxMembers);

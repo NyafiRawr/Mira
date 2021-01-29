@@ -4,7 +4,7 @@ import GildRelation from './GildRelation';
 
 export default class Gild extends Model {
   public serverId!: string;
-  public gildId!: number;
+  public id!: number;
   public ownerId!: string;
   public name!: string;
   public description?: string | null;
@@ -15,14 +15,20 @@ export default class Gild extends Model {
 
 Gild.init(
   {
-    serverId: STRING,
-    gildId: {
+    serverId: {
+      type: STRING,
+      allowNull: false,
+    },
+    id: {
       type: INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    ownerId: STRING,
+    ownerId: {
+      type: STRING,
+      allowNull: false,
+    },
     name: STRING,
     description: {
       type: STRING,
@@ -33,6 +39,9 @@ Gild.init(
       type: STRING,
       allowNull: true,
       defaultValue: null,
+      validate: {
+        isUrl: true,
+      },
     },
     channels: {
       type: STRING,
@@ -51,6 +60,4 @@ Gild.init(
   }
 );
 
-Gild.hasMany(GildRelation, { as: 'gild_relations', foreignKey: 'gildId' });
-
-Gild.sync();
+Gild.hasMany(GildRelation, { foreignKey: 'gildId' });

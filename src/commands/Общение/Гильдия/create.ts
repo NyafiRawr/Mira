@@ -37,11 +37,11 @@ export const create = async (message: Message, args: string[]) => {
     toTitle(name)
   );
 
-  await gildrelations.create(message.guild!.id, message.author.id, gild.gildId);
+  await gildrelations.create(message.guild!.id, message.author.id, gild.id);
 
   if (gilds.invites.has(message.author.id)) {
     gilds.invites.delete(message.author.id);
   }
 
-  await info(message, [gild.gildId.toString()]);
+  await info(message, [gild.id.toString()]);
 };

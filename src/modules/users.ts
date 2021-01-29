@@ -12,12 +12,12 @@ export const all = async (serverId: string): Promise<User[]> =>
 export const get = async (serverId: string, userId: string): Promise<User> => {
   const user = await User.findOne({
     where: {
-      userId,
+      id: userId,
       serverId,
     },
   });
   if (user == null) {
-    return User.create({ serverId, userId });
+    return User.create({ serverId, id: userId });
   }
   return user;
 };

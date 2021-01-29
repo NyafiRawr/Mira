@@ -3,6 +3,10 @@ import * as vars from '../modules/vars';
 import config from '../config';
 import { client } from '../client';
 import { Collection } from 'discord.js';
+import GildRelation from '../models/GildRelation';
+
+Gild.sync();
+GildRelation.sync();
 
 // userId - gildId
 export const invites = new Collection<string, number>();
@@ -96,16 +100,8 @@ export const creationCategoryId = async (
 };
 //#endregion
 
-export const getOne = async (
-  serverId: string,
-  gildId: number
-): Promise<Gild | null> =>
-  Gild.findOne({
-    where: {
-      serverId,
-      gildId,
-    },
-  });
+export const getOne = async (gildId: number): Promise<Gild | null> =>
+  Gild.findByPk(gildId);
 
 export const getAll = async (serverId: string): Promise<Gild[]> =>
   Gild.findAll({
@@ -122,7 +118,7 @@ export const create = async (
 
 export const remove = async (serverId: string, gild: Gild): Promise<void> => {
   await Gild.destroy({
-    where: { serverId, gildId: gild.gildId },
+    where: { serverId, id: gild.id },
     cascade: true,
   }); // Удаление гильдии освобождает её участников
 
@@ -133,12 +129,12 @@ export const remove = async (serverId: string, gild: Gild): Promise<void> => {
       channels.texts.map(async (channelId: string) => {
         await guild.channels
           .resolve(channelId)
-          ?.delete(`Удаление гильдии с ID: ${gild.gildId}`);
+          ?.delete(`Удаление гильдии с ID: ${gild.id}`);
       });
       channels.voices.map(async (channelId: string) => {
         await guild.channels
           .resolve(channelId)
-          ?.delete(`Удаление гильдии с ID: ${gild.gildId}`);
+          ?.delete(`Удаление гильдии с ID: ${gild.id}`);
       });
     }
   } catch {

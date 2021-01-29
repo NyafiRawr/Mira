@@ -30,4 +30,4 @@ Access.init(
   }
 );
 
-Access.sync({ force: false });
+Access.sync({ alter: true });

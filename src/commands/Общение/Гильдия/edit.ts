@@ -16,7 +16,7 @@ export const edit = async (message: Message, args: string[]) => {
     );
   }
 
-  const gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  const gild = await gilds.getOne(relation.gildId);
   if (gild?.ownerId != message.author.id) {
     throw new Error(
       'редактировать информацию о гильдии может только гильдмастер!'
@@ -76,5 +76,5 @@ export const edit = async (message: Message, args: string[]) => {
     }
   }
 
-  await info(message, [gild.gildId.toString()]);
+  await info(message, [gild.id.toString()]);
 };

@@ -11,14 +11,14 @@ export const kick = async (message: Message, args: string[]) => {
     throw new Error('у тебя нет гильдии, чтобы исключать из неё кого-нибудь.');
   }
 
-  const gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  const gild = await gilds.getOne(relation.gildId);
   if (gild?.ownerId != message.author.id) {
     throw new Error('исключать из гильдии может только гильдмастер!');
   }
 
   if (args.shift() === 'dead') {
     let counter = 0;
-    const grs = await gildrelations.getAll(message.guild!.id, gild.gildId);
+    const grs = await gildrelations.getAll(message.guild!.id, gild.id);
     for (const gr of grs) {
       const member = await message
         .guild!.members.fetch(gr.userId)

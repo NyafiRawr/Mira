@@ -1,7 +1,8 @@
-import { Model, STRING, DATE } from 'sequelize';
+import { Model, STRING, DATE, INTEGER } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class MuteList extends Model {
+  public id!: number;
   public serverId!: string;
   public userId!: string;
   public reason!: string;
@@ -12,15 +13,21 @@ export default class MuteList extends Model {
 
 MuteList.init(
   {
+    id: {
+      type: INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'perServerOneMuteForUser',
     },
     userId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'perServerOneMuteForUser',
     },
     reason: {
       type: STRING,
@@ -45,4 +52,4 @@ MuteList.init(
   }
 );
 
-MuteList.sync({ force: false });
+MuteList.sync({ alter: true });

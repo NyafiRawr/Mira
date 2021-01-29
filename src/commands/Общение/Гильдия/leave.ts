@@ -12,7 +12,7 @@ export const leave = async (message: Message, args: string[]) => {
     throw new Error('у тебя нет гильдии, чтобы покидать её.');
   }
 
-  const gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  const gild = await gilds.getOne(relation.gildId);
   if (gild?.ownerId == message.author.id) {
     await gilds.remove(message.guild!.id, gild); // Каскадное удаление
     message.reply(`твоя гильдия распущена.`);

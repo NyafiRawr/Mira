@@ -25,7 +25,7 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     const base = await users.all(message.guild!.id);
     const onlyLiveHumans: User[] = base.filter((user) => {
-      const member = message.guild!.members.cache.get(user.userId);
+      const member = message.guild!.members.cache.get(user.id);
       return member?.user?.bot === false && user.balance !== 0;
     });
     if (onlyLiveHumans.length == 0) {
@@ -64,7 +64,7 @@ module.exports = {
           pages[pageNumber - 1]
             .map((user, index) => {
               return `**${maxTopSize * (pageNumber - 1) + index + 1}. <@${
-                user.userId
+                user.id
               }>** ${separateThousandth(user.balance.toString())}:cookie:`;
             })
             .join('\n')

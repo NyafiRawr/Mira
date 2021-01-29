@@ -43,7 +43,7 @@ export const remove = async (
 const calculate = async (serverId: string, userId: string) => {
   const vt = await get(serverId, userId);
   if (vt) {
-    const newTime = (Date.now() - parseInt(vt.entryTime, 10)) / 1000;
+    const newTime = (Date.now() - vt.entryTime) / 1000;
     const user = await users.get(serverId, userId);
     await user.update({
       voiceSeconds: user.voiceSeconds + newTime,

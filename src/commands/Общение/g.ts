@@ -67,7 +67,7 @@ module.exports = {
         if (gildId != undefined) {
           gilds.invites.delete(message.author.id);
 
-          const gild = await gilds.getOne(message.guild!.id, gildId);
+          const gild = await gilds.getOne(gildId);
           if (gild == null) {
             throw new Error('к сожалению, эта гильдия уже была распущена.');
           }

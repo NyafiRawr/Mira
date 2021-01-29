@@ -1,4 +1,4 @@
-import { Model, STRING } from 'sequelize';
+import { Model, STRING, TEXT } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class Var extends Model {
@@ -12,15 +12,15 @@ Var.init(
     serverId: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'varId',
     },
     key: {
       type: STRING,
       allowNull: false,
-      primaryKey: true,
+      unique: 'varId',
     },
     value: {
-      type: STRING,
+      type: TEXT,
       allowNull: false,
     },
   },
@@ -30,4 +30,4 @@ Var.init(
   }
 );
 
-Var.sync();
+Var.sync({ alter: true });

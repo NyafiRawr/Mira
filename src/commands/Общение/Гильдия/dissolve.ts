@@ -16,7 +16,7 @@ export const dissolve = async (message: Message, args: string[]) => {
   if (Number.isInteger(id) == false) {
     throw new Error('ID гильдии должен быть целым числом.');
   }
-  const gild = await gilds.getOne(message.guild!.id, id);
+  const gild = await gilds.getOne(id);
   if (gild == null) {
     message.reply(`не найдена гильдия с ID: ${id}.`);
   } else {

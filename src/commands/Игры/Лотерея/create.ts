@@ -61,9 +61,10 @@ export const create = async (message: Message, args: string[]) => {
       );
     }
 
-    for await (const [, member] of message.mentions.members) {
-      await lots.addMember(newLot.id, member.id);
-    }
+    await lots.addMembers(
+      newLot.id,
+      message.mentions.members.map((member) => member.id)
+    );
   }
 
   const isComplete = await check(message, newLot);

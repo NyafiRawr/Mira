@@ -40,4 +40,4 @@ MuteWarningTerm.init(
   }
 );
 
-MuteWarningTerm.sync({ force: false });
+MuteWarningTerm.sync({ alter: true });

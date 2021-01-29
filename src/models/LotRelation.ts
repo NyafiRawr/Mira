@@ -1,26 +1,25 @@
 import { INTEGER, Model, STRING } from 'sequelize';
 import { sequelize } from '../database';
-import Lottery from './Lottery';
+import Lot from './Lot';
 
-export default class LotteryMember extends Model {
+export default class LotRelation extends Model {
   public lotteryId!: number;
   public userId!: string;
 }
 
-LotteryMember.init(
+LotRelation.init(
   {
     lotteryId: {
       type: INTEGER,
-      primaryKey: true,
       allowNull: false,
+      primaryKey: true,
       references: {
-        model: Lottery,
+        model: Lot,
         key: 'id',
       },
     },
     userId: {
       type: STRING,
-      primaryKey: true,
       allowNull: false,
     },
   },
@@ -29,5 +28,3 @@ LotteryMember.init(
     sequelize,
   }
 );
-
-LotteryMember.sync({ force: true });

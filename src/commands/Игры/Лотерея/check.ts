@@ -2,19 +2,19 @@ import { Message } from 'discord.js';
 import config from '../../../config';
 import { randomInteger, separateThousandth } from '../../../utils';
 import * as economy from '../../../modules/economy';
-import Lottery from '../../../models/Lottery';
+import Lot from '../../../models/Lot';
 import * as lots from '../../../modules/lots';
 
 export const check = async (
   message: Message,
-  lottery: Lottery
+  lottery: Lot
 ): Promise<boolean> => {
   const members = await lots.getMembers(lottery.id);
   if (members.length !== lottery.membersWait) {
     return false;
   }
 
-  await lottery.destroy();
+  await lots.remove(lottery);
 
   const winnerIndex = randomInteger(0, lottery.membersWait - 1);
 

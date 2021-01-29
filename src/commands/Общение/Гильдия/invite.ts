@@ -13,7 +13,7 @@ export const invite = async (message: Message, args: string[]) => {
     throw new Error('у тебя нет гильдии, чтобы приглашать в неё.');
   }
 
-  const gild = await gilds.getOne(message.guild!.id, relation.gildId);
+  const gild = await gilds.getOne(relation.gildId);
   if (gild?.ownerId != message.author.id) {
     throw new Error('приглашать в гильдию может только гильдмастер!');
   }
@@ -33,7 +33,7 @@ export const invite = async (message: Message, args: string[]) => {
     throw new Error(`у ${member.displayName} уже есть гильдия.`);
   }
 
-  gilds.invites.set(member.id, gild.gildId);
+  gilds.invites.set(member.id, gild.id);
 
   await message.channel.send(`*Приглашение для ${member.displayName}*`, {
     embed: {

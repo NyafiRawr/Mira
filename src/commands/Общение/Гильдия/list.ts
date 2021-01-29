@@ -45,9 +45,9 @@ export const list = async (message: Message, args: string[]) => {
   const page = [];
   for await (const gild of pages[pageNumber - 1]) {
     page.push(
-      `${gild.gildId}. **${gild.name}** | ${await gildrelations.count(
+      `${gild.id}. **${gild.name}** | ${await gildrelations.count(
         message.guild!.id,
-        gild.gildId
+        gild.id
       )}:person_pouting: | <@${gild.ownerId}> | ${separateThousandth(
         gild.balance.toString()
       )}:cookie:`

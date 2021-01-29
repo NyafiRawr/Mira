@@ -14,14 +14,30 @@ ReactionRole.init(
   {
     id: {
       type: INTEGER,
+      allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    serverId: STRING,
-    channelId: STRING,
-    messageId: STRING,
-    roleId: STRING,
-    reaction: STRING,
+    serverId: {
+      type: STRING,
+      allowNull: false,
+    },
+    channelId: {
+      type: STRING,
+      allowNull: false,
+    },
+    messageId: {
+      type: STRING,
+      allowNull: false,
+    },
+    roleId: {
+      type: STRING,
+      allowNull: false,
+    },
+    reaction: {
+      type: STRING,
+      allowNull: false,
+    },
   },
   {
     modelName: 'reaction_role',
@@ -29,4 +45,4 @@ ReactionRole.init(
   }
 );
 
-ReactionRole.sync({ force: false });
+ReactionRole.sync({ alter: true });

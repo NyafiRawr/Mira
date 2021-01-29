@@ -2,7 +2,7 @@ import { Model, STRING, DATE, DATEONLY, INTEGER, NOW } from 'sequelize';
 import { sequelize } from '../database';
 
 export default class User extends Model {
-  public userId!: string;
+  public id!: string;
   public serverId!: string;
   public balance!: number;
   public birthday?: Date | null;
@@ -16,16 +16,20 @@ export default class User extends Model {
 
 User.init(
   {
-    userId: {
+    id: {
       type: STRING,
       primaryKey: true,
+      allowNull: false,
+      unique: 'userId',
     },
     serverId: {
       type: STRING,
-      primaryKey: true,
+      allowNull: false,
+      unique: 'userId',
     },
     entryFirstDate: {
       type: DATE,
+      allowNull: false,
       defaultValue: NOW,
     },
     birthday: {
@@ -35,14 +39,17 @@ User.init(
     },
     balance: {
       type: INTEGER,
+      allowNull: false,
       defaultValue: 0,
     },
     reputation: {
       type: INTEGER,
+      allowNull: false,
       defaultValue: 0,
     },
     voiceSeconds: {
       type: INTEGER,
+      allowNull: false,
       defaultValue: 0,
     },
     biographyDescription: {
@@ -54,6 +61,9 @@ User.init(
       type: STRING,
       allowNull: true,
       defaultValue: null,
+      validate: {
+        isUrl: true,
+      },
     },
     biographyLineColor: {
       type: STRING,
@@ -67,4 +77,4 @@ User.init(
   }
 );
 
-User.sync({ force: false });
+User.sync({ alter: true });
