@@ -4,13 +4,13 @@ module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Показать аватар',
   aliases: ['avatar', 'img'],
-  usage: '[@ ИЛИ ник ИЛИ имя]',
+  usage: '[@ ИЛИ никнейм ИЛИ tag]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
     let member: GuildMember | undefined | null =
-      message.mentions.members?.first() || message.member;
+      message.mentions.members!.first() || message.member;
 
-    if (args.length) {
+    if (message.mentions.members!.size === 0 && args.length) {
       const target = args.join(' ');
       member = message.guild!.members.cache.find(
         (m) => m.nickname == target || m.user.tag == target
