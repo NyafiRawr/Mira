@@ -9,6 +9,10 @@ const generalSettings = {
     collate: 'utf8mb4_unicode_ci',
   },
   logging: console.log, // Или logging: function (str) {}
+  sync: {
+    alter: true,
+    force: false,
+  },
 };
 
 export const sequelize = (() => {
