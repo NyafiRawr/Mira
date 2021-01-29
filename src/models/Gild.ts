@@ -1,5 +1,5 @@
 import { Model, STRING, INTEGER } from 'sequelize';
-import { sequelize, alter, force } from '../database';
+import { sequelize } from '../database';
 import GildRelation from './GildRelation';
 
 export default class Gild extends Model {

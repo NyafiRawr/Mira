@@ -1,6 +1,6 @@
 import { Model, STRING, INTEGER } from 'sequelize';
 import config from '../config';
-import { sequelize, alter, force } from '../database';
+import { sequelize } from '../database';
 import LotRelation from './LotRelation';
 
 export default class Lot extends Model {
