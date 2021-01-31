@@ -15,8 +15,8 @@ MuteWarningList.init(
   {
     id: {
       type: INTEGER,
-      primaryKey: true,
       allowNull: false,
+      primaryKey: true,
       autoIncrement: true,
     },
     serverId: {

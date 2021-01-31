@@ -3,6 +3,7 @@ import { sequelize } from '../database';
 import Gild from './Gild';
 
 export default class GildRelation extends Model {
+  public id!: number;
   public serverId!: string;
   public userId!: string;
   public gildId!: number;
@@ -11,6 +12,12 @@ export default class GildRelation extends Model {
 
 GildRelation.init(
   {
+    id: {
+      type: INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,

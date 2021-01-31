@@ -1,7 +1,8 @@
-import { Model, STRING, TEXT } from 'sequelize';
+import { INTEGER, Model, STRING, TEXT } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class Var extends Model {
+  public id!: number;
   public serverId!: string;
   public key!: string;
   public value!: string;
@@ -9,6 +10,12 @@ export default class Var extends Model {
 
 Var.init(
   {
+    id: {
+      type: INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,

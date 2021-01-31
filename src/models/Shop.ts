@@ -2,6 +2,7 @@ import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class Shop extends Model {
+  public id!: number;
   public serverId!: string;
   public roleId!: string;
   public cost!: number;
@@ -9,6 +10,12 @@ export default class Shop extends Model {
 
 Shop.init(
   {
+    id: {
+      type: INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,

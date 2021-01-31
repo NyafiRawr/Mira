@@ -45,6 +45,7 @@ export const addMembers = async (lotteryId: number, userIds: string[]) =>
     userIds.map((id) => {
       return { lotteryId, userId: id };
     })
+    //, { ignoreDuplicates: true }
   );
 
 export const getMaxMembers = async (serverId: string): Promise<number> => {

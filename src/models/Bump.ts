@@ -2,6 +2,7 @@ import { Model, STRING, INTEGER } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class Bump extends Model {
+  public id!: number;
   public serverId!: string;
   public botId!: string;
   public award!: number;
@@ -10,6 +11,12 @@ export default class Bump extends Model {
 
 Bump.init(
   {
+    id: {
+      type: INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,

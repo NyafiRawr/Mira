@@ -1,7 +1,8 @@
-import { Model, STRING } from 'sequelize';
+import { INTEGER, Model, STRING } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class Access extends Model {
+  public id!: number;
   public serverId!: string | null;
   public channelId!: string | null;
   public commandName!: string | null;
@@ -9,6 +10,12 @@ export default class Access extends Model {
 
 Access.init(
   {
+    id: {
+      type: INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     serverId: {
       type: STRING,
       allowNull: false,
