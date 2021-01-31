@@ -12,7 +12,7 @@ export const all = async (serverId: string): Promise<User[]> =>
 export const get = async (serverId: string, userId: string): Promise<User> => {
   const user = await User.findOne({
     where: {
-      id: userId,
+      userId,
       serverId,
     },
   });

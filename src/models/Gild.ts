@@ -3,8 +3,8 @@ import { sequelize } from '../database';
 import GildRelation from './GildRelation';
 
 export default class Gild extends Model {
-  public serverId!: string;
   public id!: number;
+  public serverId!: string;
   public ownerId!: string;
   public name!: string;
   public description?: string | null;
@@ -15,21 +15,24 @@ export default class Gild extends Model {
 
 Gild.init(
   {
-    serverId: {
-      type: STRING,
-      allowNull: false,
-    },
     id: {
       type: INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
+    serverId: {
+      type: STRING,
+      allowNull: false,
+    },
     ownerId: {
       type: STRING,
       allowNull: false,
     },
-    name: STRING,
+    name: {
+      type: STRING,
+      allowNull: false,
+    },
     description: {
       type: STRING,
       allowNull: true,

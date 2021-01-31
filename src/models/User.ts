@@ -2,7 +2,8 @@ import { Model, STRING, DATE, DATEONLY, INTEGER, NOW } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class User extends Model {
-  public id!: string;
+  public id!: number;
+  public userId!: string;
   public serverId!: string;
   public balance!: number;
   public birthday?: Date | null;
@@ -17,15 +18,20 @@ export default class User extends Model {
 User.init(
   {
     id: {
-      type: STRING,
-      primaryKey: true,
+      type: INTEGER,
       allowNull: false,
-      unique: 'userId',
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    userId: {
+      type: STRING,
+      allowNull: false,
+      unique: 'usersOnDifferentServers',
     },
     serverId: {
       type: STRING,
       allowNull: false,
-      unique: 'userId',
+      unique: 'usersOnDifferentServers',
     },
     entryFirstDate: {
       type: DATE,

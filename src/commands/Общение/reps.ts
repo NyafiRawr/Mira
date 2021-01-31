@@ -25,7 +25,7 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     const base = await users.all(message.guild!.id);
     const onlyLiveHumans: User[] = base.filter((user) => {
-      const member = message.guild!.members.cache.get(user.id);
+      const member = message.guild!.members.cache.get(user.userId);
       return member?.user?.bot === false && user.reputation !== 0;
     });
     if (onlyLiveHumans.length == 0) {

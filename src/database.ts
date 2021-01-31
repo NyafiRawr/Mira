@@ -1,30 +1,10 @@
 import { Sequelize, Dialect } from 'sequelize';
 import config from './config';
 
-export const alter = true; // Обновить таблицы, если они не совпадают со своими моделями (если изменения слишком серьёзные, то это не сработает)
+export const alter = true; // Обновить таблицы, если они не совпадают со своими моделями
 export const force = false; // Принудительное пересоздание таблиц (удаляет данные). Может не сработать для таблиц с FK - нужно удалить дочерную таблицу вручную
 
-const generalSettings = {
-  dialect: config.db.dialect as Dialect,
-  define: {
-    timestamps: false,
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci',
-  },
-  logging: console.log, // Или logging: function (str) {}
-  sync: {
-    alter,
-    force,
-  },
-};
-
 export const sequelize = (() => {
-  if (config.db.dialect === 'sqlite') {
-    return new Sequelize({
-      storage: config.db.storage,
-      ...generalSettings,
-    });
-  }
   return new Sequelize(config.db.database, config.db.user, config.db.password, {
     host: config.db.host,
     port: config.db.port,
@@ -59,6 +39,16 @@ export const sequelize = (() => {
       ],
       max: 5,
     },
-    ...generalSettings,
+    dialect: config.db.dialect as Dialect,
+    define: {
+      timestamps: false,
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_unicode_ci',
+    },
+    logging: console.log, // Или logging: function (str) {}
+    sync: {
+      alter,
+      force,
+    },
   });
 })();

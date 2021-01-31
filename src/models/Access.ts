@@ -3,9 +3,9 @@ import { sequelize, alter, force } from '../database';
 
 export default class Access extends Model {
   public id!: number;
-  public serverId!: string | null;
-  public channelId!: string | null;
-  public commandName!: string | null;
+  public serverId!: string;
+  public channelId?: string | null;
+  public commandName?: string | null;
 }
 
 Access.init(

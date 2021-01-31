@@ -19,15 +19,12 @@ export default {
     permissions: '1043721425', // Используется для приглашения, требует 2FA владельца бота
   },
   db: {
-    dialect: process.env.DB_DIALECT || 'sqlite',
-    // mysql
+    dialect: 'mysql',
     host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306', 10),
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_DATABASE || 'bot',
-    // sqlite
-    storage: process.env.DB_STORAGE || 'bot.sqlite',
+    database: packageJson.name,
   },
   defaultCooldown: {
     seconds: 1,
