@@ -332,6 +332,14 @@ export const checkReleases = async () => {
     where: { releaseDate: { [Op.lt]: Date.now() } },
   });
   for await (const mute of mutes) {
+    const roleId = await getMuteRoleId(mute.serverId);
+    if (roleId !== null) {
+      const user = await client.guilds.cache
+        .get(mute.serverId)
+        ?.members.fetch(mute.userId);
+      await user?.roles.remove(roleId).catch();
+    }
+
     await removeMute(
       mute.serverId,
       mute.userId,
