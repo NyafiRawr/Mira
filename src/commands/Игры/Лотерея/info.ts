@@ -30,7 +30,7 @@ export const info = async (message: Message) => {
     if (members.some((member) => member.userId === message.author.id)) {
       embed.setFooter('Ты участвуешь в этой лотерее');
     } else {
-      embed.setFooter(`Участвовать: ${config.discord.prefix}lottery join`);
+      embed.setFooter(`Участвовать: ${config.discord.prefix}lot join`);
     }
   }
 
