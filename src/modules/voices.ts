@@ -18,7 +18,7 @@ export const add = async (
 ): Promise<VoiceTime> => {
   const vt = await get(serverId, userId);
 
-  if (!vt) {
+  if (vt === null) {
     return VoiceTime.create({
       userId,
       serverId,
@@ -56,9 +56,9 @@ export const recVoiceTime = async (
   oldState: VoiceState,
   newState: VoiceState
 ): Promise<void> => {
-  if (oldState.channel == undefined && newState.channel) {
+  if (oldState.channel === null && newState.channel !== null) {
     await add(newState.guild!.id, newState.member!.id);
-  } else if (oldState.channel && newState.channel == undefined) {
+  } else if (oldState.channel !== null && newState.channel === null) {
     await calculate(oldState.guild!.id, oldState.member!.id);
   }
 };

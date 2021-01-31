@@ -16,8 +16,8 @@ export const get = async (serverId: string, userId: string): Promise<User> => {
       serverId,
     },
   });
-  if (user == null) {
-    return User.create({ serverId, id: userId });
+  if (user === null) {
+    return User.create({ serverId, userId });
   }
   return user;
 };

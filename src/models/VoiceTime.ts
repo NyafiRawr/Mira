@@ -1,4 +1,4 @@
-import { INTEGER, Model, STRING } from 'sequelize';
+import { BIGINT, INTEGER, Model, STRING } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class VoiceTime extends Model {
@@ -27,7 +27,7 @@ VoiceTime.init(
       allowNull: false,
     },
     entryTime: {
-      type: INTEGER,
+      type: BIGINT,
       allowNull: false,
     },
   },
