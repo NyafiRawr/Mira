@@ -30,7 +30,9 @@ export const join = async (message: Message) => {
   );
 
   await message.channel.send(
-    `${message.author} присоединился к лотерее! Участники: ${members.length}/${lottery.membersWait}`
+    `${message.author} присоединился к лотерее! Участники: ${
+      members.length + 1
+    }/${lottery.membersWait}`
   );
 
   await check(message, lottery);
