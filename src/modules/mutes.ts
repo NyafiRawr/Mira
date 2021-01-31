@@ -259,18 +259,18 @@ export const setMute = async (
 ): Promise<MessageEmbed> => {
   let mute = await getMute(serverId, userId);
 
-  if (mute !== null) {
-    mute = await mute.update({
-      releaseDate: mute.releaseDate.getTime() + timestamp,
-    });
-  } else {
+  if (mute === null) {
     mute = await MuteList.create({
       serverId,
       userId,
       reason,
       executorId,
       channelName,
-      releaseDate: Date.now() + timestamp,
+      releaseDate: new Date(Date.now() + timestamp),
+    });
+  } else {
+    mute = await mute.update({
+      releaseDate: new Date(mute.releaseDate.getTime() + timestamp),
     });
   }
 
