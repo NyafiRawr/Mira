@@ -6,13 +6,13 @@ export default class User extends Model {
   public userId!: string;
   public serverId!: string;
   public balance!: number;
-  public birthday?: Date | null;
+  public birthday!: Date | null;
   public entryFirstDate!: Date;
   public reputation!: number;
   public voiceSeconds!: number;
-  public biographyDescription?: string | null;
-  public biographyImageUrl?: string | null;
-  public biographyLineColor?: string | null;
+  public biographyDescription!: string | null;
+  public biographyImageUrl!: string | null;
+  public biographyLineColor!: string | null;
 }
 
 User.init(

@@ -7,9 +7,9 @@ export default class Gild extends Model {
   public serverId!: string;
   public ownerId!: string;
   public name!: string;
-  public description?: string | null;
-  public imageURL?: string | null;
-  public channels?: string | null;
+  public description!: string | null;
+  public imageURL!: string | null;
+  public channels!: string | null;
   public balance!: number;
 }
 
