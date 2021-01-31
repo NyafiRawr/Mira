@@ -498,15 +498,19 @@ export const checkBadWords = async (message: Message): Promise<void> => {
       message.author.id
     );
     if (muteTerm !== null) {
-      const muteEmbed = await setMute(
-        message.guild!.id,
-        message.author.id,
-        `Получено ${muteTerm.countWarnings} предупреждений за ${muteTerm.forDays} дней`,
-        message.client.user?.id || config.author.discord.id,
-        message.channel.toString(),
-        muteTerm.timestamp
-      );
-      await message.channel.send(message.author, muteEmbed);
+      const roleId = await getMuteRoleId(message.guild.id);
+      if (roleId !== null) {
+        await message.member!.roles.add(roleId);
+        const muteEmbed = await setMute(
+          message.guild!.id,
+          message.author.id,
+          `Получено ${muteTerm.countWarnings} предупреждений за ${muteTerm.forDays} дней`,
+          message.client.user?.id || config.author.discord.id,
+          message.channel.toString(),
+          muteTerm.timestamp
+        );
+        await message.channel.send(message.author, muteEmbed);
+      }
     }
   }
 };
