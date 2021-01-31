@@ -1,7 +1,7 @@
 import { Sequelize, Dialect } from 'sequelize';
 import config from './config';
 
-export const alter = true; // Обновить таблицы, если они не совпадают со своими моделями
+export const alter = true; // Обновить таблицы, если они не совпадают со своими моделями (если изменения слишком серьёзные, то это не сработает)
 export const force = false; // Принудительное пересоздание таблиц (удаляет данные). Может не сработать для таблиц с FK - нужно удалить дочерную таблицу вручную
 
 const generalSettings = {

@@ -25,8 +25,6 @@ export const create = async (message: Message, args: string[]) => {
     );
   }
 
-  await economy.setBalance(message.guild!.id, message.author.id, -bet);
-
   const maxMembers = await lots.getMaxMembers(message.guild!.id);
 
   const membersWait = parseInt(args[1], 10) || maxMembers;
@@ -42,13 +40,6 @@ export const create = async (message: Message, args: string[]) => {
     }
   }
 
-  const newLot = await lots.set(
-    message.guild!.id,
-    message.author.id,
-    bet,
-    membersWait
-  );
-
   if (message.mentions.members?.size) {
     if (message.mentions.members.size > membersWait) {
       throw new Error(
@@ -60,7 +51,18 @@ export const create = async (message: Message, args: string[]) => {
         'среди упомянутых участников ты упомянул себя самого, так нельзя.'
       );
     }
+  }
 
+  await economy.setBalance(message.guild!.id, message.author.id, -bet);
+
+  const newLot = await lots.set(
+    message.guild!.id,
+    message.author.id,
+    bet,
+    membersWait
+  );
+
+  if (message.mentions.members?.size) {
     await lots.addMembers(
       newLot.id,
       message.mentions.members.map((member) => member.id)
