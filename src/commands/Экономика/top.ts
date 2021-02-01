@@ -64,7 +64,7 @@ module.exports = {
           pages[pageNumber - 1]
             .map((user, index) => {
               return `**${maxTopSize * (pageNumber - 1) + index + 1}. <@${
-                user.id
+                user.userId
               }>** ${separateThousandth(user.balance.toString())}:cookie:`;
             })
             .join('\n')

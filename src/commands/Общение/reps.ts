@@ -65,7 +65,7 @@ module.exports = {
             .map(
               (user, index) =>
                 `**${maxTopSize * (pageNumber - 1) + index + 1}. <@${
-                  user.id
+                  user.userId
                 }>** ${separateThousandth(
                   user.reputation.toString()
                 )} оч. кармы`
