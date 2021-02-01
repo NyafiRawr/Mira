@@ -35,7 +35,8 @@
     "mysql2": "^2.2.5",
     "pino": "^6.11.0",
     "pino-pretty": "^4.4.0",
-    "sequelize": "^6.5.0"
+    "sequelize": "^6.5.0",
+    "sqlite3": "^5.0.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.168",

@@ -5,18 +5,19 @@ import { commands } from './commands';
 import { awardOfBump } from './modules/bumps';
 import { onAirInPresence, onAirInVoice } from './modules/airs';
 import { happyBirthday } from './modules/congratulations';
-import { rescueVoiceTime, recVoiceTime } from './modules/voices';
+import { recVoiceTime, rescueVoiceTime } from './modules/voices';
 import { reactionRoleAdd, reactionRoleRemove } from './modules/rrs';
-import { checkReleases, checkBadWords, returnMuteRole } from './modules/mutes';
+import { checkBadWords, checkReleases, returnMuteRole } from './modules/mutes';
 import {
-  logKick,
-  logBanRemove,
   logBanAdd,
-  logMessageDelete,
+  logBanRemove,
+  logKick,
   logMessageBulk,
+  logMessageDelete,
   logMessageUpdate,
 } from './modules/logs';
 import * as users from './modules/users';
+import * as channels from './modules/channels';
 
 client.on('disconnect', () => log.error('Соединение оборвалось!'));
 
@@ -116,6 +117,26 @@ client.on(
   async (messageOld, messageNew) =>
     await logMessageUpdate(messageOld, messageNew)
 );
+
+client.on('voiceStateUpdate', async (oldState, newState) => {
+  if (!oldState.channel || newState.channelID !== null) {
+    return;
+  }
+
+  await channels.deleteChannel(oldState.channel);
+});
+client.on('voiceStateUpdate', async (_, newState) => {
+  if (
+    !newState ||
+    !newState.member ||
+    !newState.channel ||
+    !newState.channel.parent
+  ) {
+    return;
+  }
+
+  await channels.creatChannel(newState.channel, newState.member);
+});
 
 //#endregion
 
