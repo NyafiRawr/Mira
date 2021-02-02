@@ -485,7 +485,7 @@ export const checkBadWords = async (message: Message): Promise<void> => {
     return;
   }
 
-  const content = message.content.toLowerCase();
+  const content = message.content.toLowerCase().split(' ');
 
   const haveBadWord = words.some((word) => content.includes(word));
   if (haveBadWord) {
