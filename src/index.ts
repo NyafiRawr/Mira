@@ -118,26 +118,8 @@ client.on(
     await logMessageUpdate(messageOld, messageNew)
 );
 
-client.on('voiceStateUpdate', async (oldState, newState) => {
-  if (!oldState.channel || newState.channelID !== null) {
-    return;
-  }
-
-  await channels.deleteChannel(oldState.channel);
-});
-client.on('voiceStateUpdate', async (_, newState) => {
-  if (
-    !newState ||
-    !newState.member ||
-    !newState.channel ||
-    !newState.channel.parent
-  ) {
-    return;
-  }
-
-  await channels.creatChannel(newState.channel, newState.member);
-});
-
 //#endregion
+
+channels.init(client);
 
 client.login(config.discord.token);
