@@ -47,6 +47,7 @@ client.once('ready', async () => {
 
   await happyBirthday(); // Вызывает сам себя
   await checkReleases(); // Вызывает сам себя
+  await channels.init(client);
 });
 
 // При каждом восстановлении соединения
@@ -61,6 +62,8 @@ client.on('message', async (message) => await awardOfBump(message));
 client.on('message', async (message) => await checkBadWords(message));
 
 //#region Streams
+client.on('voiceStateUpdate', channels.onConnect);
+client.on('voiceStateUpdate', channels.onDisconnect);
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   await onAirInVoice(oldState, newState);
@@ -119,7 +122,5 @@ client.on(
 );
 
 //#endregion
-
-channels.init(client);
 
 client.login(config.discord.token);

@@ -23,13 +23,8 @@ interface CustomVoiceChannel {
 
 const channels = new Map<VoiceChannel, CustomVoiceChannel>();
 
-export const init = (client: Client) => {
-  client.on('ready', () => {
-    client.guilds.cache.forEach((v) => clearDeadChannels(v));
-  });
-
-  client.on('voiceStateUpdate', onDisconnect);
-  client.on('voiceStateUpdate', onConnect);
+export const init = async (client: Client) => {
+  return Promise.all(client.guilds.cache.map((v) => clearDeadChannels(v)));
 };
 
 export const clearDeadChannels = async (guild: Guild) => {
@@ -87,7 +82,10 @@ export const creatChannel = async (
   await user.voice.setChannel(chan);
 };
 
-const onDisconnect = async (oldState: VoiceState, newState: VoiceState) => {
+export const onDisconnect = async (
+  oldState: VoiceState,
+  newState: VoiceState
+) => {
   if (!oldState.channel || newState.channelID !== null) {
     return;
   }
@@ -95,7 +93,7 @@ const onDisconnect = async (oldState: VoiceState, newState: VoiceState) => {
   await deleteChannel(oldState.channel);
 };
 
-const onConnect = async (_: unknown, newState: VoiceState) => {
+export const onConnect = async (_: unknown, newState: VoiceState) => {
   if (
     !newState ||
     !newState.member ||
