@@ -1,7 +1,11 @@
 import { Message } from 'discord.js';
 import config from '../../config';
 import * as vars from '../../modules/vars';
-import { VoiceChannelState } from '../../modules/channels';
+import {
+  changeState,
+  setLimit,
+  VoiceChannelState,
+} from '../../modules/channels';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -15,10 +19,12 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     switch (args.shift()) {
       case 'lock': {
-        return voiceLock(message, VoiceChannelState.LOCK);
+        await changeState(message.author, VoiceChannelState.LOCK);
+        return message.reply('канал заблокирован');
       }
       case 'unlock': {
-        return voiceLock(message, VoiceChannelState.UNLOCK);
+        await changeState(message.author, VoiceChannelState.UNLOCK);
+        return message.reply('канал заблокирован');
       }
       case 'set_root': {
         if (!message.guild) {
@@ -31,7 +37,13 @@ module.exports = {
           JSON.stringify(args)
         );
 
-        return message.react('ok');
+        return message.reply('ok!');
+      }
+      case 'limit': {
+        const limit = Math.min(Number(args[0]) || 0, 99);
+
+        await setLimit(message.author, limit);
+        return message.reply(`теперь максимум ${limit}`);
       }
       default: {
         return message.channel.send(helpEmbedMessage);
@@ -57,10 +69,4 @@ const helpEmbedMessage = {
       },
     ],
   },
-};
-
-const voiceLock = async (message: Message, value: VoiceChannelState): Promise<void> => {
-  // const user = message.author;
-
-  await message.channel.send(value);
 };

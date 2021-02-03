@@ -2,6 +2,7 @@ import {
   Client,
   Guild,
   GuildMember,
+  Snowflake,
   User,
   VoiceChannel,
   VoiceState,
@@ -17,14 +18,38 @@ export enum VoiceChannelState {
 }
 
 interface CustomVoiceChannel {
-  state: VoiceChannelState;
   owner: User;
+  voice: VoiceChannel;
+  state: VoiceChannelState;
 }
 
-const channels = new Map<VoiceChannel, CustomVoiceChannel>();
+const channels = new Map<Snowflake, CustomVoiceChannel>();
 
 export const init = async (client: Client) => {
   return Promise.all(client.guilds.cache.map((v) => clearDeadChannels(v)));
+};
+
+export const changeState = async (author: User, state: VoiceChannelState) => {
+  const chan = Array.from(channels.values()).find(
+    (value) => value.owner === author
+  );
+  if (!chan) {
+    throw new Error('Нет активных каналов где ты владелец!');
+  }
+
+  chan.state = state;
+  channels.set(chan.voice.id, chan);
+};
+
+export const setLimit = async (author: User, limit: number) => {
+  const chan = Array.from(channels.values()).find(
+    (value) => value.owner === author && value.voice.members.has(author.id)
+  );
+  if (!chan) {
+    throw new Error('Зайди в канал где ты владелец!');
+  }
+
+  await chan.voice.setUserLimit(limit);
 };
 
 export const clearDeadChannels = async (guild: Guild) => {
@@ -36,11 +61,11 @@ export const clearDeadChannels = async (guild: Guild) => {
 };
 
 export const deleteChannel = async (channel: VoiceChannel) => {
-  if (!channels.has(channel) || channel.members.size !== 0) {
+  if (!channels.has(channel.id) || channel.members.size !== 0) {
     return;
   }
 
-  channels.delete(channel);
+  channels.delete(channel.id);
   await channel.delete('Нет активных пользователей');
 };
 
@@ -69,14 +94,15 @@ export const creatChannel = async (
       permissionOverwrites: [
         {
           id: user.id,
-          deny: ['VIEW_CHANNEL'],
+          allow: ['CONNECT', 'SPEAK'],
         },
       ],
     }
   );
 
-  channels.set(chan, {
+  channels.set(chan.id, {
     owner: user.user,
+    voice: chan,
     state: VoiceChannelState.LOCK,
   });
   await user.voice.setChannel(chan);
@@ -86,7 +112,7 @@ export const onDisconnect = async (
   oldState: VoiceState,
   newState: VoiceState
 ) => {
-  if (!oldState.channel || newState.channelID !== null) {
+  if (!oldState.channel || newState.channelID === oldState.channelID) {
     return;
   }
 
