@@ -61,12 +61,13 @@ client.on('message', async (message) => await commands(message));
 client.on('message', async (message) => await awardOfBump(message));
 client.on('message', async (message) => await checkBadWords(message));
 
-//#region Stream
+//#region Streams
+client.on('voiceStateUpdate', channels.onConnect);
+client.on('voiceStateUpdate', channels.onDisconnect);
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   await onAirInVoice(oldState, newState);
   await recVoiceTime(oldState, newState);
-  await channels.onConnect(client);
 });
 
 client.on(
