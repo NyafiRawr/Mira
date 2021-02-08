@@ -12,7 +12,7 @@ const body = {
   },
   title: 'Попробуй угадать!',
   footer: {
-    text: `Время на ответ: ${timeoutSeconds}`,
+    text: `Время на ответ: ${timeoutSeconds} секунд`,
   },
 };
 

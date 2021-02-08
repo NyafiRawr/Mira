@@ -16,9 +16,9 @@ const repColor = 1;
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
-  description: 'Страница пользователя',
-  aliases: ['profile', 'p', 'userinfo', 'u'],
-  usage: '[@ ИЛИ edit desc [текст] ИЛИ edit img [ссылка] ИЛИ edit color [hex]]',
+  description: 'Профиль пользователя',
+  aliases: ['userinfo', 'u'],
+  usage: '[@ ИЛИ edit]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
     if (args.shift() == 'edit') {
@@ -83,7 +83,26 @@ module.exports = {
           break;
         }
         default: {
-          throw new Error('не указан элемент для редактирования.');
+          await message.channel.send({
+            embed: {
+              color: message.member!.displayColor,
+              title: this.description,
+              fields: [
+                {
+                  name: 'Редактировать',
+                  value:
+                    `\n\`${config.discord.prefix}${this.name} edit desc [новое описание]\` - изменить описание [или удалить]` +
+                    `\n\`${config.discord.prefix}${this.name} edit img [ссылка]\` - добавить картинку или гифку [или удалить]` +
+                    `\n\`${config.discord.prefix}${this.name} edit color [#hex]\` - изменить цвет полоски на свой [или удалить]`,
+                },
+              ],
+              footer: {
+                text:
+                  'По умолчанию полоска красится в цвет твоего ника на сервере',
+              },
+            },
+          });
+          return;
         }
       }
     }

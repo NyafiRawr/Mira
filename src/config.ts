@@ -66,7 +66,7 @@ export default {
     defaultPriceBuyChannelText: 30000,
     defaultPriceBuyChannelVoice: 50000,
   },
-  patternHexColor: /[0-9A-Fa-f]{6}/g,
+  patternHexColor: /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/g,
   games: {
     lottery: {
       maxMembers: 100,
