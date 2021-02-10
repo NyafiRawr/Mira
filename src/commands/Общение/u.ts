@@ -10,14 +10,10 @@ import {
 } from '../../utils';
 import config from '../../config';
 
-const repDesc = 5;
-const repImg = 10;
-const repColor = 1;
-
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
   description: 'Профиль пользователя',
-  aliases: ['userinfo', 'u'],
+  aliases: ['userinfo', 'user'],
   usage: '[@ ИЛИ edit]',
   group: __dirname.split(/[\\/]/)[__dirname.split(/[\\/]/).length - 1],
   async execute(message: Message, args: string[]) {
@@ -27,15 +23,15 @@ module.exports = {
       let user = await users.get(message.guild!.id, message.author.id);
       switch (element) {
         case 'desc': {
-          if (user.reputation < repDesc) {
+          if (
+            user.reputation < config.socialProfiles.reputationEditDescription
+          ) {
             throw new Error(
-              `не хватает ${
-                repDesc - user.reputation
-              } оч. кармы, после этого можно редактировать сколько угодно.`
+              `нужно ${config.socialProfiles.reputationEditDescription} оч. кармы, после этого можно редактировать сколько угодно.`
             );
           }
 
-          if (source == undefined) {
+          if (source.length === 0) {
             user = await user.update({ biographyDescription: null });
           } else {
             user = await user.update({ biographyDescription: source });
@@ -43,15 +39,13 @@ module.exports = {
           break;
         }
         case 'img': {
-          if (user.reputation < repImg) {
+          if (user.reputation < config.socialProfiles.reputationEditImage) {
             throw new Error(
-              `не хватает ${
-                repImg - user.reputation
-              } оч. кармы, после этого можно редактировать сколько угодно.`
+              `нужно ${config.socialProfiles.reputationEditImage} оч. кармы, после этого можно редактировать сколько угодно.`
             );
           }
 
-          if (source == undefined) {
+          if (source.length === 0) {
             user = await user.update({ biographyImageUrl: null });
           } else {
             if ((await checkUrl(source, 'image')) === false) {
@@ -64,19 +58,17 @@ module.exports = {
           break;
         }
         case 'color': {
-          if (user.reputation < repColor) {
+          if (user.reputation < config.socialProfiles.reputationEditColorLine) {
             throw new Error(
-              `не хватает ${
-                repColor - user.reputation
-              } оч. кармы, после этого можно редактировать сколько угодно.`
+              `нужно ${config.socialProfiles.reputationEditColorLine} оч. кармы, после этого можно редактировать сколько угодно.`
             );
           }
 
-          if (source == undefined) {
+          if (source.length === 0) {
             user = await user.update({ biographyLineColor: null });
           } else {
             if (config.patternHexColor.test(source) == false) {
-              throw new Error('цвет должен быть указан в формате HEX.');
+              throw new Error('цвет должен быть указан в формате #HEX.');
             }
             user = await user.update({ biographyLineColor: source });
           }
@@ -91,9 +83,9 @@ module.exports = {
                 {
                   name: 'Редактировать',
                   value:
-                    `\n\`${config.discord.prefix}${this.name} edit desc [новое описание]\` - изменить описание [или удалить]` +
-                    `\n\`${config.discord.prefix}${this.name} edit img [ссылка]\` - добавить картинку или гифку [или удалить]` +
-                    `\n\`${config.discord.prefix}${this.name} edit color [#hex]\` - изменить цвет полоски на свой [или удалить]`,
+                    `\n\`${config.discord.prefix}${this.name} edit desc [новое]\` - изменить описание [или удалить] за ${config.socialProfiles.reputationEditDescription} о.к.` +
+                    `\n\`${config.discord.prefix}${this.name} edit img [ссылка]\` - добавить картинку [или удалить] за (${config.socialProfiles.reputationEditImage} о.к.` +
+                    `\n\`${config.discord.prefix}${this.name} edit color [#hex]\` - изменить цвет полоски [или удалить] за (${config.socialProfiles.reputationEditColorLine} о.к.`,
                 },
               ],
               footer: {

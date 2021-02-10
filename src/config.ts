@@ -55,6 +55,9 @@ export default {
     defaultPriceEditDesc: 1000,
     defaultPriceEditImg: 1000,
     defaultPriceEditLine: 500,
+    reputationEditDescription: 5,
+    reputationEditImage: 10,
+    reputationEditColorLine: 1,
   },
   gilds: {
     patternClearName: /^[A-ZА-ЯЁa-zа-яё0-9_ ]{3,30}$/g,
