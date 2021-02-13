@@ -8,6 +8,7 @@ import {
   VoiceState,
 } from 'discord.js';
 import * as vars from './vars';
+import { log } from '../logger';
 
 // todo: read from vars
 const TEMP_VOICE_PREFIX = '[TEMP]';
@@ -25,11 +26,82 @@ interface CustomVoiceChannel {
 
 const channels = new Map<Snowflake, CustomVoiceChannel>();
 
+/**
+ * Получение канала в котором пользователь является админом
+ * @param author
+ */
+const getOwnChannel = (author: User): CustomVoiceChannel => {
+  const chan = Array.from(channels.values()).find(
+    (value) => value.owner === author
+  );
+  if (!chan) {
+    throw new Error('Нет активных каналов где ты владелец!');
+  }
+
+  return chan;
+};
+
+/**
+ * Инициализация при запуске
+ * проходимся по всем подключенным гильдиям и удаляем мертвые каналы
+ * @param client {Client} активный клиент дискорда
+ */
 export const init = async (client: Client) => {
   return Promise.all(client.guilds.cache.map((v) => clearDeadChannels(v)));
 };
 
-export const changeState = async (author: User, state: VoiceChannelState) => {
+/**
+ * Добавляет возможность войти в голосовой канал даже если он закрыт
+ * @param owner
+ * @param newbie
+ */
+export const invite = async (
+  owner: User,
+  newbie: GuildMember
+): Promise<CustomVoiceChannel> => {
+  const chan = getOwnChannel(owner);
+
+  // const permissions = chan.voice.permissionsFor(newbie);
+  // if (permissions?.has(['CONNECT', 'CONNECT'])) {
+  //   throw new Error(`у ${newbie.displayName} уже есть приглашение`);
+  // }
+
+  await chan.voice.updateOverwrite(newbie, {
+    CONNECT: true,
+    SPEAK: true,
+  });
+
+  return chan;
+};
+
+export const kick = async (
+  owner: User,
+  member: GuildMember
+): Promise<CustomVoiceChannel> => {
+  const chan = getOwnChannel(owner);
+
+  // const permissions = chan.voice.permissionsFor(newbie);
+  // if (permissions?.has(['CONNECT', 'CONNECT'])) {
+  //   throw new Error(`у ${newbie.displayName} уже есть приглашение`);
+  // }
+
+  await chan.voice.updateOverwrite(member, {
+    CONNECT: false,
+    SPEAK: false,
+  });
+
+  return chan;
+};
+
+/**
+ * Блокирует/разблокирует канал
+ * @param author
+ * @param state
+ */
+export const changeState = async (
+  author: User,
+  state: VoiceChannelState
+): Promise<CustomVoiceChannel> => {
   const chan = Array.from(channels.values()).find(
     (value) => value.owner === author
   );
@@ -39,19 +111,30 @@ export const changeState = async (author: User, state: VoiceChannelState) => {
 
   chan.state = state;
   channels.set(chan.voice.id, chan);
+
+  return chan;
 };
 
-export const setLimit = async (author: User, limit: number) => {
-  const chan = Array.from(channels.values()).find(
-    (value) => value.owner === author && value.voice.members.has(author.id)
-  );
-  if (!chan) {
-    throw new Error('Зайди в канал где ты владелец!');
-  }
-
+/**
+ * Добавляет ограничение на максимальное кол-во пользователей в канале
+ * @param author
+ * @param limit
+ */
+export const setLimit = async (
+  author: User,
+  limit: number
+): Promise<CustomVoiceChannel> => {
+  const chan = getOwnChannel(author);
   await chan.voice.setUserLimit(limit);
+
+  return chan;
 };
 
+/**
+ * Проходимся по каналам в гильдии и удаляем свои мертые каналы
+ * необходимо выполнять на старте приложения
+ * @param guild
+ */
 export const clearDeadChannels = async (guild: Guild) => {
   guild.channels.cache
     .filter((channel) => channel.type === 'voice')
@@ -60,6 +143,10 @@ export const clearDeadChannels = async (guild: Guild) => {
     .forEach((channel) => channel.delete());
 };
 
+/**
+ * "Безопасное" удаление канала
+ * @param channel
+ */
 export const deleteChannel = async (channel: VoiceChannel) => {
   if (!channels.has(channel.id) || channel.members.size !== 0) {
     return;
@@ -69,21 +156,30 @@ export const deleteChannel = async (channel: VoiceChannel) => {
   await channel.delete('Нет активных пользователей');
 };
 
+/**
+ * Создание и настройка канала
+ * @param channel канал родитель (например канал в который нужно войти что бы создался временный)
+ * @param user
+ */
 export const creatChannel = async (
   channel: VoiceChannel,
   user: GuildMember
-) => {
+): Promise<CustomVoiceChannel> => {
   const guild = channel.guild;
 
   const variable = await vars.getOne(guild.id, 'temp_channels_root_id');
   if (!variable) {
-    return;
+    log.warn(`не указана переменная temp_channels_root_id у "${guild.name}"`);
+    throw new Error('ошибка при создании');
   }
 
   const allowedChannels = JSON.parse(variable.value || '[]');
 
   if (!allowedChannels.includes(channel.id)) {
-    return;
+    log.warn(
+      `канал "${channel.id}" не указана переменная temp_channels_root_id у "${guild.id}"`
+    );
+    throw new Error('ошибка при создании');
   }
 
   const chan = await guild.channels.create(
@@ -100,12 +196,15 @@ export const creatChannel = async (
     }
   );
 
-  channels.set(chan.id, {
+  const customChan = {
     owner: user.user,
     voice: chan,
     state: VoiceChannelState.LOCK,
-  });
+  };
+  channels.set(chan.id, customChan);
   await user.voice.setChannel(chan);
+
+  return customChan;
 };
 
 export const onDisconnect = async (
@@ -116,7 +215,11 @@ export const onDisconnect = async (
     return;
   }
 
-  await deleteChannel(oldState.channel);
+  try {
+    await deleteChannel(oldState.channel);
+  } catch (e) {
+    log.error('ошибка при удалении чата');
+  }
 };
 
 export const onConnect = async (_: unknown, newState: VoiceState) => {
@@ -129,5 +232,9 @@ export const onConnect = async (_: unknown, newState: VoiceState) => {
     return;
   }
 
-  await creatChannel(newState.channel, newState.member);
+  try {
+    await creatChannel(newState.channel, newState.member);
+  } catch (e) {
+    log.error('ошибка при создании чата');
+  }
 };

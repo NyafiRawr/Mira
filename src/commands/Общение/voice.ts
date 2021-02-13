@@ -3,9 +3,10 @@ import config from '../../config';
 import * as vars from '../../modules/vars';
 import {
   changeState,
+  invite, kick,
   setLimit,
-  VoiceChannelState,
-} from '../../modules/channels';
+  VoiceChannelState
+} from "../../modules/channels";
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -38,6 +39,32 @@ module.exports = {
         );
 
         return message.reply('ok!');
+      }
+      case 'invite': {
+        const member = message.mentions.members?.first();
+
+        if (!member) {
+          throw new Error('ты никого не упомянул.');
+        }
+
+        const chan = await invite(message.author, member);
+
+        return message.channel.send(
+          `${member.toString()} был приглашен в <#${chan.voice.id}>`
+        );
+      }
+      case 'kick': {
+        const member = message.mentions.members?.first();
+
+        if (!member) {
+          throw new Error('ты никого не упомянул.');
+        }
+
+        const chan = await kick(message.author, member);
+
+        return message.channel.send(
+          `${member.toString()} был кикнут из <#${chan.voice.id}>`
+        );
       }
       case 'limit': {
         const limit = Math.min(Number(args[0]) || 0, 99);
