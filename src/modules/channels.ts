@@ -61,10 +61,10 @@ export const invite = async (
 ): Promise<CustomVoiceChannel> => {
   const chan = getOwnChannel(owner);
 
-  // const permissions = chan.voice.permissionsFor(newbie);
-  // if (permissions?.has(['CONNECT', 'CONNECT'])) {
-  //   throw new Error(`у ${newbie.displayName} уже есть приглашение`);
-  // }
+  const permissions = chan.voice.permissionsFor(newbie);
+  if (permissions?.has(['CONNECT', 'CONNECT'])) {
+    throw new Error(`у ${newbie.displayName} уже есть приглашение`);
+  }
 
   await chan.voice.updateOverwrite(newbie, {
     CONNECT: true,
@@ -80,10 +80,10 @@ export const kick = async (
 ): Promise<CustomVoiceChannel> => {
   const chan = getOwnChannel(owner);
 
-  // const permissions = chan.voice.permissionsFor(newbie);
-  // if (permissions?.has(['CONNECT', 'CONNECT'])) {
-  //   throw new Error(`у ${newbie.displayName} уже есть приглашение`);
-  // }
+  const permissions = chan.voice.permissionsFor(member);
+  if (permissions?.has(['CONNECT', 'CONNECT'])) {
+    throw new Error(`у ${member.displayName} уже есть приглашение`);
+  }
 
   await chan.voice.updateOverwrite(member, {
     CONNECT: false,
@@ -176,9 +176,6 @@ export const creatChannel = async (
   const allowedChannels = JSON.parse(variable.value || '[]');
 
   if (!allowedChannels.includes(channel.id)) {
-    log.warn(
-      `канал "${channel.id}" не указана переменная temp_channels_root_id у "${guild.id}"`
-    );
     throw new Error('ошибка при создании');
   }
 
