@@ -3,10 +3,11 @@ import config from '../../config';
 import * as vars from '../../modules/vars';
 import {
   changeState,
-  invite, kick,
+  invite,
+  kick,
   setLimit,
-  VoiceChannelState
-} from "../../modules/channels";
+  VoiceChannelState,
+} from '../../modules/channels';
 
 module.exports = {
   name: __filename.slice(__dirname.length + 1).split('.')[0],
@@ -25,7 +26,7 @@ module.exports = {
       }
       case 'unlock': {
         await changeState(message.author, VoiceChannelState.UNLOCK);
-        return message.reply('канал заблокирован');
+        return message.reply('канал разблокирован');
       }
       case 'set_root': {
         if (!message.guild) {

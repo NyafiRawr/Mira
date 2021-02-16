@@ -21,7 +21,6 @@ export enum VoiceChannelState {
 interface CustomVoiceChannel {
   owner: User;
   voice: VoiceChannel;
-  state: VoiceChannelState;
 }
 
 const channels = new Map<Snowflake, CustomVoiceChannel>();
@@ -109,8 +108,9 @@ export const changeState = async (
     throw new Error('Нет активных каналов где ты владелец!');
   }
 
-  chan.state = state;
-  channels.set(chan.voice.id, chan);
+  await chan.voice.updateOverwrite(chan.voice.guild.roles.everyone, {
+    VIEW_CHANNEL: state === VoiceChannelState.UNLOCK,
+  });
 
   return chan;
 };
@@ -164,19 +164,22 @@ export const deleteChannel = async (channel: VoiceChannel) => {
 export const creatChannel = async (
   channel: VoiceChannel,
   user: GuildMember
-): Promise<CustomVoiceChannel> => {
+): Promise<CustomVoiceChannel | null> => {
   const guild = channel.guild;
 
   const variable = await vars.getOne(guild.id, 'temp_channels_root_id');
   if (!variable) {
-    log.warn(`не указана переменная temp_channels_root_id у "${guild.name}"`);
-    throw new Error('ошибка при создании');
+    log.trace(`не указана переменная temp_channels_root_id у "${guild.name}"`);
+    return null;
   }
 
   const allowedChannels = JSON.parse(variable.value || '[]');
 
   if (!allowedChannels.includes(channel.id)) {
-    throw new Error('ошибка при создании');
+    log.trace(
+      `канал не указан переменной temp_channels_root_id у "${guild.name}"`
+    );
+    return null;
   }
 
   const chan = await guild.channels.create(
@@ -187,7 +190,11 @@ export const creatChannel = async (
       permissionOverwrites: [
         {
           id: user.id,
-          allow: ['CONNECT', 'SPEAK'],
+          allow: ['CONNECT', 'SPEAK', 'VIEW_CHANNEL'],
+        },
+        {
+          id: guild.roles.everyone,
+          deny: ['VIEW_CHANNEL'],
         },
       ],
     }
@@ -196,7 +203,6 @@ export const creatChannel = async (
   const customChan = {
     owner: user.user,
     voice: chan,
-    state: VoiceChannelState.LOCK,
   };
   channels.set(chan.id, customChan);
   await user.voice.setChannel(chan);
