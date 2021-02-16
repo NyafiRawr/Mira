@@ -29,7 +29,7 @@ module.exports = {
         return message.reply('канал разблокирован');
       }
       case 'set_root': {
-        if (!message.guild) {
+        if (!message.guild || !message.member?.hasPermission('ADMINISTRATOR')) {
           return;
         }
 
