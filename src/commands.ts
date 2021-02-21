@@ -62,7 +62,7 @@ const commandsPaths = [
   __dirname + '/commands/Общение/reps',
   __dirname + '/commands/Общение/server',
   __dirname + '/commands/Общение/user',
-  __dirname + '/commands/Общение/voice',
+  __dirname + '/commands/Общение/v',
 ];
 // Исключения из запрещения доступа (алиасы не нужно указывать)
 export const commandsExcludes = ['access', 'mute', 'warn'];
