@@ -1,13 +1,15 @@
 {
-	"search.exclude": {
-		"**/node_modules": true
-	},
+    "search.exclude": {
+        "**/node_modules": true
+    },
 
-	"files.eol": "\n",
-	
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+    "files.eol": "\n",
 
-	"[json]": {
-		"editor.defaultFormatter": "vscode.json-language-features"
-	}
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+
+    "git.autofetch": true
 }
