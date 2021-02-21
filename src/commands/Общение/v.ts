@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import { isNumber } from 'lodash';
 import config from '../../config';
 import * as tempvoices from '../../modules/tempvoices';
 
@@ -60,7 +61,7 @@ module.exports = {
                 const cvc = await tempvoices.invite(message.author, member);
 
                 return message.channel.send(
-                    `${member.toString()} приглашен в <#${cvc.voice.id}>`
+                    `${member.toString()} приглашен в <#${cvc.voice.id}>!`
                 );
             }
             case 'kick': {
@@ -73,14 +74,34 @@ module.exports = {
                 const cvc = await tempvoices.kick(message.author, member);
 
                 return message.channel.send(
-                    `${member.toString()} кикнут из <#${cvc.voice.id}>`
+                    `${member.toString()} кикнут из <#${
+                        cvc.voice.id
+                    }> и запрещен доступ.`
                 );
             }
             case 'limit': {
-                const limit = Math.min(Number(args[0]) || 0, 99);
-
-                await tempvoices.setLimit(message.author, limit);
-                return message.reply(`теперь максимум ${limit}`);
+                const limitArg = args.shift();
+                if (limitArg == null) {
+                    await tempvoices.setLimit(message.author, 0);
+                    return message.reply(
+                        `ограничение на количество участников в голосовом канале удалено!`
+                    );
+                } else {
+                    const limit = parseInt(limitArg, 10);
+                    if (isNumber(limit) === false) {
+                        throw new Error(
+                            'нужно указать целое и положительное число от 2 до 99.'
+                        );
+                    } else if (limit < 2 || limit > 99) {
+                        throw new Error(
+                            'ограничение может быть только в пределах от 2 до 99 участников.'
+                        );
+                    }
+                    await tempvoices.setLimit(message.author, limit);
+                    return message.reply(
+                        `ограничение на количество участников в голосовом канале ${limit}!`
+                    );
+                }
             }
             default: {
                 const channelId = await tempvoices.getTempVoiceCreaterId(
@@ -99,7 +120,10 @@ module.exports = {
                                 ? `Автосоздание отключено. Используй настройки администратора, чтобы включить`
                                 : `Чтобы создать свой голосовой чат нужно зайти в [${
                                       channel.name
-                                  }](${await channel.createInvite()})`,
+                                  }](${await channel.createInvite({
+                                      maxAge: 0,
+                                      maxUses: 0,
+                                  })})`,
                         fields: [
                             {
                                 name: 'Команды владельца канала',

@@ -79,11 +79,6 @@ export const invite = async (
 
     const cvc = getOwnChannel(owner);
 
-    const permissions = cvc.voice.permissionsFor(member);
-    if (permissions?.has(['CONNECT', 'CONNECT'])) {
-        throw new Error(`у ${member.displayName} уже есть приглашение`);
-    }
-
     await cvc.voice.updateOverwrite(member, {
         CONNECT: true,
         SPEAK: true,
@@ -102,15 +97,12 @@ export const kick = async (
 
     const cvc = getOwnChannel(owner);
 
-    const permissions = cvc.voice.permissionsFor(member);
-    if (permissions?.has(['CONNECT', 'CONNECT'])) {
-        throw new Error(`у ${member.displayName} уже есть приглашение`);
-    }
-
     await cvc.voice.updateOverwrite(member, {
         CONNECT: false,
         SPEAK: false,
     });
+
+    await member.voice.kick('Исключен владельцем голосового канала');
 
     return cvc;
 };
@@ -123,7 +115,7 @@ export const changeState = async (
     const cvc = getOwnChannel(author);
 
     await cvc.voice.updateOverwrite(cvc.voice.guild.roles.everyone, {
-        VIEW_CHANNEL: lock,
+        VIEW_CHANNEL: lock === false,
     });
 
     return cvc;
