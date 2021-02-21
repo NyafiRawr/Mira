@@ -5,64 +5,64 @@ import { sequelize } from '../database';
 
 // Выдать / -Заплатить
 export const setBalance = async (
-  serverId: string,
-  userId: string,
-  currency: number
+    serverId: string,
+    userId: string,
+    currency: number
 ): Promise<User> => {
-  let user = await users.get(serverId, userId);
-  if (user == null) {
-    user = await User.create({
-      userId,
-      serverId,
-      balance: currency,
+    let user = await users.get(serverId, userId);
+    if (user == null) {
+        user = await User.create({
+            userId,
+            serverId,
+            balance: currency,
+        });
+    }
+    // Для случаев когда -currency
+    if (user.balance + currency < 0) {
+        throw new Error(
+            `тебе не хватает ${separateThousandth(
+                Math.abs(user.balance + currency).toString()
+            )}:cookie:`
+        );
+    }
+    return user.update({
+        balance: user.balance + currency,
     });
-  }
-  // Для случаев когда -currency
-  if (user.balance + currency < 0) {
-    throw new Error(
-      `тебе не хватает ${separateThousandth(
-        Math.abs(user.balance + currency).toString()
-      )}:cookie:`
-    );
-  }
-  return user.update({
-    balance: user.balance + currency,
-  });
 };
 
 // Перевод средств, возвращает плательщика
 export const payTransaction = async (
-  serverId: string,
-  userOutId: string,
-  userInId: string,
-  currency = 0
+    serverId: string,
+    userOutId: string,
+    userInId: string,
+    currency = 0
 ): Promise<User> => {
-  const userOut = await users.get(serverId, userOutId);
-  const userIn = await users.get(serverId, userInId);
+    const userOut = await users.get(serverId, userOutId);
+    const userIn = await users.get(serverId, userInId);
 
-  if (userOut.balance < currency) {
-    throw new Error(
-      `тебе не хватает ${separateThousandth(
-        (userOut.balance - currency).toString()
-      )} печенек!`
-    );
-  }
+    if (userOut.balance < currency) {
+        throw new Error(
+            `тебе не хватает ${separateThousandth(
+                (userOut.balance - currency).toString()
+            )} печенек!`
+        );
+    }
 
-  return sequelize.transaction(async (t) => {
-    const user = await userOut.update(
-      {
-        balance: userOut.balance - currency,
-      },
-      { transaction: t }
-    );
+    return sequelize.transaction(async (t) => {
+        const user = await userOut.update(
+            {
+                balance: userOut.balance - currency,
+            },
+            { transaction: t }
+        );
 
-    await userIn.update(
-      {
-        balance: userIn.balance + currency,
-      },
-      { transaction: t }
-    );
+        await userIn.update(
+            {
+                balance: userIn.balance + currency,
+            },
+            { transaction: t }
+        );
 
-    return user;
-  });
+        return user;
+    });
 };

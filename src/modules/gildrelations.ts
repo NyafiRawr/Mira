@@ -1,52 +1,52 @@
 import GildRelations from '../models/GildRelation';
 
 export const getOne = async (
-  serverId: string,
-  userId: string
+    serverId: string,
+    userId: string
 ): Promise<GildRelations | null> =>
-  GildRelations.findOne({
-    where: {
-      serverId,
-      userId,
-    },
-  });
+    GildRelations.findOne({
+        where: {
+            serverId,
+            userId,
+        },
+    });
 
 export const getAll = async (
-  serverId: string,
-  gildId: number
+    serverId: string,
+    gildId: number
 ): Promise<GildRelations[]> =>
-  GildRelations.findAll({
-    where: {
-      serverId,
-      gildId,
-    },
-  });
+    GildRelations.findAll({
+        where: {
+            serverId,
+            gildId,
+        },
+    });
 
 export const create = async (
-  serverId: string,
-  userId: string,
-  gildId: number
+    serverId: string,
+    userId: string,
+    gildId: number
 ): Promise<GildRelations> =>
-  GildRelations.create({
-    serverId,
-    userId,
-    gildId,
-  });
+    GildRelations.create({
+        serverId,
+        userId,
+        gildId,
+    });
 
 export const remove = async (
-  serverId: string,
-  userId: string
+    serverId: string,
+    userId: string
 ): Promise<void> => {
-  const relation = await getOne(serverId, userId);
-  if (relation != null) {
-    return relation.destroy();
-  }
+    const relation = await getOne(serverId, userId);
+    if (relation != null) {
+        return relation.destroy();
+    }
 };
 
 export const count = async (
-  serverId: string,
-  gildId: number
+    serverId: string,
+    gildId: number
 ): Promise<number> => {
-  const relation = await getAll(serverId, gildId);
-  return relation.length;
+    const relation = await getAll(serverId, gildId);
+    return relation.length;
 };

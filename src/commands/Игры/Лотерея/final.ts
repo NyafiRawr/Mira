@@ -4,24 +4,24 @@ import * as lots from '../../../modules/lots';
 import { check } from './check';
 
 export const final = async (message: Message) => {
-  const lottery = await lots.get(message.guild!.id);
+    const lottery = await lots.get(message.guild!.id);
 
-  if (lottery === null) {
-    throw new Error('лотерей нет - нечего завершать.');
-  }
+    if (lottery === null) {
+        throw new Error('лотерей нет - нечего завершать.');
+    }
 
-  if (lottery.userId !== message.author.id) {
-    throw new Error('ты не организатор лотереи и не можешь её завершить.');
-  }
+    if (lottery.userId !== message.author.id) {
+        throw new Error('ты не организатор лотереи и не можешь её завершить.');
+    }
 
-  const members = await lots.getMembers(lottery.id);
-  if (members.length === 0) {
-    throw new Error(
-      `невозможно определить победителя без участников, используй \`${config.discord.prefix}lot close\`, если хочешь закрыть лотерею.`
-    );
-  }
+    const members = await lots.getMembers(lottery.id);
+    if (members.length === 0) {
+        throw new Error(
+            `невозможно определить победителя без участников, используй \`${config.discord.prefix}lot close\`, если хочешь закрыть лотерею.`
+        );
+    }
 
-  lottery.membersWait = members.length;
+    lottery.membersWait = members.length;
 
-  await check(message, lottery);
+    await check(message, lottery);
 };

@@ -2,53 +2,53 @@ import { Model, STRING, DATE, NOW, INTEGER } from 'sequelize';
 import { sequelize, alter, force } from '../database';
 
 export default class MuteWarningList extends Model {
-  public id!: number;
-  public serverId!: string;
-  public userId!: string;
-  public reason!: string;
-  public executorId!: string;
-  public channelName!: string;
-  public date!: Date;
+    public id!: number;
+    public serverId!: string;
+    public userId!: string;
+    public reason!: string;
+    public executorId!: string;
+    public channelName!: string;
+    public date!: Date;
 }
 
 MuteWarningList.init(
-  {
-    id: {
-      type: INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
+    {
+        id: {
+            type: INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        serverId: {
+            type: STRING,
+            allowNull: false,
+        },
+        userId: {
+            type: STRING,
+            allowNull: false,
+        },
+        reason: {
+            type: STRING,
+            allowNull: false,
+        },
+        executorId: {
+            type: STRING,
+            allowNull: false,
+        },
+        channelName: {
+            type: STRING,
+            allowNull: false,
+        },
+        date: {
+            type: DATE,
+            allowNull: false,
+            defaultValue: NOW,
+        },
     },
-    serverId: {
-      type: STRING,
-      allowNull: false,
-    },
-    userId: {
-      type: STRING,
-      allowNull: false,
-    },
-    reason: {
-      type: STRING,
-      allowNull: false,
-    },
-    executorId: {
-      type: STRING,
-      allowNull: false,
-    },
-    channelName: {
-      type: STRING,
-      allowNull: false,
-    },
-    date: {
-      type: DATE,
-      allowNull: false,
-      defaultValue: NOW,
-    },
-  },
-  {
-    modelName: 'mute_warning_list',
-    sequelize,
-  }
+    {
+        modelName: 'mute_warning_list',
+        sequelize,
+    }
 );
 
 MuteWarningList.sync({ alter, force });

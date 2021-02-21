@@ -4,24 +4,28 @@ import { help } from './help';
 import * as punches from '../../../modules/mutes';
 
 export const unset = async (message: Message, args: string[]) => {
-  const argNum = args.shift();
-  if (argNum === undefined) {
-    throw new Error('не указан номер условия.');
-  }
-  const num = parseInt(argNum, 10);
-  if (isInteger(num) === false) {
-    throw new Error('номер должен быть целочисленным и положительным.');
-  }
+    const argNum = args.shift();
+    if (argNum === undefined) {
+        throw new Error('не указан номер условия.');
+    }
+    const num = parseInt(argNum, 10);
+    if (isInteger(num) === false) {
+        throw new Error('номер должен быть целочисленным и положительным.');
+    }
 
-  const terms = await punches.getTerms(message.guild!.id);
+    const terms = await punches.getTerms(message.guild!.id);
 
-  if (num < 1 || num > terms.length) {
-    throw new Error('такого номера нет в списке условий.');
-  }
+    if (num < 1 || num > terms.length) {
+        throw new Error('такого номера нет в списке условий.');
+    }
 
-  const term = terms.find((mwt, index) => index === num - 1)!;
+    const term = terms.find((mwt, index) => index === num - 1)!;
 
-  await punches.removeTerm(message.guild!.id, term.countWarnings, term.forDays);
+    await punches.removeTerm(
+        message.guild!.id,
+        term.countWarnings,
+        term.forDays
+    );
 
-  await help(message);
+    await help(message);
 };
