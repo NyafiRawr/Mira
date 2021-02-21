@@ -55,6 +55,9 @@ export default {
     defaultPriceEditDesc: 1000,
     defaultPriceEditImg: 1000,
     defaultPriceEditLine: 500,
+    reputationEditDescription: 5,
+    reputationEditImage: 10,
+    reputationEditColorLine: 1,
   },
   gilds: {
     patternClearName: /^[A-ZА-ЯЁa-zа-яё0-9_ ]{3,30}$/g,
@@ -66,7 +69,7 @@ export default {
     defaultPriceBuyChannelText: 30000,
     defaultPriceBuyChannelVoice: 50000,
   },
-  patternHexColor: /[0-9A-Fa-f]{6}/g,
+  patternHexColor: /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/g,
   games: {
     lottery: {
       maxMembers: 100,

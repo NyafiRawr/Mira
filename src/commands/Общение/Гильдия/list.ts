@@ -2,7 +2,6 @@ import { Message, MessageEmbed } from 'discord.js';
 import config from '../../../config';
 import Gild from '../../../models/Gild';
 import * as gilds from '../../../modules/gilds';
-import { separateThousandth } from '../../../utils';
 import * as gildrelations from '../../../modules/gildrelations';
 
 const topSize = 15;
@@ -20,8 +19,6 @@ export const list = async (message: Message, args: string[]) => {
       'на этом сервере нет гильдий, но я здесь и вместе мы сможем это исправить!'
     );
   }
-
-  list.sort((a, b) => b.balance - a.balance);
 
   const maxTopSize = topSize > list.length ? list.length : topSize;
   const pages: Gild[][] = [];
@@ -42,21 +39,24 @@ export const list = async (message: Message, args: string[]) => {
     pageNumber = 1;
   }
 
-  const page = [];
+  const page = new MessageEmbed(body);
   for await (const gild of pages[pageNumber - 1]) {
-    page.push(
-      `${gild.id}. **${gild.name}** | ${await gildrelations.count(
+    const channels: { texts: string[]; voices: string[] } =
+      gild.channels === null
+        ? { texts: [], voices: [] }
+        : JSON.parse(gild.channels);
+    page.addField(
+      `${gild.name}`,
+      `🆔 ${gild.id} 🙎${await gildrelations.count(
         message.guild!.id,
         gild.id
-      )}:person_pouting: | <@${gild.ownerId}> | ${separateThousandth(
-        gild.balance.toString()
-      )}:cookie:`
+      )} уч. 💬 ${channels.texts.length} чат. 🎙️${
+        channels.voices.length
+      } к.\nГильдмастер <@${gild.ownerId}>`
     );
   }
 
   await message.channel.send(
-    new MessageEmbed(body)
-      .setDescription(page.join('\n'))
-      .setFooter(`Страница: ${pageNumber}/${pages.length}`)
+    page.setFooter(`Страница: ${pageNumber}/${pages.length}`)
   );
 };

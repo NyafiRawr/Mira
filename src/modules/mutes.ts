@@ -480,14 +480,14 @@ export const checkBadWords = async (message: Message): Promise<void> => {
     return;
   }
 
-  const words = await getBadWords(message.guild.id);
-  if (words === null) {
+  const badWords = await getBadWords(message.guild.id);
+  if (badWords === null) {
     return;
   }
 
-  const content = message.content.toLowerCase();
+  const content = message.content.toLowerCase().split(' ');
 
-  const haveBadWord = words.some((word) => content.includes(word));
+  const haveBadWord = content.some((word) => badWords.includes(word));
   if (haveBadWord) {
     await message.delete({ reason: reasonBadWord });
 
