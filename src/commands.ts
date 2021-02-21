@@ -61,6 +61,7 @@ const commandsPaths = [
   __dirname + '/commands/Общение/rep',
   __dirname + '/commands/Общение/reps',
   __dirname + '/commands/Общение/server',
+  __dirname + '/commands/Общение/v',
   __dirname + '/commands/Общение/u',
 ];
 // Исключения из запрещения доступа (алиасы не нужно указывать)

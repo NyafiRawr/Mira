@@ -5,15 +5,19 @@ import { commands } from './commands';
 import { awardOfBump } from './modules/bumps';
 import { onAirInPresence, onAirInVoice } from './modules/airs';
 import { happyBirthday } from './modules/congratulations';
-import { rescueVoiceTime, recVoiceTime } from './modules/voices';
+import { writeVoiceTime, rewriteVoiceTime } from './modules/voicetimes';
 import { reactionRoleAdd, reactionRoleRemove } from './modules/rrs';
-import { checkReleases, checkBadWords, returnMuteRole } from './modules/mutes';
+import { checkBadWords, checkJail, returnMuteRole } from './modules/mutes';
 import {
-  logKick,
-  logBanRemove,
+  clearDeadTempChannels,
+  checkEntryInTempVoiceCreater,
+} from './modules/tempvoices';
+import {
   logBanAdd,
-  logMessageDelete,
+  logBanRemove,
+  logKick,
   logMessageBulk,
+  logMessageDelete,
   logMessageUpdate,
 } from './modules/logs';
 import * as users from './modules/users';
@@ -44,26 +48,28 @@ client.once('ready', async () => {
     status: 'online',
   });
 
-  await happyBirthday(); // Вызывает сам себя
-  await checkReleases(); // Вызывает сам себя
+  await happyBirthday();
+  await checkJail();
 });
 
 // При каждом восстановлении соединения
 client.on('ready', async () => {
   log.info(`Бот ${client.user?.tag} на связи!`);
 
-  await rescueVoiceTime(); // Вычислить время проведенное участниками в голосовых чатах
+  await rewriteVoiceTime();
+  await clearDeadTempChannels();
 });
 
-client.on('message', async (message) => await commands(message));
-client.on('message', async (message) => await awardOfBump(message));
-client.on('message', async (message) => await checkBadWords(message));
-
-//#region Streams
+client.on('message', async (message) => {
+  await commands(message);
+  await awardOfBump(message);
+  await checkBadWords(message);
+});
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   await onAirInVoice(oldState, newState);
-  await recVoiceTime(oldState, newState);
+  await writeVoiceTime(oldState, newState);
+  await checkEntryInTempVoiceCreater(oldState, newState);
 });
 
 client.on(
@@ -72,10 +78,6 @@ client.on(
     await onAirInPresence(oldPresence, newPresence)
 );
 
-//#endregion
-
-//#region Reactions
-
 client.on('messageReactionAdd', async (messageReaction, user) => {
   await reactionRoleAdd(messageReaction, user);
 });
@@ -83,10 +85,6 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
 client.on('messageReactionRemove', async (messageReaction, user) => {
   await reactionRoleRemove(messageReaction, user);
 });
-
-//#endregion
-
-//#region Logs
 
 client.on('guildMemberAdd', async (guildMember) => {
   await users.get(guildMember.guild.id, guildMember.user.id); // Записываем время входа
@@ -116,7 +114,5 @@ client.on(
   async (messageOld, messageNew) =>
     await logMessageUpdate(messageOld, messageNew)
 );
-
-//#endregion
 
 client.login(config.discord.token);

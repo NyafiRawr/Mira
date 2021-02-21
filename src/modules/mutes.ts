@@ -325,7 +325,7 @@ export const removeMute = async (
   });
 };
 
-export const checkReleases = async () => {
+export const checkJail = async () => {
   log.info('[Муты] Начата проверка сроков заключения...');
 
   const mutes = await MuteList.findAll({
@@ -351,7 +351,7 @@ export const checkReleases = async () => {
   log.info(`[Муты] Проверка завершена, удалено мутов: ${mutes.length}`);
 
   setTimeout(async () => {
-    await checkReleases();
+    await checkJail();
   }, timeoutCheckReleases);
 };
 
