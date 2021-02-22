@@ -1,8 +1,11 @@
 import pino from 'pino';
 
 const logger = pino({
-    prettyPrint: { colorize: true, translateTime: true }, // UTC
-    level: process.env.LOG_LEVEL || 'info',
+    prettyPrint: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'hostname,pid',
+    },
 });
 
 export const log = {
