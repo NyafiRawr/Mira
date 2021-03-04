@@ -3,7 +3,7 @@ import config from '../../../config';
 import * as punches from '../../../modules/mutes';
 
 export const give = async (message: Message, args: string[]) => {
-    const victim = message.mentions.users.first();
+    const victim = message.mentions.members?.first();
     if (victim === undefined) {
         throw new Error(
             'не упомянут участник, которому нужно выдать предупреждение.'
@@ -34,16 +34,16 @@ export const give = async (message: Message, args: string[]) => {
     if (muteTerm !== null) {
         const roleId = await punches.getMuteRoleId(message.guild!.id);
         if (roleId !== null) {
-            await message.member!.roles.add(roleId);
+            await victim.roles.add(roleId);
             const muteEmbed = await punches.setMute(
                 message.guild!.id,
-                message.author.id,
+                victim.id,
                 `Получено ${muteTerm.countWarnings} предупреждений за ${muteTerm.forDays} дней`,
                 message.client.user?.id || config.author.discord.id,
                 message.channel.toString(),
                 muteTerm.timestamp
             );
-            await message.channel.send(message.author, muteEmbed);
+            await message.channel.send(victim, muteEmbed);
         }
     }
 };
