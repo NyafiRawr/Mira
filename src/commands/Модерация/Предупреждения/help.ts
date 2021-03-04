@@ -24,7 +24,7 @@ export const help = async (message: Message) => {
                                     } предупреждения в течение ${
                                         term.forDays
                                     } дней изоляция на ${timeFomattedDHMS(
-                                        term.timestamp / 60 / 1000
+                                        term.timestamp
                                     )} мин.`
                             )
                             .join('\n') || 'Нет',
