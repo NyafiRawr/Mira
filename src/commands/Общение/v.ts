@@ -21,7 +21,7 @@ module.exports = {
             }
             case 'set': {
                 if (
-                    message.member?.hasPermission(this.permissions[0]) == null
+                    !message.member?.hasPermission(this.permissions[0])
                 ) {
                     throw new Error(
                         `нужно иметь глобальную привилегию: ${this.permissions[0]}.`
