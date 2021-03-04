@@ -335,21 +335,26 @@ export const checkJail = async () => {
     const mutes = await MuteList.findAll({
         where: { releaseDate: { [Op.lt]: Date.now() } },
     });
+
     for await (const mute of mutes) {
         const roleId = await getMuteRoleId(mute.serverId);
         if (roleId !== null) {
-            const user = await client.guilds.cache
+            const member = await client.guilds.cache
                 .get(mute.serverId)
                 ?.members.fetch(mute.userId);
-            await user?.roles.remove(roleId).catch();
+            await member?.roles
+                .remove(roleId)
+                .catch(() => null)
+                .then(
+                    async () =>
+                        await removeMute(
+                            mute.serverId,
+                            mute.userId,
+                            'Мут закончился',
+                            client.user?.id || config.author.discord.id
+                        )
+                );
         }
-
-        await removeMute(
-            mute.serverId,
-            mute.userId,
-            'Мут закончился',
-            client.user?.id || config.author.discord.id
-        );
     }
 
     log.info(`[Муты] Проверка завершена, удалено мутов: ${mutes.length}`);
