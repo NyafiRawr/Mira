@@ -20,9 +20,7 @@ module.exports = {
                 return message.reply('голосовой канал разблокирован 🔓');
             }
             case 'set': {
-                if (
-                    !message.member?.hasPermission(this.permissions[0])
-                ) {
+                if (!message.member?.hasPermission(this.permissions[0])) {
                     throw new Error(
                         `нужно иметь глобальную привилегию: ${this.permissions[0]}.`
                     );
