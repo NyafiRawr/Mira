@@ -38,6 +38,7 @@ const commandsPaths = [
   __dirname + '/commands/Игры/dice',
   __dirname + '/commands/Игры/coin',
   __dirname + '/commands/Игры/lot',
+  __dirname + '/commands/Игры/osu',
 
   __dirname + '/commands/Модерация/bump',
   __dirname + '/commands/Модерация/embed',
@@ -62,8 +63,6 @@ const commandsPaths = [
   __dirname + '/commands/Общение/reps',
   __dirname + '/commands/Общение/server',
   __dirname + '/commands/Общение/user',
-
-  __dirname + '/commands/Прочее/osu',
 ];
 // Исключения из запрещения доступа (алиасы не нужно указывать)
 export const commandsExcludes = ['access', 'mute', 'warn'];

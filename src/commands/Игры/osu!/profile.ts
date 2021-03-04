@@ -9,23 +9,15 @@ import {
 const user = {
   country_code: 'RU',
   avatar_url: 'https://a.ppy.sh/8566593',
-  discord_tag: 'NyafiRawr#9896',
-  // playstyle: '["mouse","touch"]',
   playmode: 'osu',
-  badges: '',
-  groups: '',
   link: 'https://osu.ppy.sh/users/8566593',
-
   user_id: '8566593',
   username: 'NyafiRawr',
   join_date: '2016-06-16 11:15:35',
-
   count300: '917034',
   count100: '148131',
   count50: '21184',
   playcount: '6256',
-  ranked_score: '3304805830',
-  total_score: '5140948343',
   pp_rank: '257484',
   level: '91.2265',
   pp_raw: '1898.07',
@@ -38,7 +30,6 @@ const user = {
   country: 'RU',
   total_seconds_played: '438453',
   pp_country_rank: '24033',
-  events: [],
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -74,7 +65,7 @@ export const profile = async (message: Message, args: string[]) => {
       )}    <:hit50:805819695785312327> ${separateThousandth(user.count50)}`
     )
     .setThumbnail(user.avatar_url || '')
-    .addField('Сыграно игр', `${separateThousandth(user.playcount)} карт`, true)
+    .addField('Сыграно', `${separateThousandth(user.playcount)} карт`, true)
     .addField(
       'Точность',
       `${roundDecimalPlaces(parseInt(user.accuracy), 2)}%`,

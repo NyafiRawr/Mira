@@ -10,11 +10,10 @@ module.exports = {
   async execute(message: Message, args: string[]) {
     switch (args.shift()) {
       case 'p': {
-        await profile(message, args);
-        break;
+        return await profile(message, args);
       }
       default: {
-        await help(message);
+        return await help(message);
       }
     }
   },
