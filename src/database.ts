@@ -45,7 +45,7 @@ export const sequelize = (() => {
             },
             dialect: config.db.dialect as Dialect,
             define: {
-                timestamps: false,
+                timestamps: true,
                 charset: 'utf8mb4',
                 collate: 'utf8mb4_unicode_ci',
             },
