@@ -9,6 +9,7 @@ export default class MuteList extends Model {
     public executorId!: string;
     public channelName!: string;
     public releaseDate!: Date;
+    public createdAt!: Date;
 }
 
 MuteList.init(
@@ -49,6 +50,7 @@ MuteList.init(
     {
         modelName: 'mute_list',
         sequelize,
+        timestamps: true,
     }
 );
 

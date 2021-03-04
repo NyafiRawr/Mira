@@ -11,7 +11,7 @@ import { timeFomattedDHMS, timeFomattedDMYHHMMSS } from '../utils';
 
 export const minutesCheckReleases = 60;
 const timeoutCheckReleases = minutesCheckReleases * 60 * 1000;
-const prisonIncrease = 24 * 60 * 60 * 1000; // +1 день за выход с сервера с мутом
+const forLeaveWithMuteAddMS = 24 * 60 * 60 * 1000; // +1 день за выход с сервера с мутом
 const reasonBadWord = 'Запрещенное слово';
 
 //#region Warns
@@ -127,22 +127,23 @@ export const returnMuteRole = async (guildMember: GuildMember) => {
         const roleId = await getMuteRoleId(guildMember.guild.id);
         if (roleId) {
             await guildMember.roles.add(roleId);
-            if (mute.releaseDate.getTime() <= Date.now()) {
-                mute = await mute.update({
-                    releaseDate: Date.now() + prisonIncrease,
-                });
-            } else {
-                mute = await mute.update({
-                    releaseDate: mute.releaseDate.getTime() + prisonIncrease,
-                });
-            }
+
+            const oldMuteMS =
+                mute.releaseDate.getTime() - mute.createdAt.getTime();
+
+            mute = await mute.update({
+                releaseDate: Date.now() + oldMuteMS + forLeaveWithMuteAddMS,
+            });
+
             await guildMember
                 .send(
-                    `С возвращением! Выход с сервера с ролью молчания +1 день к сроку заключения: ${timeFomattedDMYHHMMSS(
+                    `С возвращением! Выход с сервера с ролью молчания + ${timeFomattedDHMS(
+                        forLeaveWithMuteAddMS
+                    )} к сроку заключения (${timeFomattedDMYHHMMSS(
                         mute.releaseDate.getTime()
-                    )}`
+                    )})`
                 )
-                .catch(/* ЛС ЗАКРЫТО */);
+                .catch(() => null /* ЛС ЗАКРЫТО */);
         }
     }
 };
