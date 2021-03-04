@@ -53,6 +53,7 @@ const commandsPaths = [
     __dirname + '/commands/Модерация/warn',
     __dirname + '/commands/Модерация/mute',
     __dirname + '/commands/Модерация/bw',
+    __dirname + '/commands/Модерация/ban',
 
     __dirname + '/commands/Общение/g',
     __dirname + '/commands/Общение/ava',
