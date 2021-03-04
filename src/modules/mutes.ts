@@ -132,7 +132,7 @@ export const returnMuteRole = async (guildMember: GuildMember) => {
                 mute.releaseDate.getTime() - mute.createdAt.getTime();
 
             mute = await mute.update({
-                releaseDate: Date.now() + oldMuteMS + forLeaveWithMuteAddMS,
+                releaseDate: new Date(Date.now() + oldMuteMS + forLeaveWithMuteAddMS),
             });
 
             await guildMember
