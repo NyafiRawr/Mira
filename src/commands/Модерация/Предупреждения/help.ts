@@ -25,7 +25,7 @@ export const help = async (message: Message) => {
                                         term.forDays
                                     } дней изоляция на ${timeFomattedDHMS(
                                         term.timestamp
-                                    )} мин.`
+                                    )}`
                             )
                             .join('\n') || 'Нет',
                     inline: false,
