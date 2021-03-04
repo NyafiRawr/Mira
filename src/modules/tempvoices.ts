@@ -133,12 +133,9 @@ export const setLimit = async (
 
 // "Безопасное" удаление канала
 export const deleteTempVoice = async (channel: VoiceChannel) => {
-    if (!channels.has(channel.id) || channel.members.size !== 0) {
-        return;
-    }
-
     channels.delete(channel.id);
-    await channel.delete('Нет активных пользователей');
+
+    await channel.delete('Владелец вышел из своего чата');
 };
 
 // Создание голосового чата и перемещение пользователя туда
@@ -172,21 +169,21 @@ export const checkEntryInTempVoiceCreater = async (
     oldState: VoiceState,
     newState: VoiceState
 ) => {
-    // Если владелец временного канала покинул его, то удалить
     if (
-        oldState.channel !== null &&
-        channels.get(oldState.channel.id)?.owner.id === newState.member!.id
+        oldState.channel !== null && // Если кто-то покинул канал
+        channels.get(oldState.channel.id)?.owner.id === oldState.member!.id // И это владелец покинул свой канал
     ) {
         await deleteTempVoice(oldState.channel);
     }
 
     // Если кто-то зашёл ...
     if (newState.channel !== null) {
-        // ... в канал для создания голосовых чатов, то создать
+        // ... в канал для создания голосовых чатов ...
         const tempVoiceCreaterId = await getTempVoiceCreaterId(
             newState.guild.id
         );
         if (newState.channelID === tempVoiceCreaterId) {
+            // ... то создать чат
             await createTempVoice(newState.channel, newState.member!).catch(
                 () => {
                     newState.member!.send(
