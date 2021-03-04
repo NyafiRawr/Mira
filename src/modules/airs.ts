@@ -69,7 +69,7 @@ export const remove = async (
 ): Promise<void> => {
     const roleId = await getRoleId(guild.id);
     if (roleId) {
-        await member.roles.remove(roleId).catch();
+        await member.roles.remove(roleId).catch(() => null);
     }
 };
 

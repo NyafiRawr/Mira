@@ -96,7 +96,7 @@ module.exports = {
                     reaction
                 );
 
-                await messageFetch.react(reaction).catch();
+                await messageFetch.react(reaction).catch(() => null);
 
                 return message.reply('связка роль-реакция добавлена.');
             }
