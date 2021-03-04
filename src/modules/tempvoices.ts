@@ -171,9 +171,10 @@ export const checkEntryInTempVoiceCreater = async (
 ) => {
     if (
         oldState.channel !== null && // Если кто-то покинул канал
-        channels.get(oldState.channel.id)?.owner.id === oldState.member!.id // И это владелец покинул свой канал
+        oldState.channel !== newState.channel && // И это не прикол дискорда с запуском эфира
+        channels.get(oldState.channel.id)?.owner.id === oldState.member!.id // И это был владелец канала
     ) {
-        await deleteTempVoice(oldState.channel);
+        await deleteTempVoice(oldState.channel); // Удалить канал
     }
 
     // Если кто-то зашёл ...
